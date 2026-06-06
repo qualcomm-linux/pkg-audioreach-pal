@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-glib --with-syslog --with-no-ipc PALHEADERS_CFLAGS="-I$(CURDIR)/inc" PALHEADERS_LIBS=" "
+
+override_dh_missing:
+	dh_missing --list-missing

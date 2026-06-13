@@ -1,0 +1,51 @@
+Source: audioreach-pal
+Section: misc
+Priority: optional
+Maintainer: Sairamreddy Bojja <sbojja@qti.qualcomm.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13),
+ libglib2.0-0,
+ libglib2.0-dev,
+ pkg-config,
+ audioreach-conf,
+ libtinyalsa2,
+ libtinyalsa-dev,
+ libtinycompress0,
+ libtinycompress-dev,
+ audioreach-graphservices,
+ audioreach-graphservices-dev,
+ audioreach-graphmgr,
+ audioreach-graphmgr-dev,
+ audioreach-audio-utils,
+ audioreach-audio-utils-dev,
+ libexpat1-dev,
+Standards-Version: 4.6.2
+Homepage: https://github.com/Audioreach/audioreach-pal
+Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal -b debian/latest
+Vcs-Browser: https://github.com/qualcomm-linux/pkg-audioreach-pal
+
+Package: audioreach-pal
+Architecture: arm64
+Section: libs
+Depends: ${misc:Depends},
+ libtinyalsa2,
+ libtinycompress0,
+ audioreach-conf,
+ audioreach-graphservices,
+ audioreach-graphmgr,
+ audioreach-audio-utils,
+Description: AudioReach platform abstraction layer
+ Provides APIs to configure and control audio use cases by bridging
+ user-space audio frameworks with underlying audio hardware.
+
+Package: audioreach-pal-dev
+Architecture: arm64
+Description: AudioReach pal - development files
+ AudioReach platform abstraction layer
+ Provides APIs to configure and control audio use cases by bridging
+ user-space audio frameworks with underlying audio hardware.
+ .
+ This package contains library headers for the shared libraries shipped in the
+ audioreach-pal package.
+Section: libdevel
+Depends: audioreach-pal (= ${binary:Version}), ${misc:Depends}

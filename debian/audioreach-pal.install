@@ -1,0 +1,6 @@
+usr/lib/${DEB_HOST_MULTIARCH}/*.so.*
+usr/lib/${DEB_HOST_MULTIARCH}/*.so
+etc/mixer_paths_*.xml
+etc/resourcemanager_*.xml
+etc/plugin_manager.xml
+etc/usecaseKvManager.xml

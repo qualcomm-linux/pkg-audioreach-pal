@@ -4,7 +4,6 @@ Priority: optional
 Maintainer: Sairamreddy Bojja <sbojja@qti.qualcomm.com>
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 13),
- libglib2.0-0,
  libglib2.0-dev,
  pkg-config,
  audioreach-conf,
@@ -27,7 +26,8 @@ Vcs-Browser: https://github.com/qualcomm-linux/pkg-audioreach-pal
 Package: audioreach-pal
 Architecture: arm64
 Section: libs
-Depends: ${misc:Depends},
+Depends: ${shlibs:Depends}, ${misc:Depends},
+ libc6,
  libtinyalsa2,
  libtinycompress0,
  audioreach-conf,

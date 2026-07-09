@@ -1,0 +1,339 @@
+/*
+ * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ *       copyright notice, this list of conditions and the following
+ *       disclaimer in the documentation and/or other materials provided
+ *       with the distribution.
+ *     * Neither the name of The Linux Foundation nor the names of its
+ *       contributors may be used to endorse or promote products derived
+ *       from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Changes from Qualcomm Technologies, Inc. are provided under the following license:
+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ * SPDX-License-Identifier: BSD-3-Clause-Clear
+ */
+
+#ifndef _BLUETOOTH_H_
+#define _BLUETOOTH_H_
+
+#include "Device.h"
+#include <tinyalsa/asoundlib.h>
+#include <bt_intf.h>
+#include <bt_ble.h>
+#include <vector>
+#include <mutex>
+#include <system/audio.h>
+#include "Session.h"
+#include "SoundDoseUtility.h"
+
+#define DISALLOW_COPY_AND_ASSIGN(name) \
+    name(const name &); \
+    name &operator=(const name &)
+
+#define SPEECH_MODE_INVALID 0xFFFF
+
+enum A2DP_ROLE {
+    SOURCE = 0,
+    SINK,
+};
+
+#define TO_AIR		0
+#define FROM_AIR	1
+
+enum streamMapDir {
+    STREAM_MAP_IN = 1 << 0,
+    STREAM_MAP_OUT = 1 << 1,
+};
+
+typedef enum {
+    SESSION_UNKNOWN,
+    /** A2DP legacy that AVDTP media is encoded by Bluetooth Stack */
+    A2DP_SOFTWARE_ENCODING_DATAPATH,
+    /** The encoding of AVDTP media is done by HW and there is control only */
+    A2DP_HARDWARE_OFFLOAD_DATAPATH,
+    /** Used when encoded by Bluetooth Stack and streaming to Hearing Aid */
+    HEARING_AID_SOFTWARE_ENCODING_DATAPATH,
+    /** Used when encoded by Bluetooth Stack and streaming to LE Audio device */
+    LE_AUDIO_SOFTWARE_ENCODING_DATAPATH,
+    /** Used when decoded by Bluetooth Stack and streaming to audio framework */
+    LE_AUDIO_SOFTWARE_DECODED_DATAPATH,
+    /** Encoding is done by HW an there is control only */
+    LE_AUDIO_HARDWARE_OFFLOAD_ENCODING_DATAPATH,
+    /** Decoding is done by HW an there is control only */
+    LE_AUDIO_HARDWARE_OFFLOAD_DECODING_DATAPATH,
+    /** SW Encoding for LE Audio Broadcast */
+    LE_AUDIO_BROADCAST_SOFTWARE_ENCODING_DATAPATH,
+    /** HW Encoding for LE Audio Broadcast */
+    LE_AUDIO_BROADCAST_HARDWARE_OFFLOAD_ENCODING_DATAPATH,
+}tSESSION_TYPE;
+
+typedef enum {
+    CTRL_ACK_SUCCESS,
+    CTRL_ACK_UNSUPPORTED,
+    CTRL_ACK_FAILURE,
+    CTRL_ACK_PENDING,
+    CTRL_ACK_INCALL_FAILURE,
+    CTRL_ACK_DISCONNECT_IN_PROGRESS,
+    CTRL_SKT_DISCONNECTED,
+    CTRL_ACK_UNKNOWN,
+    CTRL_ACK_RECONFIGURATION,
+};
+
+typedef void (*bt_audio_pre_init_t)(void);
+typedef int (*audio_source_open_api_t)(tSESSION_TYPE session_type);
+typedef int (*audio_source_close_api_t)(tSESSION_TYPE session_type);
+typedef int (*audio_source_start_api_t)(tSESSION_TYPE session_type);
+typedef int (*audio_source_stop_api_t)(tSESSION_TYPE session_type);
+typedef int (*audio_source_suspend_api_t)(tSESSION_TYPE session_type);
+typedef void (*audio_source_handoff_triggered_t)(void);
+typedef void (*clear_source_a2dpsuspend_flag_t)(void);
+typedef void * (*audio_get_enc_config_api_t)(tSESSION_TYPE session_type, uint8_t *multicast_status,
+                                        uint8_t *num_dev, audio_format_t *codec_format);
+typedef int (*audio_source_check_a2dp_ready_api_t)(tSESSION_TYPE session_type);
+typedef bool (*audio_is_tws_mono_mode_enable_t)(void);
+typedef int (*audio_sink_start_api_t)(tSESSION_TYPE session_type);
+typedef int (*audio_sink_stop_api_t)(tSESSION_TYPE session_type);
+typedef void * (*audio_get_dec_config_t)(audio_format_t *codec_format);
+typedef int (*audio_sink_session_setup_complete_t)(uint64_t system_latency);
+typedef int (*audio_sink_check_a2dp_ready_t)(void);
+typedef uint16_t (*audio_sink_get_a2dp_latency_api_t)(tSESSION_TYPE session_type);
+typedef bool (*audio_is_scrambling_enabled_t)(void);
+typedef int (*audio_sink_suspend_api_t)(tSESSION_TYPE session_type);
+typedef void (*btoffload_update_metadata_api_t)(tSESSION_TYPE session_type, void* metadata);
+typedef int (*audio_sink_open_api_t)(tSESSION_TYPE session_type);
+typedef int (*audio_sink_close_api_t)(tSESSION_TYPE session_type);
+typedef int (*audio_source_get_supported_latency_modes_api_t)(tSESSION_TYPE session_type, size_t *num_modes, size_t max_latency_modes, uint32_t *modes);
+typedef int (*audio_source_set_latency_mode_api_t)(tSESSION_TYPE session_type, uint32_t mode);
+
+typedef int (*audio_source_open_t)(void);
+typedef int (*audio_source_close_t)(void);
+typedef int (*audio_source_start_t)(void);
+typedef int (*audio_source_stop_t)(void);
+typedef int (*audio_source_suspend_t)(void);
+typedef void* (*audio_get_enc_config_t)(uint8_t* multicast_status,
+    uint8_t* num_dev, audio_format_t* codec_format);
+typedef int (*audio_source_check_a2dp_ready_t)(void);
+typedef int (*audio_sink_start_t)(void);
+typedef int (*audio_sink_stop_t)(void);
+typedef uint16_t(*audio_sink_get_a2dp_latency_t)(void);
+typedef int (*audio_sink_suspend_t)(void);
+typedef int (*audio_sink_open_t)(void);
+typedef int (*audio_sink_close_t)(void);
+
+extern "C" void CreateBtDevice(struct pal_device *device,
+                                const std::shared_ptr<ResourceManager> rm,
+                                std::shared_ptr<Device> *dev);
+// Abstract base class
+class Bluetooth : public Device
+{
+protected:
+    Bluetooth(struct pal_device *device, std::shared_ptr<ResourceManager> Rm);
+
+    codec_type                 mCodecType;
+    struct pal_media_config    mCodecConfig;
+    codec_format_t             mCodecFormat;
+    void                       *mCodecInfo;
+    void                       *mPluginHandler;
+    bt_codec_t                 *mPluginCodec;
+    bool                       mIsAbrEnabled;
+    bool                       mIsConfigured;
+    bool                       mIsLC3MonoModeOn;
+    bool                       mIsTwsMonoModeOn;
+    bool                       mIsScramblingEnabled;
+    bool                       mIsDummySink;
+    struct pcm                 *mFBPcm;
+    std::vector<int>           mFBPcmDevIds;
+    std::shared_ptr<Bluetooth> mFBDev;
+    int                        mAbrRefCnt;
+    std::mutex                 mAbrMutex;
+    int                        mTotalActiveSessionRequests;
+    codec_version_t            mCodecVersion;
+
+    int32_t getPCMId();
+    int checkAndUpdateCustomPayload(uint8_t **paramData, size_t *paramSize);
+    int getPluginPayload(void **handle, bt_codec_t **btCodec,
+                         bt_enc_payload_t **out_buf,
+                         codec_type codecType);
+    int configureCOPModule(int32_t pcmId, const char *backendName, uint32_t tagId, uint32_t streamMapDir, bool isFbpayload);
+    int configureRATModule(int32_t pcmId, const char *backendName, uint32_t tagId, bool isFbpayload);
+    int configurePCMConverterModule(int32_t pcmId, const char *backendName, uint32_t tagId, bool isFbpayload);
+    int configureGraphModules();
+    int configureNrecParameters(bool isNrecEnabled);
+    int updateDeviceMetadata();
+    void updateDeviceAttributes();
+    bool isPlaceholderEncoder();
+    void startAbr();
+    void stopAbr();
+    int32_t configureSlimbusClockSrc(void);
+public:
+    int getCodecConfig(struct pal_media_config *config) override;
+    virtual ~Bluetooth();
+};
+
+class BtA2dp : public Bluetooth
+{
+protected:
+    static std::shared_ptr<Device> sObjRx;
+    static std::shared_ptr<Device> sObjTx;
+    static std::shared_ptr<Device> sObjBleRx;
+    static std::shared_ptr<Device> sObjBleTx;
+    static std::shared_ptr<Device> sObjBleBroadcastRx;
+    BtA2dp(struct pal_device *device, std::shared_ptr<ResourceManager> Rm);
+    pal_param_bta2dp_t mParamBtA2dp;
+    pal_sound_dose_info_t mSoundDoseInfo;
+
+private:
+    /* BT IPC related members */
+    static void                                 *bt_lib_source_handle;
+    static bt_audio_pre_init_t                  bt_audio_pre_init;
+    static audio_source_open_api_t              audio_source_open_api;
+    static audio_source_close_api_t             audio_source_close_api;
+    static audio_source_start_api_t             audio_source_start_api;
+    static audio_source_stop_api_t              audio_source_stop_api;
+    static audio_source_suspend_api_t           audio_source_suspend_api;
+    static audio_source_handoff_triggered_t     audio_source_handoff_triggered;
+    static clear_source_a2dpsuspend_flag_t      clear_source_a2dpsuspend_flag;
+    static audio_get_enc_config_api_t           audio_get_enc_config_api;
+    static audio_source_check_a2dp_ready_api_t  audio_source_check_a2dp_ready_api;
+    static audio_is_tws_mono_mode_enable_t      audio_is_tws_mono_mode_enable;
+    static audio_sink_get_a2dp_latency_api_t    audio_sink_get_a2dp_latency_api;
+
+    static void                                 *bt_lib_sink_handle;
+    static audio_sink_start_api_t               audio_sink_start_api;
+    static audio_sink_stop_api_t                audio_sink_stop_api;
+    static audio_get_dec_config_t               audio_get_dec_config;
+    static audio_sink_session_setup_complete_t  audio_sink_session_setup_complete;
+    static audio_sink_check_a2dp_ready_t        audio_sink_check_a2dp_ready;
+    static audio_is_scrambling_enabled_t        audio_is_scrambling_enabled;
+    static audio_sink_suspend_api_t             audio_sink_suspend_api;
+    static btoffload_update_metadata_api_t      btoffload_update_metadata_api;
+    static audio_sink_open_api_t                audio_sink_open_api;
+    static audio_sink_close_api_t               audio_sink_close_api;
+    static audio_source_get_supported_latency_modes_api_t audio_source_get_supported_latency_modes_api;
+    static audio_source_set_latency_mode_api_t audio_source_set_latency_mode_api;
+
+    static audio_source_open_t                  audio_source_open;
+    static audio_source_close_t                 audio_source_close;
+    static audio_source_start_t                 audio_source_start;
+    static audio_source_stop_t                  audio_source_stop;
+    static audio_source_suspend_t               audio_source_suspend;
+    static audio_get_enc_config_t               audio_get_enc_config;
+    static audio_source_check_a2dp_ready_t      audio_source_check_a2dp_ready;
+    static audio_sink_get_a2dp_latency_t        audio_sink_get_a2dp_latency;
+
+    static audio_sink_start_t                   audio_sink_start;
+    static audio_sink_stop_t                    audio_sink_stop;
+    static audio_sink_suspend_t                 audio_sink_suspend;
+    static audio_sink_open_t                    audio_sink_open;
+    static audio_sink_close_t                   audio_sink_close;
+
+    /* member variables */
+    uint8_t         mA2dpRole;  // source or sink
+    enum A2DP_STATE mA2dpState;
+    bool            mIsA2dpOffloadSupported;
+    bool            mSupport_bt_audio_pre_init;
+    uint32_t        mA2dpLatencyMode;
+    bool            mA2dpLatencyUpdatedFromFramework;
+    uint32_t        mCodecLatency;
+    std::unique_ptr<SoundDoseUtility> mSoundDose;
+
+    uint32_t getLatency(uint32_t slatency);
+    int startPlayback();
+    int stopPlayback();
+    int startCapture();
+    int stopCapture();
+
+    /* common member funtions */
+    void init_a2dp_source();
+    void open_a2dp_source();
+    int close_audio_source();
+    tSESSION_TYPE get_session_type();
+
+    void init_a2dp_sink();
+    void open_a2dp_sink();
+    int close_audio_sink();
+    bool a2dp_send_sink_setup_complete(void);
+    using Bluetooth::init;
+    void init();
+
+public:
+    int start();
+    int stop();
+    bool isDeviceReady(pal_device_id_t id) override;
+    int32_t setDeviceParameter(uint32_t param_id, void *param) override;
+    int32_t getDeviceParameter(uint32_t param_id, void **param) override;
+    int32_t getDeviceConfig(struct pal_device *deviceattr,
+                            struct pal_stream_attributes *sAttr) override;
+
+    static std::shared_ptr<Device> getInstance(struct pal_device *device,
+                                               std::shared_ptr<ResourceManager> Rm);
+    virtual ~BtA2dp();
+    DISALLOW_COPY_AND_ASSIGN(BtA2dp);
+    int32_t checkDeviceStatus() override;
+};
+
+class BtSco : public Bluetooth
+{
+protected:
+    static std::shared_ptr<Device> sObjRx;
+    static std::shared_ptr<Device> sObjTx;
+    static std::shared_ptr<Device> sObjHfpRx;
+    static std::shared_ptr<Device> sObjHfpTx;
+    BtSco(struct pal_device *device, std::shared_ptr<ResourceManager> Rm);
+    bool mIsScoOn = false;
+    bool mIsHfpOn = false;
+    static bool sIsWbSpeechEnabled;
+    static int  sSwbSpeechMode;
+    static bool sIsSwbLc3Enabled;
+    static audio_lc3_codec_cfg_t sLc3CodecInfo;
+    static bool sIsNrecEnabled;
+    /**
+     * This configuration is maintained for backward compatibility.
+     * In future releases, this support will be removed, and HFP sync
+     * will be considered mandatory.
+     */
+    static bool sIsHFPSyncEnabled;
+    int startSwb();
+    int openBTHost();
+    int closeBTHost();
+    int startBTHost();
+    int stopBTHost();
+    int getCodecConfigFromBTHost();
+    void prepareLC3Config();
+
+public:
+    int start();
+    int stop();
+    bool isDeviceReady(pal_device_id_t id) override;
+    int32_t setDeviceParameter(uint32_t param_id, void *param) override;
+    void convertCodecInfo(audio_lc3_codec_cfg_t& lc3CodecInfo, const btsco_lc3_cfg_t& lc3Cfg);
+    bool isScoNbWbActive() override;
+    bool isHFPRunning();
+    int32_t checkAndUpdateSampleRate(uint32_t *sampleRate) override;
+    int32_t getDeviceConfig(struct pal_device *deviceattr,
+                            struct pal_stream_attributes *sAttr) override;
+
+    static std::shared_ptr<Device> getInstance(struct pal_device *device,
+                                               std::shared_ptr<ResourceManager> Rm);
+    virtual ~BtSco();
+    DISALLOW_COPY_AND_ASSIGN(BtSco);
+};
+
+#endif /* _BLUETOOTH_H_ */

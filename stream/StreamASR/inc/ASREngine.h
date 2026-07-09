@@ -1,0 +1,139 @@
+/*
+ * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ *       copyright notice, this list of conditions and the following
+ *       disclaimer in the documentation and/or other materials provided
+ *       with the distribution.
+ *     * Neither the name of The Linux Foundation nor the names of its
+ *       contributors may be used to endorse or promote products derived
+ *       from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
+ * Copyright (c) 2024-2025 Qualcomm Innovation Center, Inc. All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause-Clear
+ */
+
+#ifndef ASRENGINE_H
+#define ASRENGINE_H
+
+#include <map>
+
+#include "ASRPlatformInfo.h"
+#include "PayloadBuilder.h"
+#include "asr_module_calibration_api.h"
+#include "sdz_api.h"
+
+typedef enum {
+    ASR_ENG_IDLE,
+    ASR_ENG_ACTIVE,
+    ASR_ENG_TEXT_RECEIVED,
+} asr_eng_state_t;
+
+class Session;
+class StreamASR;
+
+class ASREngine
+{
+public:
+    ASREngine(StreamASR *s, std::shared_ptr<ASRStreamConfig> smCfg);
+    ~ASREngine();
+
+    static std::shared_ptr<ASREngine> GetInstance(StreamASR *s,
+                          std::shared_ptr<ASRStreamConfig> smCfg);
+    int32_t StartEngine(StreamASR *s);
+    int32_t StopEngine(StreamASR *s);
+    int32_t ConnectSessionDevice(
+        StreamASR *stream_handle,
+        pal_stream_type_t streamType,
+        std::shared_ptr<Device> deviceToConnect);
+    int32_t DisconnectSessionDevice(
+        StreamASR *streamHandle,
+        pal_stream_type_t streamType,
+        std::shared_ptr<Device> deviceToDisconnect);
+    int32_t SetupSessionDevice(
+        StreamASR *streamHandle,
+        pal_stream_type_t streamType,
+        std::shared_ptr<Device> deviceToDisconnect);
+    int32_t setECRef(StreamASR *s, std::shared_ptr<Device> dev,
+                     bool is_enable, bool setECForFirstTime = false);
+    int32_t getCustomParam(custom_payload_uc_info_t* uc_info, std::string param_str,
+                           void* param_payload, size_t* payload_size, Stream *s);
+    int32_t setParameters(StreamASR *s, asr_param_id_type_t pid, void* paramPayload = nullptr);
+    uint32_t GetNumOutput() { return numOutput; }
+    uint32_t GetOutputToken() { return outputToken; }
+    uint32_t GetPayloadSize() { return payloadSize; }
+    uint32_t GetSdzNumOutput() { return sdzNumOutput; }
+    uint32_t GetSdzOutputToken() { return sdzOutputToken; }
+    uint32_t GetSdzPayloadSize() { return sdzPayloadSize; }
+    void releaseEngine() { eng = nullptr; }
+private:
+    static void EventProcessingThread(ASREngine *engine);
+    static void HandleSessionCallBack(uint64_t hdl, uint32_t event_id, void *data,
+                                      uint32_t eventSize);
+
+    int32_t PopulateEventPayload();
+    void ParseEventAndNotifyStream(void* eventData);
+    void ParseSdzEventAndNotifyStream(void* eventData);
+    void HandleSessionEvent(uint32_t eventId __unused, void *data, uint32_t size);
+    bool IsEngineActive();
+    int32_t UpdateASRConfiguration(StreamASR *s);
+    int32_t UpdateSDZConfiguration(StreamASR *s);
+    int32_t AttachStream(StreamASR *s);
+    int32_t DetachStream(StreamASR *s);
+
+    bool isCrrDevUsingExtEc;
+    bool exitThread;
+    bool loggerModeEnabled;
+    bool timestampEnabled;
+    uint32_t outputBufSize;
+    uint32_t numOutput;
+    uint32_t payloadSize;
+    uint32_t outputToken;
+    uint32_t sdzNumOutput;
+    uint32_t sdzPayloadSize;
+    uint32_t sdzOutputToken;
+    uint32_t moduleTagIds[ASR_MAX_PARAM_IDS];
+    uint32_t paramIds[ASR_MAX_PARAM_IDS];
+    int32_t ecRefCount;
+    int32_t devDisconnectCount;
+
+    std::queue<std::pair<uint32_t, void *>> eventQ;
+    static std::shared_ptr<ASREngine> eng;
+    param_id_asr_config_t *speechCfg;
+    uint32_t outputCfgSize;
+    param_id_asr_output_config_v2_t *outputCfg;
+    uint32_t sdzOutputCfgSize;
+    param_id_sdz_output_config_v2_t *sdzOutputCfg;
+    std::shared_ptr<Device> rxEcDev;
+    std::recursive_mutex ecRefMutex;
+    std::shared_ptr<ASRPlatformInfo> asrInfo;
+    std::shared_ptr<ASRStreamConfig> smCfg;
+
+    asr_eng_state_t engState;
+    std::thread eventThreadHandler;
+    std::mutex mutexEngine;
+    std::condition_variable cv;
+
+    Session *session;
+    PayloadBuilder *builder;
+    std::vector<StreamASR *> streamList;
+};
+#endif  // ASRENGINE_H

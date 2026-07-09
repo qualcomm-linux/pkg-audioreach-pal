@@ -1,0 +1,120 @@
+/*
+ * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ *       copyright notice, this list of conditions and the following
+ *       disclaimer in the documentation and/or other materials provided
+ *       with the distribution.
+ *     * Neither the name of The Linux Foundation nor the names of its
+ *       contributors may be used to endorse or promote products derived
+ *       from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Changes from Qualcomm Technologies, Inc. are provided under the following license:
+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+ * SPDX-License-Identifier: BSD-3-Clause-Clear
+ */
+
+#define LOG_TAG "PAL: Speaker"
+#include "Speaker.h"
+#include "ResourceManager.h"
+#include "SpeakerProtectionwsa88xx.h"
+#include "SpeakerProtection.h"
+#include "Device.h"
+#include "kvh2xml.h"
+
+extern "C" void CreateSpeakerDevice(struct pal_device *device,
+                                    const std::shared_ptr<ResourceManager> rm,
+                                    std::shared_ptr<Device> *dev) {
+    *dev = Speaker::getInstance(device, rm);
+
+}
+
+std::shared_ptr<Device> Speaker::obj = nullptr;
+
+std::shared_ptr<Device> Speaker::getInstance(struct pal_device *device,
+                                             std::shared_ptr<ResourceManager> Rm)
+{
+    if (!obj) {
+        std::lock_guard<std::mutex> lock(Device::mInstMutex);
+        if (!obj) {
+            if (ResourceManager::IsSpeakerProtectionEnabled()) {
+                std::shared_ptr<Device> sp;
+                switch (Rm->getWsaUsed()) {
+                    case WSA883X:
+                        sp = std::make_shared<SpeakerProtectionwsa883x>(device, Rm);
+                        break;
+                    case WSA884X:
+                        sp = std::make_shared<SpeakerProtectionwsa884x>(device, Rm);
+                        break;
+                    case WSA885X:
+                        sp = std::make_shared<SpeakerProtectionwsa885x>(device, Rm);
+                        break;
+                    case WSA885X_I2S:
+                        sp = std::make_shared<SpeakerProtectionwsa885xI2s>(device, Rm);
+                        break;
+                    default:
+                        // during default as well enable spkrprotectionwsa884x
+                        sp = std::make_shared<SpeakerProtectionwsa884x>(device, Rm);
+                        break;
+                }
+                obj = sp;
+            } else {
+                std::shared_ptr<Device> sp(new Speaker(device, Rm));
+                obj = sp;
+            }
+        }
+    }
+    return obj;
+}
+
+
+Speaker::Speaker(struct pal_device *device, std::shared_ptr<ResourceManager> Rm) :
+Device(device, Rm)
+{
+}
+
+Speaker::Speaker()
+{
+
+}
+
+Speaker::~Speaker()
+{
+
+}
+
+int Speaker::close()
+{
+    int status = 0;
+
+    status = Device::close();
+    if (status == 0 && deviceCount == 0) {
+        std::shared_ptr<ResourceManager> Rm = nullptr;
+        Rm = ResourceManager::getInstance();
+        if (Rm && Rm->IsChargeConcurrencyEnabled() && Rm->getChargerOnlineState() &&
+            Rm->getConcurrentBoostState()) {
+            status = Rm->chargerListenerSetBoostState(false, CONCURRENCY_PB_STOPS);
+            if (0 != status)
+                PAL_ERR(LOG_TAG, "Failed to notify PMIC: %d", status);
+        } else {
+            PAL_DBG(LOG_TAG, "Concurrent State unchanged, ignore notifying");
+        }
+    }
+    return status;
+}

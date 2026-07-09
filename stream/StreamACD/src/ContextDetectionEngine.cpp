@@ -1,0 +1,318 @@
+/*
+ * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ *       copyright notice, this list of conditions and the following
+ *       disclaimer in the documentation and/or other materials provided
+ *       with the distribution.
+ *     * Neither the name of The Linux Foundation nor the names of its
+ *       contributors may be used to endorse or promote products derived
+ *       from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
+ * Copyright (c) 2024-2025 Qualcomm Innovation Center, Inc. All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause-Clear
+ */
+
+#define LOG_TAG "PAL: ContextDetectionEngine"
+
+#include "ContextDetectionEngine.h"
+
+#include "ACDEngine.h"
+#include "StreamACD.h"
+#include "SessionAR.h"
+
+std::shared_ptr<ContextDetectionEngine> ContextDetectionEngine::Create(
+    StreamACD *s,
+    std::shared_ptr<ACDStreamConfig> sm_cfg)
+{
+    std::shared_ptr<ContextDetectionEngine> engine(nullptr);
+    std::string streamConfigName;
+
+    if (!s) {
+        PAL_ERR(LOG_TAG, "Invalid stream handle");
+        return nullptr;
+    }
+    streamConfigName = sm_cfg->GetStreamConfigName();
+
+    if (!strcmp(streamConfigName.c_str(), "QC_ACD")) {
+        try {
+            engine = ACDEngine::GetInstance(s, sm_cfg);
+        } catch (const std::exception& e) {
+            PAL_ERR(LOG_TAG, "ContextDetectionEngine creation failed %s", e.what());
+            goto exit;
+        }
+    } else if (!strcmp(streamConfigName.c_str(), "QC_SDZ")) {
+        try {
+            engine = std::make_shared<ContextDetectionEngine>(s, sm_cfg);
+        } catch (const std::exception& e) {
+            PAL_ERR(LOG_TAG, "ContextDetectionEngine creation failed %s", e.what());
+            goto exit;
+        }
+    } else {
+        PAL_ERR(LOG_TAG, "Invalid Stream Config");
+    }
+
+    PAL_VERBOSE(LOG_TAG, "Exit, engine %p", engine.get());
+exit:
+    return engine;
+}
+
+ContextDetectionEngine::ContextDetectionEngine(
+    StreamACD *s,
+    std::shared_ptr<ACDStreamConfig> sm_cfg) {
+
+    struct pal_stream_attributes sAttr;
+    std::shared_ptr<ResourceManager> rm = nullptr;
+
+    eng_state_ = ENG_IDLE;
+    sm_cfg_ = sm_cfg;
+    exit_thread_ = false;
+    stream_handle_ = s;
+    eng_state_ = ENG_IDLE;
+    builder_ = new PayloadBuilder();
+    dev_disconnect_count_ = 0;
+
+    PAL_DBG(LOG_TAG, "Enter");
+
+    acd_info_ = ACDPlatformInfo::GetInstance();
+    if (!acd_info_) {
+        PAL_ERR(LOG_TAG, "No ACD platform info present");
+        throw std::runtime_error("No ACD platform info present");
+    }
+
+    // Create session
+    rm = ResourceManager::getInstance();
+    if (!rm) {
+        PAL_ERR(LOG_TAG, "Failed to get ResourceManager instance");
+        throw std::runtime_error("Failed to get ResourceManager instance");
+    }
+    stream_handle_->getStreamAttributes(&sAttr);
+    session_ = dynamic_cast<SessionAR*>(Session::makeSession(rm, &sAttr));
+
+    if (!session_) {
+        PAL_ERR(LOG_TAG, "Failed to create session");
+        throw std::runtime_error("Failed to create session");
+    }
+
+    session_->registerCallBack(ContextHandleSessionCallBack, (uint64_t)this);
+
+    PAL_DBG(LOG_TAG, "Exit");
+}
+
+void ContextDetectionEngine::ContextHandleSessionCallBack(uint64_t hdl, uint32_t event_id, void *data,
+                                      uint32_t event_size)
+{
+    return;
+}
+
+ContextDetectionEngine::~ContextDetectionEngine()
+{
+    PAL_INFO(LOG_TAG, "Enter");
+
+    if (event_thread_handler_.joinable()) {
+        std::unique_lock<std::mutex> lck(mutex_);
+        exit_thread_ = true;
+        cv_.notify_one();
+        lck.unlock();
+        event_thread_handler_.join();
+        lck.lock();
+        PAL_INFO(LOG_TAG, "Thread joined");
+    }
+
+    if (session_) {
+        delete session_;
+    }
+    PAL_INFO(LOG_TAG, "Exit");
+}
+
+int32_t ContextDetectionEngine::StartEngine(StreamACD *s)
+{
+    int32_t status = 0;
+
+    PAL_DBG(LOG_TAG, "Enter");
+
+    if (isEngActive())
+        goto exit;
+
+    status = session_->prepare(s);
+    if (0 != status) {
+        PAL_ERR(LOG_TAG, "Error:%d Failed to prepare session", status);
+        goto exit;
+    }
+
+    status = session_->start(s);
+    if (0 != status) {
+        PAL_ERR(LOG_TAG, "Error:%d Failed to start session", status);
+        goto exit;
+    }
+
+    eng_state_ = ENG_ACTIVE;
+exit:
+    PAL_DBG(LOG_TAG, "Exit, status %d", status);
+    return status;
+}
+
+int32_t ContextDetectionEngine::StopEngine(StreamACD *s)
+{
+    int32_t status = 0;
+
+    PAL_DBG(LOG_TAG, "Enter");
+
+    status = session_->stop(s);
+    if (status)
+        PAL_ERR(LOG_TAG, "Error:%d Failed to stop session", status);
+
+    eng_state_ = ENG_LOADED;
+    PAL_DBG(LOG_TAG, "Exit, status = %d", status);
+    return status;
+}
+
+int32_t ContextDetectionEngine::SetupEngine(StreamACD *s, void *config __unused)
+{
+    int32_t status = 0;
+
+    PAL_DBG(LOG_TAG, "Enter");
+
+    status = session_->open(s);
+    if (0 != status) {
+        PAL_ERR(LOG_TAG, "Error:%d Failed to open session", status);
+        goto exit;
+    }
+
+    eng_state_ = ENG_LOADED;
+    eng_streams_.push_back(s);
+exit:
+    return status;
+}
+
+int32_t ContextDetectionEngine::TeardownEngine(StreamACD *s, void *config __unused)
+{
+    int32_t status = 0;
+
+    status = session_->close(s);
+    if (status) {
+        PAL_ERR(LOG_TAG, "Error:%d Failed to close session", status);
+        goto exit;
+    }
+
+    eng_state_ = ENG_IDLE;
+exit:
+    auto iter = std::find(eng_streams_.begin(), eng_streams_.end(), s);
+    if (iter != eng_streams_.end())
+        eng_streams_.erase(iter);
+    return status;
+}
+
+int32_t ContextDetectionEngine::ReconfigureEngine(StreamACD *s, void *old_config, void *new_config)
+{
+    return 0;
+}
+
+int32_t ContextDetectionEngine::LoadSoundModel()
+{
+    return 0;
+}
+int32_t ContextDetectionEngine::UnloadSoundModel()
+{
+    return 0;
+}
+
+int32_t ContextDetectionEngine::ConnectSessionDevice(
+    StreamACD* stream_handle, pal_stream_type_t stream_type,
+    std::shared_ptr<Device> device_to_connect)
+{
+    int32_t status = 0;
+
+    if (!session_) {
+        PAL_ERR(LOG_TAG, "Invalid session");
+        return -EINVAL;
+    }
+
+    if (dev_disconnect_count_ == 0)
+        status = session_->connectSessionDevice(stream_handle, stream_type,
+                                            device_to_connect);
+
+    PAL_DBG(LOG_TAG, "dev_disconnect_count_: %d", dev_disconnect_count_);
+    return status;
+}
+
+int32_t ContextDetectionEngine::DisconnectSessionDevice(
+    StreamACD* stream_handle, pal_stream_type_t stream_type,
+    std::shared_ptr<Device> device_to_disconnect)
+{
+    int32_t status = 0;
+
+    if (!session_) {
+        PAL_ERR(LOG_TAG, "Invalid session");
+        return -EINVAL;
+    }
+
+    dev_disconnect_count_++;
+    if (dev_disconnect_count_ == eng_streams_.size())
+        status = session_->disconnectSessionDevice(stream_handle, stream_type,
+                                               device_to_disconnect);
+    PAL_DBG(LOG_TAG, "dev_disconnect_count_: %d", dev_disconnect_count_);
+    return status;
+}
+
+int32_t ContextDetectionEngine::SetupSessionDevice(
+    StreamACD* stream_handle, pal_stream_type_t stream_type,
+    std::shared_ptr<Device> device_to_disconnect)
+{
+    int32_t status = 0;
+
+    if (!session_) {
+        PAL_ERR(LOG_TAG, "Invalid session");
+        return -EINVAL;
+    }
+
+    dev_disconnect_count_--;
+    if (dev_disconnect_count_ < 0)
+        dev_disconnect_count_ = 0;
+
+    if (dev_disconnect_count_ == 0)
+        status = session_->setupSessionDevice(stream_handle, stream_type,
+                                          device_to_disconnect);
+
+    PAL_DBG(LOG_TAG, "dev_disconnect_count_: %d", dev_disconnect_count_);
+    return status;
+}
+
+int32_t ContextDetectionEngine::setECRef(StreamACD *s, std::shared_ptr<Device> dev, bool is_enable)
+{
+    if (!session_) {
+        PAL_ERR(LOG_TAG, "Invalid session");
+        return -EINVAL;
+    }
+
+    return session_->setECRef(s, dev, is_enable);
+}
+
+int32_t ContextDetectionEngine::getCustomParam(custom_payload_uc_info_t* uc_info, std::string param_str,
+                                    void* param_payload, size_t* payload_size, Stream *s)
+{
+    if (!session_) {
+        PAL_ERR(LOG_TAG, "Invalid session");
+        return -EINVAL;
+    }
+
+    return session_->getCustomParam(uc_info, param_str, param_payload, payload_size, s);
+}

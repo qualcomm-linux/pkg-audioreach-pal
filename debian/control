@@ -2,6 +2,8 @@ Source: audioreach-pal
 Section: misc
 Priority: optional
 Maintainer: Sairamreddy Bojja <sbojja@qti.qualcomm.com>
+Uploaders:
+ Agathe Porte <agathe.porte@oss.qualcomm.com>
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 13),
  libglib2.0-dev,

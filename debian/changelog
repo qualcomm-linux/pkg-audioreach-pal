@@ -1,6 +1,6 @@
-audioreach-pal (1.0.0-1) UNRELEASED; urgency=low
+audioreach-pal (1.0.0-0qli+staging1~) UNRELEASED; urgency=low
 
   * Initial release.
 
- -- Sairamreddy Bojja  <sbojja@qti.qualcomm.com>  Sat, 13 Jun 2026 14:19:40 +0530
+ -- Rohith Chiluka <rchiluka@qti.qualcomm.com>  Wed, 09 Jul 2026 15:20:14 +0200
 

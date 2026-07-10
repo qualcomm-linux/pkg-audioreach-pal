@@ -1,8 +1,9 @@
-audioreach-pal (1.0.0-0qli+staging1~bpo13+1~) UNRELEASED; urgency=medium
+audioreach-pal (1.0.0-0qli+staging1~bpo13+1) trixie; urgency=medium
 
+  [ Agathe Porte ]
   * Rebuild for trixie.
 
- -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Fri, 10 Jul 2026 13:46:22 +0200
+ -- root <root@4b78c90f18d5>  Fri, 10 Jul 2026 11:47:41 +0000
 
 audioreach-pal (1.0.0-0qli+staging1) forky; urgency=low
 

@@ -1,5 +1,6 @@
-audioreach-pal (1.0.0-0qli+staging1~) UNRELEASED; urgency=low
+audioreach-pal (1.0.0-0qli+staging1) forky; urgency=low
 
+  [ Agathe Porte ]
   * Initial release.
 
- -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Thu, 09 Jul 2026 15:54:44 +0200
+ -- root <root@97473a13d908>  Fri, 10 Jul 2026 07:27:23 +0000

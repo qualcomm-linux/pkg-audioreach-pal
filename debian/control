@@ -32,11 +32,6 @@ Section: libs
 Depends:
  audioreach-audio-utils,
  audioreach-conf,
- audioreach-graphmgr,
- audioreach-graphservices,
- libc6,
- libtinyalsa2,
- libtinycompress0,
  ${misc:Depends},
  ${shlibs:Depends},
 Description: AudioReach platform abstraction layer

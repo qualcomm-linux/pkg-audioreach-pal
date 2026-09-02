@@ -2,4 +2,3 @@ etc/mixer_paths_*.xml
 etc/plugin_manager.xml
 etc/resourcemanager_*.xml
 etc/usecaseKvManager.xml
-usr/lib/${DEB_HOST_MULTIARCH}/*.so.*

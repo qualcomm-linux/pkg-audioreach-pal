@@ -27,18 +27,37 @@ Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal.git
 Vcs-Browser: https://github.com/qualcomm-linux/pkg-audioreach-pal
 
 Package: audioreach-pal
-Architecture: arm64
-Section: libs
+Architecture: all
 Depends:
  audioreach-audio-utils,
  audioreach-conf,
  ${misc:Depends},
  ${shlibs:Depends},
+Recommends:
+ libaudioreach-pal1,
 Description: AudioReach platform abstraction layer
  Provides APIs to configure and control audio use cases by bridging
  user-space audio frameworks with underlying audio hardware.
 
-Package: audioreach-pal-dev
+Package: libaudioreach-pal1
+Architecture: arm64
+Multi-Arch: same
+Section: libs
+Depends:
+ audioreach-audio-utils,
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: AudioReach platform abstraction layer - shared libraries
+ Provides APIs to configure and control audio use cases by bridging
+ user-space audio frameworks with underlying audio hardware.
+ .
+ This package contains shared libraries for the PAL.
+Breaks:
+ audioreach-pal (<< 1.0.0-0qli+staging2~),
+Replaces:
+ audioreach-pal (<< 1.0.0-0qli+staging2~),
+
+Package: libaudioreach-pal-dev
 Architecture: arm64
 Description: AudioReach pal - development files
  AudioReach platform abstraction layer
@@ -46,8 +65,14 @@ Description: AudioReach pal - development files
  user-space audio frameworks with underlying audio hardware.
  .
  This package contains library headers for the shared libraries shipped in the
- audioreach-pal package.
+ libaudioreach-pal1 package.
 Section: libdevel
 Depends:
- audioreach-pal (= ${binary:Version}),
+ libaudioreach-pal1 (= ${binary:Version}),
  ${misc:Depends},
+Provides:
+ audioreach-pal-dev,
+Breaks:
+ audioreach-pal-dev (<< 1.0.0-0qli+staging2~),
+Replaces:
+ audioreach-pal-dev (<< 1.0.0-0qli+staging2~),

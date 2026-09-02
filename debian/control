@@ -22,7 +22,7 @@ Build-Depends:
  pkg-config,
 Standards-Version: 4.6.2
 Homepage: https://github.com/Audioreach/audioreach-pal
-Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal -b debian/latest
+Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal.git
 Vcs-Browser: https://github.com/qualcomm-linux/pkg-audioreach-pal
 
 Package: audioreach-pal

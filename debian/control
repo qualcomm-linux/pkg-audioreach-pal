@@ -8,7 +8,6 @@ Build-Depends:
  debhelper-compat (= 13),
  audioreach-audio-utils,
  audioreach-audio-utils-dev,
- audioreach-conf,
  audioreach-graphmgr,
  audioreach-graphmgr-dev,
  audioreach-graphservices,
@@ -20,6 +19,7 @@ Build-Depends:
  libtinycompress-dev,
  libtinycompress0,
  pkg-config,
+ qcom-kvh2xml-dev,
 Standards-Version: 4.6.2
 Homepage: https://github.com/Audioreach/audioreach-pal
 Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal.git

@@ -3,23 +3,24 @@ Section: misc
 Priority: optional
 Maintainer: Sairamreddy Bojja <sbojja@qti.qualcomm.com>
 Uploaders:
- Agathe Porte <agathe.porte@oss.qualcomm.com>
+ Agathe Porte <agathe.porte@oss.qualcomm.com>,
 Rules-Requires-Root: no
-Build-Depends: debhelper-compat (= 13),
- libglib2.0-dev,
- pkg-config,
- audioreach-conf,
- libtinyalsa2,
- libtinyalsa-dev,
- libtinycompress0,
- libtinycompress-dev,
- audioreach-graphservices,
- audioreach-graphservices-dev,
- audioreach-graphmgr,
- audioreach-graphmgr-dev,
+Build-Depends:
+ debhelper-compat (= 13),
  audioreach-audio-utils,
  audioreach-audio-utils-dev,
+ audioreach-conf,
+ audioreach-graphmgr,
+ audioreach-graphmgr-dev,
+ audioreach-graphservices,
+ audioreach-graphservices-dev,
  libexpat1-dev,
+ libglib2.0-dev,
+ libtinyalsa-dev,
+ libtinyalsa2,
+ libtinycompress-dev,
+ libtinycompress0,
+ pkg-config,
 Standards-Version: 4.6.2
 Homepage: https://github.com/Audioreach/audioreach-pal
 Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal -b debian/latest
@@ -28,14 +29,16 @@ Vcs-Browser: https://github.com/qualcomm-linux/pkg-audioreach-pal
 Package: audioreach-pal
 Architecture: arm64
 Section: libs
-Depends: ${shlibs:Depends}, ${misc:Depends},
+Depends:
+ audioreach-audio-utils,
+ audioreach-conf,
+ audioreach-graphmgr,
+ audioreach-graphservices,
  libc6,
  libtinyalsa2,
  libtinycompress0,
- audioreach-conf,
- audioreach-graphservices,
- audioreach-graphmgr,
- audioreach-audio-utils,
+ ${misc:Depends},
+ ${shlibs:Depends},
 Description: AudioReach platform abstraction layer
  Provides APIs to configure and control audio use cases by bridging
  user-space audio frameworks with underlying audio hardware.
@@ -50,4 +53,6 @@ Description: AudioReach pal - development files
  This package contains library headers for the shared libraries shipped in the
  audioreach-pal package.
 Section: libdevel
-Depends: audioreach-pal (= ${binary:Version}), ${misc:Depends}
+Depends:
+ audioreach-pal (= ${binary:Version}),
+ ${misc:Depends},

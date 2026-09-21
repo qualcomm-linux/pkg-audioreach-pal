@@ -1,1 +1,1 @@
-usr/lib/${DEB_HOST_MULTIARCH}/libpal.so.*
+usr/lib/${DEB_HOST_MULTIARCH}/libaudioreach-pal.so.*

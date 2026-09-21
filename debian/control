@@ -73,8 +73,8 @@ Description: AudioReach pal - development files
  Provides APIs to configure and control audio use cases by bridging
  user-space audio frameworks with underlying audio hardware.
  .
- This package contains library headers for the shared libraries shipped in the
- libaudioreach-pal1 package.
+ This package contains library headers for the shared libraries shipped
+ in the libaudioreach-pal1 package.
 Section: libdevel
 Depends:
  libaudioreach-pal1 (= ${binary:Version}),

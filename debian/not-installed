@@ -1,5 +1,13 @@
 usr/lib/${DEB_HOST_MULTIARCH}/*.la
 
+# No static libraries, until explicitly needed
+usr/lib/${DEB_HOST_MULTIARCH}/libplugin_manager.a
+usr/lib/${DEB_HOST_MULTIARCH}/libsession_utils_config.a
+
+# Defines mm-audio-headers, but does not contain everything needed
+# e.g. kvh2xml: https://github.com/AudioReach/audioreach-conf/pull/95
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/pal-headers.pc
+
 # Plugins do not need a pkg-config
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/codecs.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/dev_bt.pc

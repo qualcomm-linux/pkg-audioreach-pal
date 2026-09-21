@@ -1,4 +1,3 @@
 usr/include/pal/*
-usr/lib/${DEB_HOST_MULTIARCH}/*.a
 usr/lib/${DEB_HOST_MULTIARCH}/libpal.so
-usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/*.pc
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/pal.pc

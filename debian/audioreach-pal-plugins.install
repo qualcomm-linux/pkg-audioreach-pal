@@ -21,7 +21,6 @@ usr/lib/${DEB_HOST_MULTIARCH}/libdev_speaker.so usr/lib/${DEB_HOST_MULTIARCH}/au
 usr/lib/${DEB_HOST_MULTIARCH}/libdev_speaker_mic.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
 usr/lib/${DEB_HOST_MULTIARCH}/libdev_ultrasound.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
 usr/lib/${DEB_HOST_MULTIARCH}/libdev_usb.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
-usr/lib/${DEB_HOST_MULTIARCH}/libplugin_manager.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
 usr/lib/${DEB_HOST_MULTIARCH}/libsession_agm.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
 usr/lib/${DEB_HOST_MULTIARCH}/libsession_ar.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
 usr/lib/${DEB_HOST_MULTIARCH}/libsession_compress.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/

@@ -1,7 +1,10 @@
 usr/lib/${DEB_HOST_MULTIARCH}/*.la
 
-# No static libraries, until explicitly needed
+# The plugin manager is linked directly into libpal.so.
+# Do not ship standalone plugin manager libraries.
 usr/lib/${DEB_HOST_MULTIARCH}/libplugin_manager.a
+usr/lib/${DEB_HOST_MULTIARCH}/libplugin_manager.so
+# No static libraries, until explicitly needed
 usr/lib/${DEB_HOST_MULTIARCH}/libsession_utils_config.a
 
 # Defines mm-audio-headers, but does not contain everything needed

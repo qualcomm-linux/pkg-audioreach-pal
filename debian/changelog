@@ -12,8 +12,22 @@ audioreach-pal (1.0.0-0qli+staging2~) UNRELEASED; urgency=medium
   * d/rules: Add hardening and library flags.
   * d/control: Split libraries/headers into libaudioreach-pal1 & -dev.
   * d/copyright: Initial cleanup.
+  * d/control: Adopt for QLI and shlib depends.
+  * d/patches: Build against libaudioreach-*.
+    - d/p/0001-pal-replace-hardcoded-lib-flags-with-PKG_CHECK_MODUL.patch
+  * d/control: Split into audioreach-pal-plugins.
+    Keeping audioreach-pal for data and configuration.
+  * d/control: Improve libaudioreach-pal1/-dev contents.
+  * d/not-installed: Exclude statically linked libplugin_manager.so.
+  * d/libaudioreach-pal1.symbols: Add initial symbols tracking.
+  * d/audioreach-pal-plugins: Rename libstream_sensorpcmdata.so.
+    - d/p/0002-build-fix-Sensor-PCM-data-library-name.patch
+  * d/libaudioreach-pal*.install: Rename to libaudioreach-pal.so.
+    - d/p/0003-build-rename-PAL-shared-library.patch
+  * d/control: Cleanup build-deps.
+  * d/libaudioreach-pal.links: Add compat symlinks.
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 02 Sep 2026 17:08:24 +0200
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Mon, 21 Sep 2026 16:38:09 +0200
 
 audioreach-pal (1.0.0-0qli+staging1) forky; urgency=low
 

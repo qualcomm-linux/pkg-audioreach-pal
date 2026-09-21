@@ -1,0 +1,122 @@
+From: Chiluka Rohith <rchiluka@qti.qualcomm.com>
+Date: Thu, 10 Sep 2026 20:43:27 +0530
+Subject: pal: replace hardcoded lib flags with PKG_CHECK_MODULES
+
+Add PKG_CHECK_MODULES for gsl and ar_osal in configure.ac so library
+names are resolved from installed .pc files at configure time rather
+than being hardcoded in Makefiles. Update LIBADD entries across pal,
+stream, session and plugin Makefiles to use @GSL_LIBS@ and @OSAL_LIBS@.
+
+Origin: https://github.com/AudioReach/audioreach-pal/pull/87
+
+Signed-off-by: Chiluka Rohith <rchiluka@qti.qualcomm.com>
+---
+ Makefile.am                                | 6 +++---
+ configure.ac                               | 8 ++++++++
+ plugins/vui_interface/sva_intf/Makefile.am | 2 +-
+ session/SessionAR/Makefile.am              | 2 +-
+ stream/StreamACDB/Makefile.am              | 2 +-
+ stream/StreamCommon/Makefile.am            | 2 +-
+ stream/StreamNonTunnel/Makefile.am         | 2 +-
+ 7 files changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 3eb5c12..7c8cdd3 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -86,11 +86,11 @@ library_includedir = $(includedir)/pal
+ lib_LTLIBRARIES     = libpal.la
+ libpal_la_SOURCES   = $(pal_sources)
+ if BUILDSYSTEM_OPENWRT
+-libpal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute -lar-osal -lexpat -ltinycompress -lagmclientwrapper
+-libpal_la_LIBADD   += -lar-gsl
++libpal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress -lagmclientwrapper
++libpal_la_LIBADD   += @GSL_LIBS@
+ libpal_la_CPPFLAGS  = -DFEATURE_IPQ_OPENWRT
+ else
+-libpal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute -lar-osal -lexpat -ltinycompress
++libpal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress
+ libpal_la_CPPFLAGS  =  -DPAL_USE_SYSLOG -DLINUX_ENABLED -DATRACE_UNSUPPORTED -DPAL_MEMLOG_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ endif
+ if IS_SDXLEMUR
+diff --git a/configure.ac b/configure.ac
+index 8d64979..3fc3856 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -86,6 +86,14 @@ AC_SUBST([AGM_CFLAGS])
+ PKG_CHECK_MODULES([SPF], [spf])
+ AC_SUBST([SPF_CFLAGS])
+ 
++PKG_CHECK_MODULES([GSL], [gsl])
++AC_SUBST([GSL_LIBS])
++AC_SUBST([GSL_CFLAGS])
++
++PKG_CHECK_MODULES([OSAL], [ar_osal])
++AC_SUBST([OSAL_LIBS])
++AC_SUBST([OSAL_CFLAGS])
++
+ AC_CHECK_FUNCS([strlcpy])
+ AM_CONDITIONAL(USE_G_STR_FUNC, ! test "x$ac_cv_func_strlcpy" = "xyes")
+ 
+diff --git a/plugins/vui_interface/sva_intf/Makefile.am b/plugins/vui_interface/sva_intf/Makefile.am
+index d05ebdc..0bc370e 100644
+--- a/plugins/vui_interface/sva_intf/Makefile.am
++++ b/plugins/vui_interface/sva_intf/Makefile.am
+@@ -25,4 +25,4 @@ lib_LTLIBRARIES =  libsva_intf.la
+ libsva_intf_la_SOURCES = $(c_sources)
+ libsva_intf_la_CPPFLAGS = $(AM_CPPFLAGS)
+ libsva_intf_la_LDFLAGS  = -shared -version-number @LT_VERSION_NUMBER@
+-libsva_intf_la_LIBADD = -lar-osal @GLIB_LIBS@ $(top_builddir)/utils/libvuiinterface_utils.la
++libsva_intf_la_LIBADD = @OSAL_LIBS@ @GLIB_LIBS@ $(top_builddir)/utils/libvuiinterface_utils.la
+diff --git a/session/SessionAR/Makefile.am b/session/SessionAR/Makefile.am
+index 6c18fb4..54c6cbe 100644
+--- a/session/SessionAR/Makefile.am
++++ b/session/SessionAR/Makefile.am
+@@ -44,7 +44,7 @@ library_includedir = $(includedir)/session_ar
+ 
+ lib_LTLIBRARIES     = libsession_ar.la
+ libsession_ar_la_SOURCES   = $(session_ar_sources)
+-libsession_ar_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress -lar-gsl
++libsession_ar_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress @GSL_LIBS@
+ libsession_ar_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
+ libsession_ar_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_ar_la_CPPFLAGS += -std=c++14
+diff --git a/stream/StreamACDB/Makefile.am b/stream/StreamACDB/Makefile.am
+index cbb14dc..c804b38 100644
+--- a/stream/StreamACDB/Makefile.am
++++ b/stream/StreamACDB/Makefile.am
+@@ -22,7 +22,7 @@ library_includedir = $(includedir)/stream_acdb
+ 
+ lib_LTLIBRARIES     = libstream_acdb.la
+ libstream_acdb_la_SOURCES   = $(stream_acdb_sources)
+-libstream_acdb_la_LIBADD    = @GLIB_LIBS@ -llog -lcutils -lexpat -lar-gsl
++libstream_acdb_la_LIBADD    = @GLIB_LIBS@ -llog -lcutils -lexpat @GSL_LIBS@
+ libstream_acdb_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_acdb_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_acdb_la_CPPFLAGS += -std=c++14
+diff --git a/stream/StreamCommon/Makefile.am b/stream/StreamCommon/Makefile.am
+index 276b79f..ba6a909 100644
+--- a/stream/StreamCommon/Makefile.am
++++ b/stream/StreamCommon/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/stream_common
+ 
+ lib_LTLIBRARIES     = libstream_common.la
+ libstream_common_la_SOURCES   = $(stream_common_sources)
+-libstream_common_la_LIBADD    = @GLIB_LIBS@ -lexpat -lar-gsl
++libstream_common_la_LIBADD    = @GLIB_LIBS@ -lexpat @GSL_LIBS@
+ libstream_common_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_common_la_CPPFLAGS += -std=c++14
+ libstream_common_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
+diff --git a/stream/StreamNonTunnel/Makefile.am b/stream/StreamNonTunnel/Makefile.am
+index 5e76ada..a4b494b 100644
+--- a/stream/StreamNonTunnel/Makefile.am
++++ b/stream/StreamNonTunnel/Makefile.am
+@@ -42,7 +42,7 @@ library_includedir = $(includedir)/stream_nontunnel
+ 
+ lib_LTLIBRARIES     = libstream_nontunnel.la
+ libstream_nontunnel_la_SOURCES   = $(stream_nontunnel_sources)
+-libstream_nontunnel_la_LIBADD    = @GLIB_LIBS@ -lexpat -lar-gsl
++libstream_nontunnel_la_LIBADD    = @GLIB_LIBS@ -lexpat @GSL_LIBS@
+ libstream_nontunnel_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
+ libstream_nontunnel_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_nontunnel_la_CPPFLAGS += -std=c++14

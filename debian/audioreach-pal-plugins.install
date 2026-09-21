@@ -43,4 +43,4 @@ usr/lib/${DEB_HOST_MULTIARCH}/libstream_nontunnel.so usr/lib/${DEB_HOST_MULTIARC
 usr/lib/${DEB_HOST_MULTIARCH}/libstream_pcm.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
 usr/lib/${DEB_HOST_MULTIARCH}/libstream_sensorrenderer.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
 usr/lib/${DEB_HOST_MULTIARCH}/libstream_ultrasound.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
-usr/lib/${DEB_HOST_MULTIARCH}/libstreamsensorpcmdata_headers.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/
+usr/lib/${DEB_HOST_MULTIARCH}/libstream_sensorpcmdata.so usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/

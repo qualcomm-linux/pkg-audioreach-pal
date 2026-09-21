@@ -1,1 +1,2 @@
 0001-pal-replace-hardcoded-lib-flags-with-PKG_CHECK_MODUL.patch
+0002-build-fix-Sensor-PCM-data-library-name.patch

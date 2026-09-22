@@ -1,0 +1,64 @@
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
+Date: Mon, 21 Sep 2026 16:23:55 +0200
+Subject: build: install PAL headers in namespaced include directory
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Public API headers are moved into /usr/include/audioreach-pal/ to avoid
+namespace clashes with other generic "PAL" implementations.
+
+Forwarded: https://github.com/AudioReach/audioreach-pal/pull/91
+
+Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+---
+ Makefile.am           | 2 +-
+ inc/Makefile.am       | 2 +-
+ inc/pal-headers.pc.in | 2 +-
+ pal.pc.in             | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index e0cbf05..1b9be10 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -84,7 +84,7 @@ AM_CPPFLAGS += -DCONFIG_GSL
+ AM_CPPFLAGS += -DPAL_PLUGIN_DIR=\"@PAL_PLUGIN_DIR@\"
+ AM_CPPFLAGS += -DPAL_DATA_DIR=\"@PAL_DATA_DIR@\"
+ 
+-library_includedir = $(includedir)/pal
++library_includedir = $(includedir)/audioreach-pal
+ lib_LTLIBRARIES     = libaudioreach-pal.la
+ libaudioreach_pal_la_SOURCES   = $(pal_sources)
+ if BUILDSYSTEM_OPENWRT
+diff --git a/inc/Makefile.am b/inc/Makefile.am
+index a26fdf4..542f785 100755
+--- a/inc/Makefile.am
++++ b/inc/Makefile.am
+@@ -7,5 +7,5 @@ h_sources = ${top_srcdir}/PalDefs.h \
+             ${top_srcdir}/PalMappings.h \
+             ${top_srcdir}/PalARDefs.h
+ 
+-library_includedir = $(includedir)/pal
++library_includedir = $(includedir)/audioreach-pal
+ library_include_HEADERS = $(h_sources)
+diff --git a/inc/pal-headers.pc.in b/inc/pal-headers.pc.in
+index 9b14ef1..f161ee4 100755
+--- a/inc/pal-headers.pc.in
++++ b/inc/pal-headers.pc.in
+@@ -7,4 +7,4 @@ Name: mm-audio-headers
+ Description: Common mm-audio-headers for Audio-Reach
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/pal
++Cflags: -I${includedir}/audioreach-pal
+diff --git a/pal.pc.in b/pal.pc.in
+index 5ca895a..0e6ec28 100644
+--- a/pal.pc.in
++++ b/pal.pc.in
+@@ -7,4 +7,4 @@ Name: pal
+ Description: pal library
+ Version: @LT_VERSION@
+ Libs: -L${libdir} -laudioreach-pal
+-Cflags: -I${includedir}/pal
++Cflags: -I${includedir}/audioreach-pal

@@ -7,3 +7,5 @@
 0007-build-install-PAL-plugins-in-configurable-directory.patch
 0008-build-add-PAL-functional-test.patch
 0009-build-link-PAL-against-AGM.patch
+0010-build-install-PAL-headers-in-namespaced-include-dire.patch
+0011-build-rename-PAL-pkg-config-file.patch

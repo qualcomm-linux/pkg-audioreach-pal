@@ -1,0 +1,82 @@
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
+Date: Mon, 21 Sep 2026 16:24:18 +0200
+Subject: build: rename PAL pkg-config file
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+The pkg-config metadata is renamed to "audioreach-pal.pc" to avoid
+namespace clashes with other generic "PAL" libraries. Beware that this
+means any consumer of the current .pc file now needs to search for a
+"audioreach-pal" module, instead of "pal".
+
+Forwarded: https://github.com/AudioReach/audioreach-pal/pull/91
+
+Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+---
+ Makefile.am          |  4 ++--
+ audioreach-pal.pc.in | 10 ++++++++++
+ configure.ac         |  2 +-
+ pal.pc.in            | 10 ----------
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+ create mode 100644 audioreach-pal.pc.in
+ delete mode 100644 pal.pc.in
+
+diff --git a/Makefile.am b/Makefile.am
+index 1b9be10..8cda917 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,6 +1,6 @@
+ pkgconfigdir = $(libdir)/pkgconfig
+-pkgconfig_DATA = pal.pc
+-EXTRA_DIST = $(pkgconfig_DATA) utils/inc/PluginUtils.h
++pkgconfig_DATA = audioreach-pal.pc
++EXTRA_DIST = $(pkgconfig_DATA) utils/inc/pluginUtils.h
+ 
+ 
+ if BUILDSYSTEM_OPENWRT
+diff --git a/audioreach-pal.pc.in b/audioreach-pal.pc.in
+new file mode 100644
+index 0000000..a77225d
+--- /dev/null
++++ b/audioreach-pal.pc.in
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: audioreach-pal
++Description: AudioReach PAL library
++Version: @LT_VERSION@
++Libs: -L${libdir} -laudioreach-pal
++Cflags: -I${includedir}/audioreach-pal
+diff --git a/configure.ac b/configure.ac
+index 971cd17..f3da38b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -175,7 +175,7 @@ AC_CONFIG_SUBDIRS([
+ 
+ AC_CONFIG_FILES([ Makefile \
+ test/Makefile \
+-pal.pc \
++audioreach-pal.pc \
+ stream/Makefile \
+ session/Makefile \
+ device/Makefile \
+diff --git a/pal.pc.in b/pal.pc.in
+deleted file mode 100644
+index 0e6ec28..0000000
+--- a/pal.pc.in
++++ /dev/null
+@@ -1,10 +0,0 @@
+-prefix=@prefix@
+-exec_prefix=@exec_prefix@
+-libdir=@libdir@
+-includedir=@includedir@
+-
+-Name: pal
+-Description: pal library
+-Version: @LT_VERSION@
+-Libs: -L${libdir} -laudioreach-pal
+-Cflags: -I${includedir}/audioreach-pal

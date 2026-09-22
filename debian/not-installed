@@ -1,11 +1,18 @@
+usr/lib/${DEB_HOST_MULTIARCH}/libaudioreach-pal.la
 usr/lib/${DEB_HOST_MULTIARCH}/audioreach-pal/plugins/*.la
 
 # The plugin manager is linked directly into libpal.so.
 # Do not ship standalone plugin manager libraries.
+usr/lib/${DEB_HOST_MULTIARCH}/libplugin_manager.la
 usr/lib/${DEB_HOST_MULTIARCH}/libplugin_manager.a
 usr/lib/${DEB_HOST_MULTIARCH}/libplugin_manager.so
-# No static libraries, until explicitly needed
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/plugin_manager.pc
+# The session utils config is linked directly into the
+# session-config plugins. Do not ship standalone lib.
+usr/lib/${DEB_HOST_MULTIARCH}/libsession_utils_config.la
 usr/lib/${DEB_HOST_MULTIARCH}/libsession_utils_config.a
+usr/lib/${DEB_HOST_MULTIARCH}/libsession_utils_config.so
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_utils_config.pc
 
 # Defines mm-audio-headers, but does not contain everything needed
 # e.g. kvh2xml: https://github.com/AudioReach/audioreach-conf/pull/95
@@ -31,14 +38,12 @@ usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/dev_speaker.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/dev_speaker_mic.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/dev_ultrasound.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/dev_usb.pc
-usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/plugin_manager.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_agm.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_ar.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_compress.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_compress_config.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_pcm.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_pcm_config.pc
-usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_utils_config.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_voice.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/session_voice_config.pc
 usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/stream_acd.pc

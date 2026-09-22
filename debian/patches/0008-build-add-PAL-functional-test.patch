@@ -1,0 +1,74 @@
+From: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+Date: Tue, 22 Sep 2026 00:00:00 +0200
+Subject: build: add PAL functional test program
+
+Build the existing PAL ultrasound use-case test as a Linux executable.
+The Debian package installs it separately so it can be run on target
+hardware without adding it to the normal PAL runtime package.
+
+This is intentionally not registered as an Automake TESTS target: it
+requires a functioning AudioReach sound card and target configuration.
+
+Forwarded: not-needed
+
+---
+ Makefile.am           |  2 +-
+ configure.ac          |  1 +
+ test/Makefile.am      | 11 +++++++++++
+ test/PalTest_main.c   |  1 +
+ test/PalUsecaseTest.c |  2 ++
+ 5 files changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -179,4 +179,4 @@ audioadsprpcd_la_CFLAGS = -fPIC
+ endif
+ 
+ 
+-SUBDIRS =  inc plugins . session stream device plugins/configs
++SUBDIRS =  inc plugins . session stream device plugins/configs test
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -173,6 +173,7 @@ AC_CONFIG_SUBDIRS([
+ ])
+ 
+ AC_CONFIG_FILES([ Makefile \
++test/Makefile \
+ pal.pc \
+ stream/Makefile \
+ session/Makefile \
+diff --git a/test/Makefile.am b/test/Makefile.am
+new file mode 100644
+--- /dev/null
++++ b/test/Makefile.am
+@@ -0,0 +1,11 @@
++bin_PROGRAMS = PalTest
++
++PalTest_SOURCES = \
++    PalUsecaseTest.c \
++    PalTest_main.c
++
++PalTest_CPPFLAGS = \
++    -I$(top_srcdir)/inc
++
++PalTest_LDADD = $(top_builddir)/.libs/libaudioreach-pal.so
++PalTest_DEPENDENCIES = $(top_builddir)/libaudioreach-pal.la
+
+diff --git a/test/PalTest_main.c b/test/PalTest_main.c
+--- a/test/PalTest_main.c
++++ b/test/PalTest_main.c
+@@ -35,2 +35,3 @@
+ #include <unistd.h>
++#include <stdlib.h>
+ #include <stdio.h>
+
+diff --git a/test/PalUsecaseTest.c b/test/PalUsecaseTest.c
+--- a/test/PalUsecaseTest.c
++++ b/test/PalUsecaseTest.c
+@@ -31,2 +31,4 @@
+ #include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
+ #include <string.h>

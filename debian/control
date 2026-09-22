@@ -45,6 +45,18 @@ Description: AudioReach platform abstraction layer - plugins
  .
  This package contains plugin libraries for different scenarios.
 
+Package: audioreach-pal-tests
+Architecture: arm64
+Depends:
+ audioreach-pal (= ${binary:Version}),
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: AudioReach platform abstraction layer - functional tests
+ Provides target-side functional tests for the AudioReach PAL.
+ .
+ This package contains tests that require a functioning AudioReach sound
+ card and target-specific PAL configuration.
+
 Package: libaudioreach-pal1
 Architecture: arm64
 Multi-Arch: same

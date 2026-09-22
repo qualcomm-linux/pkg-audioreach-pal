@@ -1,0 +1,2 @@
+# No manual for test binary
+audioreach-pal-tests: no-manual-page [usr/bin/PalTest]

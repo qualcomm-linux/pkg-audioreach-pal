@@ -5,3 +5,4 @@
 0005-configure-use-configurable-PAL-runtime-directories.patch
 0006-build-install-PAL-XML-files-in-configurable-director.patch
 0007-build-install-PAL-plugins-in-configurable-directory.patch
+0008-build-add-PAL-functional-test.patch

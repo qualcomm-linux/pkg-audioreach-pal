@@ -9,3 +9,4 @@
 0009-build-link-PAL-against-AGM.patch
 0010-build-install-PAL-headers-in-namespaced-include-dire.patch
 0011-build-rename-PAL-pkg-config-file.patch
+0012-build-link-internal-helper-libraries-statically.patch

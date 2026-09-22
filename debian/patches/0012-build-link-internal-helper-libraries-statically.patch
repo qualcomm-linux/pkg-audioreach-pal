@@ -1,0 +1,62 @@
+From: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+Date: Tue, 22 Sep 2026 15:00:00 +0200
+Subject: build: link internal helper libraries statically
+
+The --disable-shared option is a configure-time option and does not
+disable shared output when used in a per-library libtool LDFLAGS value.
+As a result, libaudioreach-pal and the session configuration plugins can
+retain DT_NEEDED entries for the internal plugin_manager and
+session_utils_config libraries even though Debian excludes their standalone
+shared libraries from the runtime packages.
+
+Use libtool's -static linker flag so the helper implementations are folded
+into their consumers and are not required at runtime as separate libraries.
+
+Forwarded: not-needed
+Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+---
+ plugins/PluginManager/Makefile.am                            | 2 +-
+ plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am | 2 +-
+ plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am | 2 +-
+ plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/plugins/PluginManager/Makefile.am b/plugins/PluginManager/Makefile.am
+--- a/plugins/PluginManager/Makefile.am
++++ b/plugins/PluginManager/Makefile.am
+@@ -44,6 +44,6 @@ libplugin_manager_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libplugin_manager_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libplugin_manager_la_CPPFLAGS += -std=c++14 -fPIC
+-libplugin_manager_la_LDFLAGS   = --disable-shared -avoid-version
++libplugin_manager_la_LDFLAGS   = -static -avoid-version
+ libplugin_manager_la_CPPFLAGS += @GLIB_CFLAGS@  -include glib.h
+ libplugin_manager_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libplugin_manager_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am
+@@ -33,6 +33,6 @@ libsession_utils_config_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa
+ libsession_utils_config_la_CPPFLAGS  = $(AM_CPPFLAGS)
+ libsession_utils_config_la_CPPFLAGS += -std=c++14
+-libsession_utils_config_la_LDFLAGS   = --disable-shared -avoid-version
++libsession_utils_config_la_LDFLAGS   = -static -avoid-version
+ libsession_utils_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_utils_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_utils_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am
+@@ -28,6 +28,6 @@ libsession_utils_config_la_LIBADD    = @GLIB_LIBS@ -llog -lexpat -ltinyalsa
+ libsession_utils_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_utils_config_la_CPPFLAGS += -std=c++14
+-libsession_utils_config_la_LDFLAGS   = --disable-shared -avoid-version
++libsession_utils_config_la_LDFLAGS   = -static -avoid-version
+ libsession_utils_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dstrlcat=g_strlcat -include glib.h
+ libsession_utils_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_utils_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am
+@@ -35,1 +35,1 @@
+-libsession_utils_config_la_LDFLAGS   = --disable-shared -avoid-version
++libsession_utils_config_la_LDFLAGS   = -static -avoid-version

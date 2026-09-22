@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: audioreach-pal
 Upstream-Contact: https://github.com/AudioReach/audioreach-pal/issues/new
-Source: https://github.com/qualcomm/audioreach-pal
+Source: https://github.com/AudioReach/audioreach-pal
 
 Files: *
 Copyright: 2013-2022, The Linux Foundation

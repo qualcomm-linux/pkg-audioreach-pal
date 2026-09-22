@@ -1,3 +1,7 @@
 0001-pal-replace-hardcoded-lib-flags-with-PKG_CHECK_MODUL.patch
 0002-build-fix-Sensor-PCM-data-library-name.patch
 0003-build-rename-PAL-shared-library.patch
+0004-configure-add-PAL-directory-options.patch
+0005-configure-use-configurable-PAL-runtime-directories.patch
+0006-build-install-PAL-XML-files-in-configurable-director.patch
+0007-build-install-PAL-plugins-in-configurable-directory.patch

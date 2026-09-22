@@ -1,0 +1,2187 @@
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
+Date: Mon, 21 Sep 2026 16:08:10 +0200
+Subject: build: install PAL plugins in configurable directory
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Assisted-By: GPT:gpt-6-astra
+Forwarded: https://github.com/AudioReach/audioreach-pal/pull/92
+
+Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+---
+ device/Bluetooth/Makefile.am                                |  5 +++--
+ device/Bluetooth/dev_bt.pc.in                               |  4 ++--
+ device/DisplayPort/Makefile.am                              |  5 +++--
+ device/DisplayPort/dev_display.pc.in                        |  4 ++--
+ device/DummyDev/Makefile.am                                 |  5 +++--
+ device/DummyDev/dev_dummy.pc.in                             |  4 ++--
+ device/ECRefDevice/Makefile.am                              |  5 +++--
+ device/ECRefDevice/dev_ec_ref.pc.in                         |  4 ++--
+ device/ExtEC/Makefile.am                                    |  5 +++--
+ device/ExtEC/dev_ext_ec.pc.in                               |  4 ++--
+ device/FMDevice/Makefile.am                                 |  5 +++--
+ device/FMDevice/dev_fm.pc.in                                |  4 ++--
+ device/Handset/Makefile.am                                  |  5 +++--
+ device/Handset/dev_handset.pc.in                            |  4 ++--
+ device/HandsetMic/Makefile.am                               |  6 +++---
+ device/HandsetMic/dev_handset_mic.pc.in                     |  4 ++--
+ device/HandsetVaMic/Makefile.am                             |  5 +++--
+ device/HandsetVaMic/dev_handset_va.pc.in                    |  4 ++--
+ device/HapticsDev/Makefile.am                               |  5 +++--
+ device/HapticsDev/dev_haptics.pc.in                         |  4 ++--
+ device/Headphone/Makefile.am                                |  5 +++--
+ device/Headphone/dev_headphone.pc.in                        |  4 ++--
+ device/HeadsetMic/Makefile.am                               |  5 +++--
+ device/HeadsetMic/dev_headset_mic.pc.in                     |  4 ++--
+ device/HeadsetVaMic/Makefile.am                             |  5 +++--
+ device/HeadsetVaMic/dev_headset_va.pc.in                    |  4 ++--
+ device/RTProxy/Makefile.am                                  |  5 +++--
+ device/RTProxy/dev_proxy.pc.in                              |  4 ++--
+ device/Speaker/Makefile.am                                  |  5 +++--
+ device/Speaker/dev_speaker.pc.in                            |  4 ++--
+ device/SpeakerMic/Makefile.am                               |  5 +++--
+ device/SpeakerMic/dev_speaker_mic.pc.in                     |  4 ++--
+ device/USBAudio/Makefile.am                                 |  5 +++--
+ device/USBAudio/dev_usb.pc.in                               |  4 ++--
+ device/UltrasoundDevice/Makefile.am                         |  5 +++--
+ device/UltrasoundDevice/dev_ultrasound.pc.in                |  4 ++--
+ plugins/codecs/Makefile.am                                  | 13 +++++++------
+ plugins/codecs/codecs.pc.in                                 |  4 ++--
+ .../qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am  |  5 +++--
+ .../ConfigSessionAlsaCompress/session_compress_config.pc.in |  3 +--
+ .../qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am       |  5 +++--
+ .../default/ConfigSessionAlsaPcm/session_pcm_config.pc.in   |  3 +--
+ .../qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am     |  5 +++--
+ .../ConfigSessionAlsaVoice/session_voice_config.pc.in       |  3 +--
+ .../qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am  |  5 +++--
+ .../ConfigSessionAlsaCompress/session_compress_config.pc.in |  2 +-
+ .../qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am       |  5 +++--
+ .../default/ConfigSessionAlsaPcm/session_pcm_config.pc.in   |  3 +--
+ .../qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am     |  5 +++--
+ .../ConfigSessionAlsaVoice/session_voice_config.pc.in       |  3 +--
+ .../mobile/default/ConfigSessionAlsaCompress/Makefile.am    |  5 +++--
+ .../ConfigSessionAlsaCompress/session_compress_config.pc.in |  2 +-
+ .../qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am    |  5 +++--
+ .../default/ConfigSessionAlsaPcm/session_pcm_config.pc.in   |  3 +--
+ .../qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am  |  5 +++--
+ .../ConfigSessionAlsaVoice/session_voice_config.pc.in       |  3 +--
+ plugins/vui_interface/customva_intf/Makefile.am             |  7 ++++---
+ plugins/vui_interface/customva_intf/customva_intf.pc.in     |  4 ++--
+ plugins/vui_interface/hotword_intf/Makefile.am              |  7 ++++---
+ plugins/vui_interface/hotword_intf/hotword_intf.pc.in       |  4 ++--
+ plugins/vui_interface/sva_intf/Makefile.am                  |  5 +++--
+ plugins/vui_interface/sva_intf/sva_interface.pc.in          |  4 ++--
+ session/SessionAR/Makefile.am                               |  5 +++--
+ session/SessionAR/session_ar.pc.in                          |  4 ++--
+ session/SessionAgm/Makefile.am                              |  5 +++--
+ session/SessionAgm/session_agm.pc.in                        |  4 ++--
+ session/SessionAlsaCompress/Makefile.am                     |  5 +++--
+ session/SessionAlsaCompress/session_compress.pc.in          |  4 ++--
+ session/SessionAlsaPcm/Makefile.am                          |  5 +++--
+ session/SessionAlsaPcm/session_pcm.pc.in                    |  4 ++--
+ session/SessionAlsaVoice/Makefile.am                        |  5 +++--
+ session/SessionAlsaVoice/session_voice.pc.in                |  4 ++--
+ stream/StreamACD/Makefile.am                                |  5 +++--
+ stream/StreamACD/stream_acd.pc.in                           |  4 ++--
+ stream/StreamACDB/Makefile.am                               |  7 ++++---
+ stream/StreamACDB/stream_acdb.pc.in                         |  4 ++--
+ stream/StreamASR/Makefile.am                                |  5 +++--
+ stream/StreamASR/stream_asr.pc.in                           |  4 ++--
+ stream/StreamCallTranslation/Makefile.am                    |  5 +++--
+ stream/StreamCallTranslation/stream_calltranslation.pc.in   |  4 ++--
+ stream/StreamCommon/Makefile.am                             |  5 +++--
+ stream/StreamCommon/StreamCommonProxy/Makefile.am           |  5 +++--
+ .../StreamCommon/StreamCommonProxy/stream_commonproxy.pc.in |  4 ++--
+ stream/StreamCommon/StreamContextProxy/Makefile.am          |  5 +++--
+ .../StreamContextProxy/stream_contextproxy.pc.in            |  4 ++--
+ stream/StreamCommon/StreamSensorPCMData/Makefile.am         |  5 +++--
+ .../StreamSensorPCMData/streamsensorpcmdata_headers.pc.in   |  4 ++--
+ stream/StreamCommon/StreamSensorRenderer/Makefile.am        |  5 +++--
+ .../StreamSensorRenderer/stream_sensorrenderer.pc.in        |  4 ++--
+ stream/StreamCommon/StreamUltrasSound/Makefile.am           |  5 +++--
+ .../StreamCommon/StreamUltrasSound/stream_ultrasound.pc.in  |  4 ++--
+ stream/StreamCommon/stream_common.pc.in                     |  4 ++--
+ stream/StreamCompress/Makefile.am                           |  5 +++--
+ stream/StreamCompress/stream_compress.pc.in                 |  4 ++--
+ stream/StreamHaptic/Makefile.am                             |  5 +++--
+ stream/StreamHaptic/stream_haptics.pc.in                    |  4 ++--
+ stream/StreamInCall/Makefile.am                             |  5 +++--
+ stream/StreamInCall/stream_incall.pc.in                     |  4 ++--
+ stream/StreamNonTunnel/Makefile.am                          |  5 +++--
+ stream/StreamNonTunnel/stream_nontunnel.pc.in               |  4 ++--
+ stream/StreamPCM/Makefile.am                                |  5 +++--
+ stream/StreamPCM/stream_pcm.pc.in                           |  4 ++--
+ stream/StreamSoundTrigger/Makefile.am                       |  5 +++--
+ stream/StreamSoundTrigger/stream_soundtrigger.pc.in         |  4 ++--
+ 104 files changed, 258 insertions(+), 214 deletions(-)
+
+diff --git a/device/Bluetooth/Makefile.am b/device/Bluetooth/Makefile.am
+index 82597bc..d07a5a1 100644
+--- a/device/Bluetooth/Makefile.am
++++ b/device/Bluetooth/Makefile.am
+@@ -45,14 +45,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_bt
+ 
+-lib_LTLIBRARIES     = libdev_bt.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_bt.la
+ libdev_bt_la_SOURCES   = $(dev_bt_sources)
+ libdev_bt_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_bt_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libdev_bt_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_bt_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_bt_la_CPPFLAGS += -std=c++17
+-libdev_bt_la_LDFLAGS   = -shared -avoid-version
++libdev_bt_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_bt_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/Bluetooth/dev_bt.pc.in b/device/Bluetooth/dev_bt.pc.in
+index 771caea..011689f 100644
+--- a/device/Bluetooth/dev_bt.pc.in
++++ b/device/Bluetooth/dev_bt.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_bt
+ Description: dev_bt library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_bt
+\ No newline at end of file
++Cflags: -I${includedir}/dev_bt
+diff --git a/device/DisplayPort/Makefile.am b/device/DisplayPort/Makefile.am
+index 3e269cb..8c87222 100644
+--- a/device/DisplayPort/Makefile.am
++++ b/device/DisplayPort/Makefile.am
+@@ -41,14 +41,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_display
+ 
+-lib_LTLIBRARIES     = libdev_display.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_display.la
+ libdev_display_la_SOURCES   = $(dev_display_sources)
+ libdev_display_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_display_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libdev_display_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_display_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_display_la_CPPFLAGS += -std=c++14
+-libdev_display_la_LDFLAGS   = -shared -avoid-version
++libdev_display_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_display_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/DisplayPort/dev_display.pc.in b/device/DisplayPort/dev_display.pc.in
+index 4e25ce4..6f22fb3 100644
+--- a/device/DisplayPort/dev_display.pc.in
++++ b/device/DisplayPort/dev_display.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_display
+ Description: dev_display library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_display
+\ No newline at end of file
++Cflags: -I${includedir}/dev_display
+diff --git a/device/DummyDev/Makefile.am b/device/DummyDev/Makefile.am
+index 3f6e122..d30f730 100644
+--- a/device/DummyDev/Makefile.am
++++ b/device/DummyDev/Makefile.am
+@@ -43,13 +43,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_dummy
+ 
+-lib_LTLIBRARIES     = libdev_dummy.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_dummy.la
+ libdev_dummy_la_SOURCES   = $(dev_dummy_sources)
+ libdev_dummy_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_dummy_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_dummy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_dummy_la_CPPFLAGS += -std=c++14
+-libdev_dummy_la_LDFLAGS   = -shared -avoid-version
++libdev_dummy_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_dummy_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/DummyDev/dev_dummy.pc.in b/device/DummyDev/dev_dummy.pc.in
+index 6eafa43..1cf2c51 100644
+--- a/device/DummyDev/dev_dummy.pc.in
++++ b/device/DummyDev/dev_dummy.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_dummy
+ Description: dev_dummy library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_dummy
+\ No newline at end of file
++Cflags: -I${includedir}/dev_dummy
+diff --git a/device/ECRefDevice/Makefile.am b/device/ECRefDevice/Makefile.am
+index 685517c..dbe485a 100644
+--- a/device/ECRefDevice/Makefile.am
++++ b/device/ECRefDevice/Makefile.am
+@@ -42,14 +42,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_ec_ref
+ 
+-lib_LTLIBRARIES     = libdev_ec_ref.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_ec_ref.la
+ libdev_ec_ref_la_SOURCES   = $(dev_ec_ref_sources)
+ libdev_ec_ref_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_ec_ref_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libdev_ec_ref_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_ec_ref_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_ec_ref_la_CPPFLAGS += -std=c++14
+-libdev_ec_ref_la_LDFLAGS   = -shared -avoid-version
++libdev_ec_ref_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_ec_ref_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/ECRefDevice/dev_ec_ref.pc.in b/device/ECRefDevice/dev_ec_ref.pc.in
+index 4006510..500ea74 100644
+--- a/device/ECRefDevice/dev_ec_ref.pc.in
++++ b/device/ECRefDevice/dev_ec_ref.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_ec_ref
+ Description: dev_ec_ref library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_ec_ref
+\ No newline at end of file
++Cflags: -I${includedir}/dev_ec_ref
+diff --git a/device/ExtEC/Makefile.am b/device/ExtEC/Makefile.am
+index 16fa323..c0f8df6 100644
+--- a/device/ExtEC/Makefile.am
++++ b/device/ExtEC/Makefile.am
+@@ -41,13 +41,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_ext_ec
+ 
+-lib_LTLIBRARIES     = libdev_ext_ec.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_ext_ec.la
+ libdev_ext_ec_la_SOURCES   = $(dev_ext_ec_sources)
+ libdev_ext_ec_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_ext_ec_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_ext_ec_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_ext_ec_la_CPPFLAGS += -std=c++14
+-libdev_ext_ec_la_LDFLAGS   = -shared -avoid-version
++libdev_ext_ec_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_ext_ec_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/ExtEC/dev_ext_ec.pc.in b/device/ExtEC/dev_ext_ec.pc.in
+index 67b1fb8..f7e4f38 100644
+--- a/device/ExtEC/dev_ext_ec.pc.in
++++ b/device/ExtEC/dev_ext_ec.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_ext_ec
+ Description: dev_ext_ec library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_ext_ec
+\ No newline at end of file
++Cflags: -I${includedir}/dev_ext_ec
+diff --git a/device/FMDevice/Makefile.am b/device/FMDevice/Makefile.am
+index bd327ee..e9c455f 100644
+--- a/device/FMDevice/Makefile.am
++++ b/device/FMDevice/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_fm
+ 
+-lib_LTLIBRARIES     = libdev_fm.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_fm.la
+ libdev_fm_la_SOURCES   = $(dev_fm_sources)
+ libdev_fm_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_fm_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_fm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_fm_la_CPPFLAGS += -std=c++14
+-libdev_fm_la_LDFLAGS   = -shared -avoid-version
++libdev_fm_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_fm_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/FMDevice/dev_fm.pc.in b/device/FMDevice/dev_fm.pc.in
+index aa3df3e..3897f97 100644
+--- a/device/FMDevice/dev_fm.pc.in
++++ b/device/FMDevice/dev_fm.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_fm
+ Description: dev_fm library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_fm
+\ No newline at end of file
++Cflags: -I${includedir}/dev_fm
+diff --git a/device/Handset/Makefile.am b/device/Handset/Makefile.am
+index 86144b1..b28548e 100644
+--- a/device/Handset/Makefile.am
++++ b/device/Handset/Makefile.am
+@@ -42,14 +42,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_handset
+ 
+-lib_LTLIBRARIES     = libdev_handset.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_handset.la
+ libdev_handset_la_SOURCES   = $(dev_handset_sources)
+ libdev_handset_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_handset_la_LIBADD    += -L${abs_top_builddir}/device/Speaker/.libs -ldev_speaker
+ libdev_handset_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_handset_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_handset_la_CPPFLAGS += -std=c++14
+-libdev_handset_la_LDFLAGS   = -shared -avoid-version
++libdev_handset_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_handset_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/Handset/dev_handset.pc.in b/device/Handset/dev_handset.pc.in
+index e72ef0d..19fa3ec 100644
+--- a/device/Handset/dev_handset.pc.in
++++ b/device/Handset/dev_handset.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_handset
+ Description: dev_handset library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_handset
+\ No newline at end of file
++Cflags: -I${includedir}/dev_handset
+diff --git a/device/HandsetMic/Makefile.am b/device/HandsetMic/Makefile.am
+index f8f96e8..13a993d 100644
+--- a/device/HandsetMic/Makefile.am
++++ b/device/HandsetMic/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_handset_mic
+ 
+-lib_LTLIBRARIES     = libdev_handset_mic.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_handset_mic.la
+ libdev_handset_mic_la_SOURCES   = $(dev_handset_mic_sources)
+ libdev_handset_mic_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_handset_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_handset_mic_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_handset_mic_la_CPPFLAGS += -std=c++14
+-libdev_handset_mic_la_LDFLAGS   = -shared -avoid-version
++libdev_handset_mic_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_handset_mic_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+@@ -67,4 +68,3 @@ endif
+ if USE_G_STR_FUNC
+ libdev_handset_mic_la_CPPFLAGS +=-Dstrlcpy=g_strlcpy -Dstrlcat=g_strlcat
+ endif
+-
+diff --git a/device/HandsetMic/dev_handset_mic.pc.in b/device/HandsetMic/dev_handset_mic.pc.in
+index cdc3ee3..77d278f 100644
+--- a/device/HandsetMic/dev_handset_mic.pc.in
++++ b/device/HandsetMic/dev_handset_mic.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_handset_mic
+ Description: dev_handset_mic library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_handset_mic
+\ No newline at end of file
++Cflags: -I${includedir}/dev_handset_mic
+diff --git a/device/HandsetVaMic/Makefile.am b/device/HandsetVaMic/Makefile.am
+index f79fc53..1e1d573 100644
+--- a/device/HandsetVaMic/Makefile.am
++++ b/device/HandsetVaMic/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_handset_va
+ 
+-lib_LTLIBRARIES     = libdev_handset_va.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_handset_va.la
+ libdev_handset_va_la_SOURCES   = $(dev_handset_va_sources)
+ libdev_handset_va_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_handset_va_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_handset_va_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_handset_va_la_CPPFLAGS += -std=c++14
+-libdev_handset_va_la_LDFLAGS   = -shared -avoid-version
++libdev_handset_va_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_handset_va_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/HandsetVaMic/dev_handset_va.pc.in b/device/HandsetVaMic/dev_handset_va.pc.in
+index ae61433..91c64b8 100644
+--- a/device/HandsetVaMic/dev_handset_va.pc.in
++++ b/device/HandsetVaMic/dev_handset_va.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_handset_va
+ Description: dev_handset_va library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_handset_va
+\ No newline at end of file
++Cflags: -I${includedir}/dev_handset_va
+diff --git a/device/HapticsDev/Makefile.am b/device/HapticsDev/Makefile.am
+index f084941..1f37609 100644
+--- a/device/HapticsDev/Makefile.am
++++ b/device/HapticsDev/Makefile.am
+@@ -46,14 +46,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_haptics
+ 
+-lib_LTLIBRARIES     = libdev_haptics.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_haptics.la
+ libdev_haptics_la_SOURCES   = $(dev_haptics_sources)
+ libdev_haptics_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_haptics_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libdev_haptics_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_haptics_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_haptics_la_CPPFLAGS += -std=c++14
+-libdev_haptics_la_LDFLAGS   = -shared -avoid-version
++libdev_haptics_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libdev_haptics_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+ libdev_haptics_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+diff --git a/device/HapticsDev/dev_haptics.pc.in b/device/HapticsDev/dev_haptics.pc.in
+index 54f31b8..5e61b94 100644
+--- a/device/HapticsDev/dev_haptics.pc.in
++++ b/device/HapticsDev/dev_haptics.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_haptics
+ Description: dev_haptics library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_haptics
+\ No newline at end of file
++Cflags: -I${includedir}/dev_haptics
+diff --git a/device/Headphone/Makefile.am b/device/Headphone/Makefile.am
+index 61a45de..d540c52 100644
+--- a/device/Headphone/Makefile.am
++++ b/device/Headphone/Makefile.am
+@@ -42,13 +42,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_headphone
+ 
+-lib_LTLIBRARIES     = libdev_headphone.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_headphone.la
+ libdev_headphone_la_SOURCES   = $(dev_headphone_sources)
+ libdev_headphone_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_headphone_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_headphone_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_headphone_la_CPPFLAGS += -std=c++14
+-libdev_headphone_la_LDFLAGS   = -shared -avoid-version
++libdev_headphone_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libdev_headphone_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+ libdev_headphone_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+diff --git a/device/Headphone/dev_headphone.pc.in b/device/Headphone/dev_headphone.pc.in
+index b3cf52f..d0c0805 100644
+--- a/device/Headphone/dev_headphone.pc.in
++++ b/device/Headphone/dev_headphone.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_headphone
+ Description: dev_headphone library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_headphone
+\ No newline at end of file
++Cflags: -I${includedir}/dev_headphone
+diff --git a/device/HeadsetMic/Makefile.am b/device/HeadsetMic/Makefile.am
+index fc38600..d601015 100644
+--- a/device/HeadsetMic/Makefile.am
++++ b/device/HeadsetMic/Makefile.am
+@@ -41,13 +41,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_headset_mic
+ 
+-lib_LTLIBRARIES     = libdev_headset_mic.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_headset_mic.la
+ libdev_headset_mic_la_SOURCES   = $(dev_headset_mic_sources)
+ libdev_headset_mic_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_headset_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_headset_mic_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_headset_mic_la_CPPFLAGS += -std=c++14
+-libdev_headset_mic_la_LDFLAGS   = -shared -avoid-version
++libdev_headset_mic_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libdev_headset_mic_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+ libdev_headset_mic_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+diff --git a/device/HeadsetMic/dev_headset_mic.pc.in b/device/HeadsetMic/dev_headset_mic.pc.in
+index e119c93..a262ace 100644
+--- a/device/HeadsetMic/dev_headset_mic.pc.in
++++ b/device/HeadsetMic/dev_headset_mic.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_headset_mic
+ Description: dev_headset_mic library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_headset_mic
+\ No newline at end of file
++Cflags: -I${includedir}/dev_headset_mic
+diff --git a/device/HeadsetVaMic/Makefile.am b/device/HeadsetVaMic/Makefile.am
+index 90c9199..b260d12 100644
+--- a/device/HeadsetVaMic/Makefile.am
++++ b/device/HeadsetVaMic/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_headset_va
+ 
+-lib_LTLIBRARIES     = libdev_headset_va.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_headset_va.la
+ libdev_headset_va_la_SOURCES   = $(dev_headset_va_sources)
+ libdev_headset_va_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_headset_va_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_headset_va_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_headset_va_la_CPPFLAGS += -std=c++14
+-libdev_headset_va_la_LDFLAGS   = -shared -avoid-version
++libdev_headset_va_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_headset_va_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/HeadsetVaMic/dev_headset_va.pc.in b/device/HeadsetVaMic/dev_headset_va.pc.in
+index 8d938cb..23f33cb 100644
+--- a/device/HeadsetVaMic/dev_headset_va.pc.in
++++ b/device/HeadsetVaMic/dev_headset_va.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_headset_va
+ Description: dev_headset_va library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_headset_va
+\ No newline at end of file
++Cflags: -I${includedir}/dev_headset_va
+diff --git a/device/RTProxy/Makefile.am b/device/RTProxy/Makefile.am
+index cc0474f..146ca64 100644
+--- a/device/RTProxy/Makefile.am
++++ b/device/RTProxy/Makefile.am
+@@ -42,14 +42,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_proxy
+ 
+-lib_LTLIBRARIES     = libdev_proxy.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_proxy.la
+ libdev_proxy_la_SOURCES   = $(dev_proxy_sources)
+ libdev_proxy_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_proxy_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libdev_proxy_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_proxy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_proxy_la_CPPFLAGS += -std=c++14
+-libdev_proxy_la_LDFLAGS   = -shared -avoid-version
++libdev_proxy_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libdev_proxy_la_CPPFLAGS += @GLIB_CFLAGS@   -include glib.h
+ 
+ libdev_proxy_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+diff --git a/device/RTProxy/dev_proxy.pc.in b/device/RTProxy/dev_proxy.pc.in
+index 9cfb547..e9149bc 100644
+--- a/device/RTProxy/dev_proxy.pc.in
++++ b/device/RTProxy/dev_proxy.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_proxy
+ Description: dev_proxy library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_proxy
+\ No newline at end of file
++Cflags: -I${includedir}/dev_proxy
+diff --git a/device/Speaker/Makefile.am b/device/Speaker/Makefile.am
+index bc9c684..54d72c9 100644
+--- a/device/Speaker/Makefile.am
++++ b/device/Speaker/Makefile.am
+@@ -51,14 +51,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_speaker
+ 
+-lib_LTLIBRARIES     = libdev_speaker.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_speaker.la
+ libdev_speaker_la_SOURCES   = $(dev_speaker_sources)
+ libdev_speaker_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress -laudioroute
+ libdev_speaker_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libdev_speaker_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_speaker_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_speaker_la_CPPFLAGS += -std=c++14
+-libdev_speaker_la_LDFLAGS   = -shared -avoid-version
++libdev_speaker_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libdev_speaker_la_CPPFLAGS += @GLIB_CFLAGS@   -include glib.h
+ 
+ libdev_speaker_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+diff --git a/device/Speaker/dev_speaker.pc.in b/device/Speaker/dev_speaker.pc.in
+index 04c338a..185f4d3 100644
+--- a/device/Speaker/dev_speaker.pc.in
++++ b/device/Speaker/dev_speaker.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_speaker
+ Description: dev_speaker library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_speaker
+\ No newline at end of file
++Cflags: -I${includedir}/dev_speaker
+diff --git a/device/SpeakerMic/Makefile.am b/device/SpeakerMic/Makefile.am
+index ea0891a..c105e7b 100644
+--- a/device/SpeakerMic/Makefile.am
++++ b/device/SpeakerMic/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_speaker_mic
+ 
+-lib_LTLIBRARIES     = libdev_speaker_mic.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_speaker_mic.la
+ libdev_speaker_mic_la_SOURCES   = $(dev_speaker_mic_sources)
+ libdev_speaker_mic_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_speaker_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_speaker_mic_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_speaker_mic_la_CPPFLAGS += -std=c++14
+-libdev_speaker_mic_la_LDFLAGS   = -shared -avoid-version
++libdev_speaker_mic_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_speaker_mic_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/SpeakerMic/dev_speaker_mic.pc.in b/device/SpeakerMic/dev_speaker_mic.pc.in
+index 9349957..86d657b 100644
+--- a/device/SpeakerMic/dev_speaker_mic.pc.in
++++ b/device/SpeakerMic/dev_speaker_mic.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_speaker_mic
+ Description: dev_speaker_mic library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_speaker_mic
+\ No newline at end of file
++Cflags: -I${includedir}/dev_speaker_mic
+diff --git a/device/USBAudio/Makefile.am b/device/USBAudio/Makefile.am
+index 9d2c523..6e5e342 100644
+--- a/device/USBAudio/Makefile.am
++++ b/device/USBAudio/Makefile.am
+@@ -41,14 +41,15 @@ endif
+ 
+ library_includedir = $(includedir)/dev_usb
+ 
+-lib_LTLIBRARIES     = libdev_usb.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_usb.la
+ libdev_usb_la_SOURCES   = $(dev_usb_sources)
+ libdev_usb_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_usb_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libdev_usb_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_usb_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_usb_la_CPPFLAGS += -std=c++14
+-libdev_usb_la_LDFLAGS   = -shared -avoid-version
++libdev_usb_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_usb_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/USBAudio/dev_usb.pc.in b/device/USBAudio/dev_usb.pc.in
+index fb14f30..892f6fe 100644
+--- a/device/USBAudio/dev_usb.pc.in
++++ b/device/USBAudio/dev_usb.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_usb
+ Description: dev_usb library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_usb
+\ No newline at end of file
++Cflags: -I${includedir}/dev_usb
+diff --git a/device/UltrasoundDevice/Makefile.am b/device/UltrasoundDevice/Makefile.am
+index e7e66d2..b23dce2 100644
+--- a/device/UltrasoundDevice/Makefile.am
++++ b/device/UltrasoundDevice/Makefile.am
+@@ -39,13 +39,14 @@ endif
+ 
+ library_includedir = $(includedir)/dev_ultrasound
+ 
+-lib_LTLIBRARIES     = libdev_ultrasound.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libdev_ultrasound.la
+ libdev_ultrasound_la_SOURCES   = $(dev_ultrasound_sources)
+ libdev_ultrasound_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_ultrasound_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_ultrasound_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_ultrasound_la_CPPFLAGS += -std=c++14
+-libdev_ultrasound_la_LDFLAGS   = -shared -avoid-version
++libdev_ultrasound_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ 
+ libdev_ultrasound_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+diff --git a/device/UltrasoundDevice/dev_ultrasound.pc.in b/device/UltrasoundDevice/dev_ultrasound.pc.in
+index 7cdf145..544ec17 100644
+--- a/device/UltrasoundDevice/dev_ultrasound.pc.in
++++ b/device/UltrasoundDevice/dev_ultrasound.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: dev_ultrasound
+ Description: dev_ultrasound library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/dev_ultrasound
+\ No newline at end of file
++Cflags: -I${includedir}/dev_ultrasound
+diff --git a/plugins/codecs/Makefile.am b/plugins/codecs/Makefile.am
+index b122963..47f834b 100644
+--- a/plugins/codecs/Makefile.am
++++ b/plugins/codecs/Makefile.am
+@@ -3,7 +3,8 @@ pkgconfig_DATA = codecs.pc
+ EXTRA_DIST = $(pkgconfig_DATA)
+ 
+ library_includedir = $(includedir)/codecs
+-lib_LTLIBRARIES     = libbt_bundle.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libbt_bundle.la
+ 
+ bt_bundle_sources = \
+               bt_base.c \
+@@ -12,7 +13,7 @@ bt_bundle_sources = \
+ libbt_bundle_la_CPPFLAGS = -I $(top_srcdir)/plugins/codecs/inc
+ libbt_bundle_la_SOURCES   = $(bt_bundle_sources)
+ libbt_bundle_la_LIBADD    = @GLIB_LIBS@ -lexpat -ldl
+-libbt_bundle_la_LDFLAGS = -shared -avoid-version
++libbt_bundle_la_LDFLAGS = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libbt_bundle_la_CPPFLAGS += @GLIB_CFLAGS@ @SPF_CFLAGS@ -include glib.h
+ libbt_bundle_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libbt_bundle_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+@@ -27,7 +28,7 @@ if USE_SYSLOG
+ libbt_bundle_la_CPPFLAGS += -DPAL_USE_SYSLOG
+ endif
+ 
+-lib_LTLIBRARIES     += libbt_ble.la
++pluginlib_LTLIBRARIES += libbt_ble.la
+ 
+ bt_ble_sources = \
+               bt_base.c \
+@@ -36,7 +37,7 @@ bt_ble_sources = \
+ libbt_ble_la_CPPFLAGS = -I $(top_srcdir)/plugins/codecs/inc
+ libbt_ble_la_SOURCES   = $(bt_ble_sources)
+ libbt_ble_la_LIBADD    = @GLIB_LIBS@ -lexpat -ldl
+-libbt_ble_la_LDFLAGS = -shared -avoid-version
++libbt_ble_la_LDFLAGS = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libbt_ble_la_CPPFLAGS += @GLIB_CFLAGS@ @SPF_CFLAGS@ -include glib.h
+ libbt_ble_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libbt_ble_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+@@ -51,7 +52,7 @@ else
+ libbt_ble_la_CPPFLAGS += -DPAL_USE_SYSLOG  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ endif
+ 
+-lib_LTLIBRARIES     += libbt_aptx.la
++pluginlib_LTLIBRARIES += libbt_aptx.la
+ 
+ bt_aptx_sources = \
+               bt_base.c \
+@@ -60,7 +61,7 @@ bt_aptx_sources = \
+ libbt_aptx_la_CPPFLAGS = -I $(top_srcdir)/plugins/codecs/inc
+ libbt_aptx_la_SOURCES   = $(bt_aptx_sources)
+ libbt_aptx_la_LIBADD    = @GLIB_LIBS@ -lexpat -ldl
+-libbt_aptx_la_LDFLAGS = -shared -avoid-version
++libbt_aptx_la_LDFLAGS = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libbt_aptx_la_CPPFLAGS += @GLIB_CFLAGS@ @SPF_CFLAGS@ -include glib.h
+ libbt_aptx_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libbt_aptx_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/codecs/codecs.pc.in b/plugins/codecs/codecs.pc.in
+index d57e951..5f79670 100644
+--- a/plugins/codecs/codecs.pc.in
++++ b/plugins/codecs/codecs.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: codecs
+ Description: codecs library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/codecs
+\ No newline at end of file
++Cflags: -I${includedir}/codecs
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am
+index 7c96209..942bc49 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am
+@@ -27,12 +27,13 @@ AM_CPPFLAGS += @AROUTE_CFLAGS@
+ session_compress_config_sources = ./src/ConfigSessionAlsaCompress.cpp
+ 
+ library_includedir = $(includedir)/session_compress_config
+-lib_LTLIBRARIES     = libsession_compress_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_compress_config.la
+ libsession_compress_config_la_SOURCES   = $(session_compress_config_sources)
+ libsession_compress_config_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libsession_compress_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_compress_config_la_CPPFLAGS += -std=c++14
+-libsession_compress_config_la_LDFLAGS   = -shared -avoid-version
++libsession_compress_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_compress_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_compress_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_compress_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\)  -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/session_compress_config.pc.in b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
+index 2cf85e3..88b8ec6 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_compress_config
+@@ -8,4 +8,3 @@ Description: session_compress_config library
+ Version: @VERSION@
+ Libs: -L${libdir}
+ Cflags: -I${includedir}/session_compress_config
+-
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am
+index 3add371..5eb268b 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am
+@@ -26,12 +26,13 @@ AM_CPPFLAGS += @AROUTE_CFLAGS@
+ session_pcm_config_sources = ./src/ConfigSessionAlsaPcm.cpp
+ 
+ library_includedir = $(includedir)/session_pcm_config
+-lib_LTLIBRARIES     = libsession_pcm_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_pcm_config.la
+ libsession_pcm_config_la_SOURCES   = $(session_pcm_config_sources)
+ libsession_pcm_config_la_LIBADD    = @GLIB_LIBS@ -lexpat -laudioroute -ltinyalsa
+ libsession_pcm_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_pcm_config_la_CPPFLAGS += -std=c++14
+-libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version
++libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_pcm_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_pcm_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_pcm_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
+index 5192aa3..b1f9e5f 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_pcm_config
+@@ -8,4 +8,3 @@ Description: session_pcm_config library
+ Version: @VERSION@
+ Libs: -L${libdir}
+ Cflags: -I${includedir}/session_pcm_config
+-
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am
+index c347b3d..5ba2d3d 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am
+@@ -27,12 +27,13 @@ AM_CPPFLAGS += @AROUTE_CFLAGS@
+ session_voice_config_sources = ./src/ConfigSessionAlsaVoice.cpp
+ 
+ library_includedir = $(includedir)/session_voice_config
+-lib_LTLIBRARIES     = libsession_voice_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_voice_config.la
+ libsession_voice_config_la_SOURCES   = $(session_voice_config_sources)
+ libsession_voice_config_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa
+ libsession_voice_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_voice_config_la_CPPFLAGS += -std=c++14
+-libsession_voice_config_la_LDFLAGS   = -shared -avoid-version
++libsession_voice_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_voice_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h  -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ libsession_voice_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_voice_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/session_voice_config.pc.in b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
+index 37ef378..53aab33 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_voice_config
+@@ -8,4 +8,3 @@ Description: session_voice_config library
+ Version: @VERSION@
+ Libs: -L${libdir}
+ Cflags: -I${includedir}/session_voice_config
+-
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am
+index 9a1bf01..af7ce67 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am
+@@ -24,12 +24,13 @@ AM_CPPFLAGS += -I ${top_srcdir}/plugins/vui_interface/api/vui-interface
+ session_compress_config_sources = ./src/ConfigSessionAlsaCompress.cpp
+ 
+ library_includedir = $(includedir)/session_compress_config
+-lib_LTLIBRARIES     = libsession_compress_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_compress_config.la
+ libsession_compress_config_la_SOURCES   = $(session_compress_config_sources)
+ libsession_compress_config_la_LIBADD    = @GLIB_LIBS@ -llog -lexpat -ltinyalsa -ltinycompress
+ libsession_compress_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_compress_config_la_CPPFLAGS += -std=c++14
+-libsession_compress_config_la_LDFLAGS   = -shared -avoid-version
++libsession_compress_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_compress_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dstrlcat=g_strlcat -include glib.h
+ libsession_compress_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_compress_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/session_compress_config.pc.in b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
+index cb71dff..e632d6b 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_compress_config
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am
+index ba0ad5a..e0b968d 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am
+@@ -23,12 +23,13 @@ AM_CPPFLAGS += -I ${top_srcdir}/plugins/vui_interface/api/vui-interface
+ session_pcm_config_sources = ./src/ConfigSessionAlsaPcm.cpp
+ 
+ library_includedir = $(includedir)/session_pcm_config
+-lib_LTLIBRARIES     = libsession_pcm_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_pcm_config.la
+ libsession_pcm_config_la_SOURCES   = $(session_pcm_config_sources)
+ libsession_pcm_config_la_LIBADD    = @GLIB_LIBS@ -llog -lexpat -laudioroute -ltinyalsa
+ libsession_pcm_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_pcm_config_la_CPPFLAGS += -std=c++14
+-libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version
++libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_pcm_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dstrlcat=g_strlcat -include glib.h
+ libsession_pcm_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_pcm_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
+index 5192aa3..b1f9e5f 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_pcm_config
+@@ -8,4 +8,3 @@ Description: session_pcm_config library
+ Version: @VERSION@
+ Libs: -L${libdir}
+ Cflags: -I${includedir}/session_pcm_config
+-
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am
+index f22b63b..6bb560f 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am
+@@ -23,12 +23,13 @@ AM_CPPFLAGS += -I ${top_srcdir}/plugins/vui_interface/api/vui-interface
+ session_voice_config_sources = ./src/ConfigSessionAlsaVoice.cpp
+ 
+ library_includedir = $(includedir)/session_voice_config
+-lib_LTLIBRARIES     = libsession_voice_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_voice_config.la
+ libsession_voice_config_la_SOURCES   = $(session_voice_config_sources)
+ libsession_voice_config_la_LIBADD    = @GLIB_LIBS@ -llog -lexpat -ltinyalsa
+ libsession_voice_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_voice_config_la_CPPFLAGS += -std=c++14
+-libsession_voice_config_la_LDFLAGS   = -shared -avoid-version
++libsession_voice_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_voice_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dstrlcat=g_strlcat -include glib.h
+ libsession_voice_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_voice_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/session_voice_config.pc.in b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
+index 37ef378..53aab33 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_voice_config
+@@ -8,4 +8,3 @@ Description: session_voice_config library
+ Version: @VERSION@
+ Libs: -L${libdir}
+ Cflags: -I${includedir}/session_voice_config
+-
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am
+index 88418d5..6a8d6eb 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am
+@@ -27,12 +27,13 @@ AM_CPPFLAGS += @AROUTE_CFLAGS@
+ session_compress_config_sources = ./src/ConfigSessionAlsaCompress.cpp
+ 
+ library_includedir = $(includedir)/session_compress_config
+-lib_LTLIBRARIES     = libsession_compress_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_compress_config.la
+ libsession_compress_config_la_SOURCES   = $(session_compress_config_sources)
+ libsession_compress_config_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libsession_compress_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_compress_config_la_CPPFLAGS += -std=c++14
+-libsession_compress_config_la_LDFLAGS   = -shared -avoid-version
++libsession_compress_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_compress_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_compress_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_compress_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\)  -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/session_compress_config.pc.in b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
+index cb71dff..e632d6b 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/session_compress_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_compress_config
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am
+index 2749ac2..08787b7 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am
+@@ -26,12 +26,13 @@ AM_CPPFLAGS += @AROUTE_CFLAGS@
+ session_pcm_config_sources = ./src/ConfigSessionAlsaPcm.cpp
+ 
+ library_includedir = $(includedir)/session_pcm_config
+-lib_LTLIBRARIES     = libsession_pcm_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_pcm_config.la
+ libsession_pcm_config_la_SOURCES   = $(session_pcm_config_sources)
+ libsession_pcm_config_la_LIBADD    = @GLIB_LIBS@ -lexpat -laudioroute -ltinyalsa
+ libsession_pcm_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_pcm_config_la_CPPFLAGS += -std=c++14
+-libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version
++libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_pcm_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_pcm_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_pcm_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
+index 5192aa3..b1f9e5f 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/session_pcm_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_pcm_config
+@@ -8,4 +8,3 @@ Description: session_pcm_config library
+ Version: @VERSION@
+ Libs: -L${libdir}
+ Cflags: -I${includedir}/session_pcm_config
+-
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am
+index 9242e8a..5dca0db 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am
+@@ -27,12 +27,13 @@ AM_CPPFLAGS += @AROUTE_CFLAGS@
+ session_voice_config_sources = ./src/ConfigSessionAlsaVoice.cpp
+ 
+ library_includedir = $(includedir)/session_voice_config
+-lib_LTLIBRARIES     = libsession_voice_config.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_voice_config.la
+ libsession_voice_config_la_SOURCES   = $(session_voice_config_sources)
+ libsession_voice_config_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa
+ libsession_voice_config_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_voice_config_la_CPPFLAGS += -std=c++14
+-libsession_voice_config_la_LDFLAGS   = -shared -avoid-version
++libsession_voice_config_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_voice_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h  -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ libsession_voice_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_voice_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/session_voice_config.pc.in b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
+index 37ef378..53aab33 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/session_voice_config.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_voice_config
+@@ -8,4 +8,3 @@ Description: session_voice_config library
+ Version: @VERSION@
+ Libs: -L${libdir}
+ Cflags: -I${includedir}/session_voice_config
+-
+diff --git a/plugins/vui_interface/customva_intf/Makefile.am b/plugins/vui_interface/customva_intf/Makefile.am
+index 07893be..a8d18c7 100644
+--- a/plugins/vui_interface/customva_intf/Makefile.am
++++ b/plugins/vui_interface/customva_intf/Makefile.am
+@@ -21,16 +21,17 @@ customva_intf_sources = ./src/CustomVAInterface.cpp
+ 
+ library_includedir = $(includedir)/customva_intf
+ 
+-lib_LTLIBRARIES     = libcustomva_intf.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libcustomva_intf.la
+ libcustomva_intf_la_SOURCES   = $(customva_intf_sources)
+ libcustomva_intf_la_LIBADD    = @GLIB_LIBS@ -llog -lcutils -lexpat
+ libcustomva_intf_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libcustomva_intf_la_CPPFLAGS += -std=c++14
+-libcustomva_intf_la_LDFLAGS   = -shared -avoid-version
++libcustomva_intf_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libcustomva_intf_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libcustomva_intf_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libcustomva_intf_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+ if BUILDSYSTEM_OPENWRT
+ libcustomva_intf_la_LIBADD += -lglib-2.0
+-endif
+\ No newline at end of file
++endif
+diff --git a/plugins/vui_interface/customva_intf/customva_intf.pc.in b/plugins/vui_interface/customva_intf/customva_intf.pc.in
+index 5c0f3d7..86b3593 100644
+--- a/plugins/vui_interface/customva_intf/customva_intf.pc.in
++++ b/plugins/vui_interface/customva_intf/customva_intf.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: customva_intf
+ Description: customva_intf library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/customva_intf
+\ No newline at end of file
++Cflags: -I${includedir}/customva_intf
+diff --git a/plugins/vui_interface/hotword_intf/Makefile.am b/plugins/vui_interface/hotword_intf/Makefile.am
+index c6f8157..db959f1 100644
+--- a/plugins/vui_interface/hotword_intf/Makefile.am
++++ b/plugins/vui_interface/hotword_intf/Makefile.am
+@@ -20,16 +20,17 @@ hotword_intf_sources = ./src/HotwordInterface.cpp
+ 
+ library_includedir = $(includedir)/hotword_intf
+ 
+-lib_LTLIBRARIES     = libhotword_intf.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libhotword_intf.la
+ libhotword_intf_la_SOURCES   = $(hotword_intf_sources)
+ libhotword_intf_la_LIBADD    = @GLIB_LIBS@ -llog -lcutils -lexpat
+ libhotword_intf_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libhotword_intf_la_CPPFLAGS += -std=c++14
+-libhotword_intf_la_LDFLAGS   = -shared -avoid-version
++libhotword_intf_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libhotword_intf_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libhotword_intf_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libhotword_intf_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+ if BUILDSYSTEM_OPENWRT
+ libhotword_intf_la_LIBADD += -lglib-2.0
+-endif
+\ No newline at end of file
++endif
+diff --git a/plugins/vui_interface/hotword_intf/hotword_intf.pc.in b/plugins/vui_interface/hotword_intf/hotword_intf.pc.in
+index 0e4e185..2aee244 100644
+--- a/plugins/vui_interface/hotword_intf/hotword_intf.pc.in
++++ b/plugins/vui_interface/hotword_intf/hotword_intf.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: hotword_intf
+ Description: hotword_intf library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/hotword_intf
+\ No newline at end of file
++Cflags: -I${includedir}/hotword_intf
+diff --git a/plugins/vui_interface/sva_intf/Makefile.am b/plugins/vui_interface/sva_intf/Makefile.am
+index 0bc370e..8eb1d0c 100644
+--- a/plugins/vui_interface/sva_intf/Makefile.am
++++ b/plugins/vui_interface/sva_intf/Makefile.am
+@@ -21,8 +21,9 @@ AM_CPPFLAGS += -I $(top_srcdir)/utils/inc/
+ 
+ c_sources := $(top_srcdir)/sva_intf/src/SVAInterface.cpp
+ 
+-lib_LTLIBRARIES =  libsva_intf.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsva_intf.la
+ libsva_intf_la_SOURCES = $(c_sources)
+ libsva_intf_la_CPPFLAGS = $(AM_CPPFLAGS)
+-libsva_intf_la_LDFLAGS  = -shared -version-number @LT_VERSION_NUMBER@
++libsva_intf_la_LDFLAGS  = -shared -version-number @LT_VERSION_NUMBER@ -Wl,-rpath,'$$ORIGIN'
+ libsva_intf_la_LIBADD = @OSAL_LIBS@ @GLIB_LIBS@ $(top_builddir)/utils/libvuiinterface_utils.la
+diff --git a/plugins/vui_interface/sva_intf/sva_interface.pc.in b/plugins/vui_interface/sva_intf/sva_interface.pc.in
+index 530291e..08fa4b2 100644
+--- a/plugins/vui_interface/sva_intf/sva_interface.pc.in
++++ b/plugins/vui_interface/sva_intf/sva_interface.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: vui_interface
+ Description: vui_interface library
+ Version: @LT_VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/sva_interface
+\ No newline at end of file
++Cflags: -I${includedir}/sva_interface
+diff --git a/session/SessionAR/Makefile.am b/session/SessionAR/Makefile.am
+index 96e481b..d6403c7 100644
+--- a/session/SessionAR/Makefile.am
++++ b/session/SessionAR/Makefile.am
+@@ -42,13 +42,14 @@ endif
+ 
+ library_includedir = $(includedir)/session_ar
+ 
+-lib_LTLIBRARIES     = libsession_ar.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_ar.la
+ libsession_ar_la_SOURCES   = $(session_ar_sources)
+ libsession_ar_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress @GSL_LIBS@
+ libsession_ar_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_ar_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_ar_la_CPPFLAGS += -std=c++14
+-libsession_ar_la_LDFLAGS   = -shared -avoid-version
++libsession_ar_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_ar_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_ar_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_ar_la_CPPFLAGS += -DPAL_CONFIG_DIR=\"@PAL_CONFIG_DIR@\"
+diff --git a/session/SessionAR/session_ar.pc.in b/session/SessionAR/session_ar.pc.in
+index 65a8cd9..12cae37 100644
+--- a/session/SessionAR/session_ar.pc.in
++++ b/session/SessionAR/session_ar.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_ar
+ Description: session_ar library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/session_ar
+\ No newline at end of file
++Cflags: -I${includedir}/session_ar
+diff --git a/session/SessionAgm/Makefile.am b/session/SessionAgm/Makefile.am
+index 0f99bc0..9edb34f 100644
+--- a/session/SessionAgm/Makefile.am
++++ b/session/SessionAgm/Makefile.am
+@@ -40,14 +40,15 @@ endif
+ 
+ library_includedir = $(includedir)/session_agm
+ 
+-lib_LTLIBRARIES     = libsession_agm.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_agm.la
+ libsession_agm_la_SOURCES   = $(session_agm_sources)
+ libsession_agm_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libsession_agm_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_agm_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_agm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_agm_la_CPPFLAGS += -std=c++14
+-libsession_agm_la_LDFLAGS   = -shared -avoid-version
++libsession_agm_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_agm_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_agm_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_agm_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\)
+diff --git a/session/SessionAgm/session_agm.pc.in b/session/SessionAgm/session_agm.pc.in
+index 9a4330c..ca39a76 100644
+--- a/session/SessionAgm/session_agm.pc.in
++++ b/session/SessionAgm/session_agm.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_agm
+ Description: session_agm library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/session_agm
+\ No newline at end of file
++Cflags: -I${includedir}/session_agm
+diff --git a/session/SessionAlsaCompress/Makefile.am b/session/SessionAlsaCompress/Makefile.am
+index 19b242d..5be5db0 100644
+--- a/session/SessionAlsaCompress/Makefile.am
++++ b/session/SessionAlsaCompress/Makefile.am
+@@ -41,13 +41,14 @@ endif
+ 
+ library_includedir = $(includedir)/session_compress
+ 
+-lib_LTLIBRARIES     = libsession_compress.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_compress.la
+ libsession_compress_la_SOURCES   = $(session_compress_sources)
+ libsession_compress_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libsession_compress_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_compress_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_compress_la_CPPFLAGS += -std=c++14
+-libsession_compress_la_LDFLAGS   = -shared -avoid-version
++libsession_compress_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_compress_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_compress_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_compress_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/session/SessionAlsaCompress/session_compress.pc.in b/session/SessionAlsaCompress/session_compress.pc.in
+index 39e4b8e..07f19cb 100644
+--- a/session/SessionAlsaCompress/session_compress.pc.in
++++ b/session/SessionAlsaCompress/session_compress.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_compress
+ Description: session_compress library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/session_compress
+\ No newline at end of file
++Cflags: -I${includedir}/session_compress
+diff --git a/session/SessionAlsaPcm/Makefile.am b/session/SessionAlsaPcm/Makefile.am
+index 18b6d8c..db037f8 100644
+--- a/session/SessionAlsaPcm/Makefile.am
++++ b/session/SessionAlsaPcm/Makefile.am
+@@ -40,14 +40,15 @@ endif
+ 
+ library_includedir = $(includedir)/session_pcm
+ 
+-lib_LTLIBRARIES     = libsession_pcm.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_pcm.la
+ libsession_pcm_la_SOURCES   = $(session_pcm_sources)
+ libsession_pcm_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libsession_pcm_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_pcm_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_pcm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_pcm_la_CPPFLAGS += -std=c++14
+-libsession_pcm_la_LDFLAGS   = -shared -avoid-version
++libsession_pcm_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_pcm_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ libsession_pcm_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_pcm_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/session/SessionAlsaPcm/session_pcm.pc.in b/session/SessionAlsaPcm/session_pcm.pc.in
+index 97072f9..f407d82 100644
+--- a/session/SessionAlsaPcm/session_pcm.pc.in
++++ b/session/SessionAlsaPcm/session_pcm.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_pcm
+ Description: session_pcm library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/session_pcm
+\ No newline at end of file
++Cflags: -I${includedir}/session_pcm
+diff --git a/session/SessionAlsaVoice/Makefile.am b/session/SessionAlsaVoice/Makefile.am
+index 1a3ea1e..1cca924 100644
+--- a/session/SessionAlsaVoice/Makefile.am
++++ b/session/SessionAlsaVoice/Makefile.am
+@@ -41,14 +41,15 @@ endif
+ 
+ library_includedir = $(includedir)/session_voice
+ 
+-lib_LTLIBRARIES     = libsession_voice.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libsession_voice.la
+ libsession_voice_la_SOURCES   = $(session_voice_sources)
+ libsession_voice_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libsession_voice_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_voice_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_voice_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_voice_la_CPPFLAGS += -std=c++14
+-libsession_voice_la_LDFLAGS   = -shared -avoid-version
++libsession_voice_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libsession_voice_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ 
+ libsession_voice_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+diff --git a/session/SessionAlsaVoice/session_voice.pc.in b/session/SessionAlsaVoice/session_voice.pc.in
+index 2b97354..7e3cb6d 100644
+--- a/session/SessionAlsaVoice/session_voice.pc.in
++++ b/session/SessionAlsaVoice/session_voice.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: session_voice
+ Description: session_voice library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/session_voice
+\ No newline at end of file
++Cflags: -I${includedir}/session_voice
+diff --git a/stream/StreamACD/Makefile.am b/stream/StreamACD/Makefile.am
+index e37267b..c15b606 100644
+--- a/stream/StreamACD/Makefile.am
++++ b/stream/StreamACD/Makefile.am
+@@ -40,14 +40,15 @@ endif
+ 
+ library_includedir = $(includedir)/stream_acd
+ 
+-lib_LTLIBRARIES     = libstream_acd.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_acd.la
+ libstream_acd_la_SOURCES   = $(stream_acd_sources)
+ libstream_acd_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_acd_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_acd_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_acd_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_acd_la_CPPFLAGS += -std=c++14
+-libstream_acd_la_LDFLAGS   = -shared -avoid-version
++libstream_acd_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_acd_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_acd_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_acd_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamACD/stream_acd.pc.in b/stream/StreamACD/stream_acd.pc.in
+index 19340e4..aaecfc9 100644
+--- a/stream/StreamACD/stream_acd.pc.in
++++ b/stream/StreamACD/stream_acd.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_acd
+ Description: stream_acd library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_acd
+\ No newline at end of file
++Cflags: -I${includedir}/stream_acd
+diff --git a/stream/StreamACDB/Makefile.am b/stream/StreamACDB/Makefile.am
+index c804b38..34492ab 100644
+--- a/stream/StreamACDB/Makefile.am
++++ b/stream/StreamACDB/Makefile.am
+@@ -20,17 +20,18 @@ stream_acdb_sources = ./src/StreamACDB.cpp
+ 
+ library_includedir = $(includedir)/stream_acdb
+ 
+-lib_LTLIBRARIES     = libstream_acdb.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_acdb.la
+ libstream_acdb_la_SOURCES   = $(stream_acdb_sources)
+ libstream_acdb_la_LIBADD    = @GLIB_LIBS@ -llog -lcutils -lexpat @GSL_LIBS@
+ libstream_acdb_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_acdb_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_acdb_la_CPPFLAGS += -std=c++14
+-libstream_acdb_la_LDFLAGS   = -shared -avoid-version
++libstream_acdb_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_acdb_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_acdb_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_acdb_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+ if BUILDSYSTEM_OPENWRT
+ libstream_acdb_la_LIBADD += -lglib-2.0
+-endif
+\ No newline at end of file
++endif
+diff --git a/stream/StreamACDB/stream_acdb.pc.in b/stream/StreamACDB/stream_acdb.pc.in
+index f625cb8..016e826 100644
+--- a/stream/StreamACDB/stream_acdb.pc.in
++++ b/stream/StreamACDB/stream_acdb.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_acdb
+ Description: stream_acdb library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_acdb
+\ No newline at end of file
++Cflags: -I${includedir}/stream_acdb
+diff --git a/stream/StreamASR/Makefile.am b/stream/StreamASR/Makefile.am
+index 0259f18..2f0693b 100644
+--- a/stream/StreamASR/Makefile.am
++++ b/stream/StreamASR/Makefile.am
+@@ -44,14 +44,15 @@ endif
+ 
+ library_includedir = $(includedir)/stream_asr
+ 
+-lib_LTLIBRARIES     = libstream_asr.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_asr.la
+ libstream_asr_la_SOURCES   = $(stream_asr_sources)
+ libstream_asr_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_asr_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_asr_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_asr_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_asr_la_CPPFLAGS += -std=c++14
+-libstream_asr_la_LDFLAGS   = -shared -avoid-version
++libstream_asr_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_asr_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_asr_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ 
+diff --git a/stream/StreamASR/stream_asr.pc.in b/stream/StreamASR/stream_asr.pc.in
+index 347048f..c093224 100644
+--- a/stream/StreamASR/stream_asr.pc.in
++++ b/stream/StreamASR/stream_asr.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_asr
+ Description: stream_asr library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_asr
+\ No newline at end of file
++Cflags: -I${includedir}/stream_asr
+diff --git a/stream/StreamCallTranslation/Makefile.am b/stream/StreamCallTranslation/Makefile.am
+index 57266b0..e490833 100644
+--- a/stream/StreamCallTranslation/Makefile.am
++++ b/stream/StreamCallTranslation/Makefile.am
+@@ -47,13 +47,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_calltranslation
+ 
+-lib_LTLIBRARIES     = libstream_calltranslation.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_calltranslation.la
+ libstream_calltranslation_la_SOURCES   = $(stream_calltranslation_sources)
+ libstream_calltranslation_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+ libstream_calltranslation_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_calltranslation_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_calltranslation_la_CPPFLAGS += -std=c++14
+-libstream_calltranslation_la_LDFLAGS   = -shared -avoid-version
++libstream_calltranslation_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_calltranslation_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_calltranslation_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_calltranslation_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCallTranslation/stream_calltranslation.pc.in b/stream/StreamCallTranslation/stream_calltranslation.pc.in
+index b21e207..cc1b6cd 100644
+--- a/stream/StreamCallTranslation/stream_calltranslation.pc.in
++++ b/stream/StreamCallTranslation/stream_calltranslation.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_calltranslation
+ Description: stream_calltranslation library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_calltranslation
+\ No newline at end of file
++Cflags: -I${includedir}/stream_calltranslation
+diff --git a/stream/StreamCommon/Makefile.am b/stream/StreamCommon/Makefile.am
+index 1bd24da..722d8db 100644
+--- a/stream/StreamCommon/Makefile.am
++++ b/stream/StreamCommon/Makefile.am
+@@ -41,13 +41,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_common
+ 
+-lib_LTLIBRARIES     = libstream_common.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_common.la
+ libstream_common_la_SOURCES   = $(stream_common_sources)
+ libstream_common_la_LIBADD    = @GLIB_LIBS@ -lexpat @GSL_LIBS@
+ libstream_common_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_common_la_CPPFLAGS += -std=c++14
+ libstream_common_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+-libstream_common_la_LDFLAGS   = -shared -avoid-version
++libstream_common_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_common_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_common_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_common_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCommon/StreamCommonProxy/Makefile.am b/stream/StreamCommon/StreamCommonProxy/Makefile.am
+index 5002cd1..f492a06 100644
+--- a/stream/StreamCommon/StreamCommonProxy/Makefile.am
++++ b/stream/StreamCommon/StreamCommonProxy/Makefile.am
+@@ -40,13 +40,14 @@ stream_commonproxy_sources = ./src/StreamCommonProxy.cpp
+ 
+ library_includedir = $(includedir)/stream_commonproxy
+ 
+-lib_LTLIBRARIES     = libstream_commonproxy.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_commonproxy.la
+ libstream_commonproxy_la_SOURCES   = $(stream_commonproxy_sources)
+ libstream_commonproxy_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+ libstream_commonproxy_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_commonproxy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_commonproxy_la_CPPFLAGS += -std=c++14
+-libstream_commonproxy_la_LDFLAGS   = -shared -avoid-version
++libstream_commonproxy_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_commonproxy_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_commonproxy_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_commonproxy_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCommon/StreamCommonProxy/stream_commonproxy.pc.in b/stream/StreamCommon/StreamCommonProxy/stream_commonproxy.pc.in
+index c9211fa..75be3b3 100644
+--- a/stream/StreamCommon/StreamCommonProxy/stream_commonproxy.pc.in
++++ b/stream/StreamCommon/StreamCommonProxy/stream_commonproxy.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_commonproxy
+ Description: stream_commonproxy library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_commonproxy
+\ No newline at end of file
++Cflags: -I${includedir}/stream_commonproxy
+diff --git a/stream/StreamCommon/StreamContextProxy/Makefile.am b/stream/StreamCommon/StreamContextProxy/Makefile.am
+index 70b577e..e673120 100644
+--- a/stream/StreamCommon/StreamContextProxy/Makefile.am
++++ b/stream/StreamCommon/StreamContextProxy/Makefile.am
+@@ -42,13 +42,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_contextproxy
+ 
+-lib_LTLIBRARIES     = libstream_contextproxy.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_contextproxy.la
+ libstream_contextproxy_la_SOURCES   = $(stream_contextproxy_sources)
+ libstream_contextproxy_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+ libstream_contextproxy_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_contextproxy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_contextproxy_la_CPPFLAGS += -std=c++14
+-libstream_contextproxy_la_LDFLAGS   = -shared -avoid-version
++libstream_contextproxy_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_contextproxy_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_contextproxy_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_contextproxy_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCommon/StreamContextProxy/stream_contextproxy.pc.in b/stream/StreamCommon/StreamContextProxy/stream_contextproxy.pc.in
+index e896b6d..11b8d2e 100644
+--- a/stream/StreamCommon/StreamContextProxy/stream_contextproxy.pc.in
++++ b/stream/StreamCommon/StreamContextProxy/stream_contextproxy.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_contextproxy
+ Description: stream_contextproxy library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_contextproxy
+\ No newline at end of file
++Cflags: -I${includedir}/stream_contextproxy
+diff --git a/stream/StreamCommon/StreamSensorPCMData/Makefile.am b/stream/StreamCommon/StreamSensorPCMData/Makefile.am
+index 2786fdf..e120ff8 100644
+--- a/stream/StreamCommon/StreamSensorPCMData/Makefile.am
++++ b/stream/StreamCommon/StreamSensorPCMData/Makefile.am
+@@ -38,13 +38,14 @@ streamsensorpcmdata_sources = $(top_srcdir)/stream/StreamCommon/StreamSensorPCMD
+ endif
+ library_includedir = $(includedir)/streamsensorpcmdata_headers
+ 
+-lib_LTLIBRARIES     = libstream_sensorpcmdata.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_sensorpcmdata.la
+ libstream_sensorpcmdata_la_SOURCES   = $(streamsensorpcmdata_sources)
+ libstream_sensorpcmdata_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+ libstream_sensorpcmdata_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_sensorpcmdata_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_sensorpcmdata_la_CPPFLAGS += -std=c++14
+-libstream_sensorpcmdata_la_LDFLAGS   = -shared -avoid-version
++libstream_sensorpcmdata_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_sensorpcmdata_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_sensorpcmdata_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_sensorpcmdata_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCommon/StreamSensorPCMData/streamsensorpcmdata_headers.pc.in b/stream/StreamCommon/StreamSensorPCMData/streamsensorpcmdata_headers.pc.in
+index 086d51c..12d5a86 100644
+--- a/stream/StreamCommon/StreamSensorPCMData/streamsensorpcmdata_headers.pc.in
++++ b/stream/StreamCommon/StreamSensorPCMData/streamsensorpcmdata_headers.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: streamsensorpcmdata_headers
+ Description: streamsensorpcmdata_headers library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/streamsensorpcmdata_headers
+\ No newline at end of file
++Cflags: -I${includedir}/streamsensorpcmdata_headers
+diff --git a/stream/StreamCommon/StreamSensorRenderer/Makefile.am b/stream/StreamCommon/StreamSensorRenderer/Makefile.am
+index 929fbcc..4829adf 100644
+--- a/stream/StreamCommon/StreamSensorRenderer/Makefile.am
++++ b/stream/StreamCommon/StreamSensorRenderer/Makefile.am
+@@ -44,13 +44,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_sensorrenderer
+ 
+-lib_LTLIBRARIES     = libstream_sensorrenderer.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_sensorrenderer.la
+ libstream_sensorrenderer_la_SOURCES   = $(stream_sensorrenderer_sources)
+ libstream_sensorrenderer_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+ libstream_sensorrenderer_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_sensorrenderer_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_sensorrenderer_la_CPPFLAGS += -std=c++14
+-libstream_sensorrenderer_la_LDFLAGS   = -shared -avoid-version
++libstream_sensorrenderer_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_sensorrenderer_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_sensorrenderer_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_sensorrenderer_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCommon/StreamSensorRenderer/stream_sensorrenderer.pc.in b/stream/StreamCommon/StreamSensorRenderer/stream_sensorrenderer.pc.in
+index 0bfabd1..4571afa 100644
+--- a/stream/StreamCommon/StreamSensorRenderer/stream_sensorrenderer.pc.in
++++ b/stream/StreamCommon/StreamSensorRenderer/stream_sensorrenderer.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_sensorrenderer
+ Description: stream_sensorrenderer library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_sensorrenderer
+\ No newline at end of file
++Cflags: -I${includedir}/stream_sensorrenderer
+diff --git a/stream/StreamCommon/StreamUltrasSound/Makefile.am b/stream/StreamCommon/StreamUltrasSound/Makefile.am
+index 142e7b4..cc1aaff 100644
+--- a/stream/StreamCommon/StreamUltrasSound/Makefile.am
++++ b/stream/StreamCommon/StreamUltrasSound/Makefile.am
+@@ -47,14 +47,15 @@ endif
+ 
+ library_includedir = $(includedir)/stream_ultrasound
+ 
+-lib_LTLIBRARIES     = libstream_ultrasound.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_ultrasound.la
+ libstream_ultrasound_la_SOURCES   = $(stream_ultrasound_sources)
+ libstream_ultrasound_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+ libstream_ultrasound_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_ultrasound_la_LIBADD    += -L${abs_top_builddir}/session/SessionAlsaPcm/.libs -lsession_pcm
+ libstream_ultrasound_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_ultrasound_la_CPPFLAGS += -std=c++14
+-libstream_ultrasound_la_LDFLAGS   = -shared -avoid-version
++libstream_ultrasound_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_ultrasound_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_ultrasound_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_ultrasound_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCommon/StreamUltrasSound/stream_ultrasound.pc.in b/stream/StreamCommon/StreamUltrasSound/stream_ultrasound.pc.in
+index b43d9e0..c950b10 100644
+--- a/stream/StreamCommon/StreamUltrasSound/stream_ultrasound.pc.in
++++ b/stream/StreamCommon/StreamUltrasSound/stream_ultrasound.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_ultrasound
+ Description: stream_ultrasound library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_ultrasound
+\ No newline at end of file
++Cflags: -I${includedir}/stream_ultrasound
+diff --git a/stream/StreamCommon/stream_common.pc.in b/stream/StreamCommon/stream_common.pc.in
+index 6fdfd62..bfd94b2 100644
+--- a/stream/StreamCommon/stream_common.pc.in
++++ b/stream/StreamCommon/stream_common.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_common
+ Description: stream_common library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_common
+\ No newline at end of file
++Cflags: -I${includedir}/stream_common
+diff --git a/stream/StreamCompress/Makefile.am b/stream/StreamCompress/Makefile.am
+index 1e2f2fe..d731844 100644
+--- a/stream/StreamCompress/Makefile.am
++++ b/stream/StreamCompress/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_compress
+ 
+-lib_LTLIBRARIES     = libstream_compress.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_compress.la
+ libstream_compress_la_SOURCES   = $(stream_compress_sources)
+ libstream_compress_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_compress_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_compress_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_compress_la_CPPFLAGS += -std=c++14
+-libstream_compress_la_LDFLAGS   = -shared -avoid-version
++libstream_compress_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_compress_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_compress_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_compress_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamCompress/stream_compress.pc.in b/stream/StreamCompress/stream_compress.pc.in
+index 8421755..d7d5628 100644
+--- a/stream/StreamCompress/stream_compress.pc.in
++++ b/stream/StreamCompress/stream_compress.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_compress
+ Description: stream_compress library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_compress
+\ No newline at end of file
++Cflags: -I${includedir}/stream_compress
+diff --git a/stream/StreamHaptic/Makefile.am b/stream/StreamHaptic/Makefile.am
+index 35e31ff..618fe42 100644
+--- a/stream/StreamHaptic/Makefile.am
++++ b/stream/StreamHaptic/Makefile.am
+@@ -41,14 +41,15 @@ stream_haptics_sources = $(top_srcdir)/stream/StreamHaptic/src/StreamHaptics.cpp
+ endif
+ library_includedir = $(includedir)/stream_haptics
+ 
+-lib_LTLIBRARIES     = libstream_haptics.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_haptics.la
+ libstream_haptics_la_SOURCES   = $(stream_haptics_sources)
+ libstream_haptics_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_haptics_la_LIBADD    += -L${abs_top_builddir}/stream/StreamPCM/.libs -lstream_pcm
+ libstream_haptics_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_haptics_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_haptics_la_CPPFLAGS += -std=c++14
+-libstream_haptics_la_LDFLAGS   = -shared -avoid-version
++libstream_haptics_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_haptics_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_haptics_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_haptics_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamHaptic/stream_haptics.pc.in b/stream/StreamHaptic/stream_haptics.pc.in
+index 6281e5a..60b5d78 100644
+--- a/stream/StreamHaptic/stream_haptics.pc.in
++++ b/stream/StreamHaptic/stream_haptics.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_haptics
+ Description: stream_haptics library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_haptics
+\ No newline at end of file
++Cflags: -I${includedir}/stream_haptics
+diff --git a/stream/StreamInCall/Makefile.am b/stream/StreamInCall/Makefile.am
+index fb3b7af..945c715 100644
+--- a/stream/StreamInCall/Makefile.am
++++ b/stream/StreamInCall/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_incall
+ 
+-lib_LTLIBRARIES     = libstream_incall.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_incall.la
+ libstream_incall_la_SOURCES   = $(stream_incall_sources)
+ libstream_incall_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_incall_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_incall_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_incall_la_CPPFLAGS += -std=c++14
+-libstream_incall_la_LDFLAGS   = -shared -avoid-version
++libstream_incall_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_incall_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_incall_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_incall_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamInCall/stream_incall.pc.in b/stream/StreamInCall/stream_incall.pc.in
+index 3e800d6..46fa134 100644
+--- a/stream/StreamInCall/stream_incall.pc.in
++++ b/stream/StreamInCall/stream_incall.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_incall
+ Description: stream_incall library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_incall
+\ No newline at end of file
++Cflags: -I${includedir}/stream_incall
+diff --git a/stream/StreamNonTunnel/Makefile.am b/stream/StreamNonTunnel/Makefile.am
+index 6b74814..603ab36 100644
+--- a/stream/StreamNonTunnel/Makefile.am
++++ b/stream/StreamNonTunnel/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_nontunnel
+ 
+-lib_LTLIBRARIES     = libstream_nontunnel.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_nontunnel.la
+ libstream_nontunnel_la_SOURCES   = $(stream_nontunnel_sources)
+ libstream_nontunnel_la_LIBADD    = @GLIB_LIBS@ -lexpat @GSL_LIBS@
+ libstream_nontunnel_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_nontunnel_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_nontunnel_la_CPPFLAGS += -std=c++14
+-libstream_nontunnel_la_LDFLAGS   = -shared -avoid-version
++libstream_nontunnel_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_nontunnel_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+ libstream_nontunnel_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_nontunnel_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamNonTunnel/stream_nontunnel.pc.in b/stream/StreamNonTunnel/stream_nontunnel.pc.in
+index 478b337..12fc686 100644
+--- a/stream/StreamNonTunnel/stream_nontunnel.pc.in
++++ b/stream/StreamNonTunnel/stream_nontunnel.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_nontunnel
+ Description: stream_nontunnel library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_nontunnel
+\ No newline at end of file
++Cflags: -I${includedir}/stream_nontunnel
+diff --git a/stream/StreamPCM/Makefile.am b/stream/StreamPCM/Makefile.am
+index 399aa3f..73eb843 100644
+--- a/stream/StreamPCM/Makefile.am
++++ b/stream/StreamPCM/Makefile.am
+@@ -40,13 +40,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_pcm
+ 
+-lib_LTLIBRARIES     = libstream_pcm.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_pcm.la
+ libstream_pcm_la_SOURCES   = $(stream_pcm_sources)
+ libstream_pcm_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_pcm_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_pcm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_pcm_la_CPPFLAGS += -std=c++14
+-libstream_pcm_la_LDFLAGS   = -shared -avoid-version
++libstream_pcm_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_pcm_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_pcm_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_pcm_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+diff --git a/stream/StreamPCM/stream_pcm.pc.in b/stream/StreamPCM/stream_pcm.pc.in
+index 0e227f1..3650d63 100644
+--- a/stream/StreamPCM/stream_pcm.pc.in
++++ b/stream/StreamPCM/stream_pcm.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_pcm
+ Description: stream_pcm library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_pcm
+\ No newline at end of file
++Cflags: -I${includedir}/stream_pcm
+diff --git a/stream/StreamSoundTrigger/Makefile.am b/stream/StreamSoundTrigger/Makefile.am
+index 1bae464..87745eb 100644
+--- a/stream/StreamSoundTrigger/Makefile.am
++++ b/stream/StreamSoundTrigger/Makefile.am
+@@ -54,13 +54,14 @@ endif
+ 
+ library_includedir = $(includedir)/stream_soundtrigger
+ 
+-lib_LTLIBRARIES     = libstream_soundtrigger.la
++pluginlibdir = @PAL_PLUGIN_DIR@
++pluginlib_LTLIBRARIES = libstream_soundtrigger.la
+ libstream_soundtrigger_la_SOURCES   = $(stream_soundtrigger_sources)
+ libstream_soundtrigger_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_soundtrigger_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_soundtrigger_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_soundtrigger_la_CPPFLAGS += -std=c++14
+-libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version
++libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+ libstream_soundtrigger_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_soundtrigger_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libstream_soundtrigger_la_CPPFLAGS += -DPAL_PLUGIN_DIR=\"@PAL_PLUGIN_DIR@\"
+diff --git a/stream/StreamSoundTrigger/stream_soundtrigger.pc.in b/stream/StreamSoundTrigger/stream_soundtrigger.pc.in
+index 879d15c..102e961 100644
+--- a/stream/StreamSoundTrigger/stream_soundtrigger.pc.in
++++ b/stream/StreamSoundTrigger/stream_soundtrigger.pc.in
+@@ -1,10 +1,10 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+-libdir=@libdir@
++libdir=@PAL_PLUGIN_DIR@
+ includedir=@includedir@
+ 
+ Name: stream_soundtrigger
+ Description: stream_soundtrigger library
+ Version: @VERSION@
+ Libs: -L${libdir}
+-Cflags: -I${includedir}/stream_soundtrigger
+\ No newline at end of file
++Cflags: -I${includedir}/stream_soundtrigger

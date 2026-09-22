@@ -1,0 +1,102 @@
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
+Date: Mon, 21 Sep 2026 15:57:22 +0200
+Subject: configure: add PAL directory options
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Add build-time PAL_PLUGIN_DIR, PAL_CONFIG_DIR, and PAL_DATA_DIR
+substitutions. Defaults preserve the existing upstream layout:
+plugins under libdir and configuration/data files under /etc.
+
+Assisted-By: GPT:gpt-6-astra
+Forwarded: https://github.com/AudioReach/audioreach-pal/pull/92
+
+Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+---
+ README.md                          | 14 ++++++++++++++
+ configure.ac                       | 22 ++++++++++++++++++++++
+ plugins/vui_interface/configure.ac |  8 +++++++-
+ 3 files changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index c3bd791..370637e 100644
+--- a/README.md
++++ b/README.md
+@@ -6,6 +6,20 @@ Audioreach-PAL (AudioReach Platform Abstraction Layer) is hardware absration lay
+ 
+ To be available soon.
+ 
++## Autotools installation directories
++
++`configure` accepts the following directory options:
++
++| Option | Default | Contents |
++| --- | --- | --- |
++| `--with-pal-plugin-dir=DIR` | `${libdir}` | PAL plugin libraries |
++| `--with-pal-config-dir=DIR` | `/etc` | `plugin_manager.xml` and `usecaseKvManager.xml` |
++| `--with-pal-data-dir=DIR` | `/etc` | Mixer paths and resource-manager XML files |
++
++These directories are also used at runtime. `DESTDIR` only stages installation;
++it is not part of the runtime paths. When building `plugins/vui_interface`
++separately, pass the same `--with-pal-plugin-dir` option to its `configure`.
++
+ ## License:
+ 
+ Audioreach-pal (source files are licensed under the BSD-3-Clause-Clear. Check out the LICENSE for more details
+diff --git a/configure.ac b/configure.ac
+index 3fc3856..7a285a2 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -23,6 +23,28 @@ AC_PROG_LN_S
+ AC_PROG_MAKE_SET
+ PKG_PROG_PKG_CONFIG
+ 
++AC_ARG_WITH([pal-plugin-dir],
++    AS_HELP_STRING([--with-pal-plugin-dir=DIR],
++        [install and load PAL plugins from DIR [default=${libdir}]]),
++    [PAL_PLUGIN_DIR="$withval"],
++    [PAL_PLUGIN_DIR="${libdir}"])
++
++AC_ARG_WITH([pal-config-dir],
++    AS_HELP_STRING([--with-pal-config-dir=DIR],
++        [install PAL configuration files in DIR [default=/etc]]),
++    [PAL_CONFIG_DIR="$withval"],
++    [PAL_CONFIG_DIR="/etc"])
++
++AC_ARG_WITH([pal-data-dir],
++    AS_HELP_STRING([--with-pal-data-dir=DIR],
++        [install PAL data files in DIR [default=/etc]]),
++    [PAL_DATA_DIR="$withval"],
++    [PAL_DATA_DIR="/etc"])
++
++AC_SUBST([PAL_PLUGIN_DIR])
++AC_SUBST([PAL_CONFIG_DIR])
++AC_SUBST([PAL_DATA_DIR])
++
+ m4_define([LT_MAJOR], [1])
+ m4_define([LT_MINOR], [0])
+ m4_define([LT_PATCH], [0])
+diff --git a/plugins/vui_interface/configure.ac b/plugins/vui_interface/configure.ac
+index 645a7e2..e85d70e 100644
+--- a/plugins/vui_interface/configure.ac
++++ b/plugins/vui_interface/configure.ac
+@@ -30,6 +30,13 @@ PKG_PROG_PKG_CONFIG
+ AC_PROG_RANLIB
+ AM_PROG_AR
+ 
++AC_ARG_WITH([pal-plugin-dir],
++    AS_HELP_STRING([--with-pal-plugin-dir=DIR],
++        [install PAL plugins in DIR [default=${libdir}]]),
++    [PAL_PLUGIN_DIR="$withval"],
++    [PAL_PLUGIN_DIR="${libdir}"])
++AC_SUBST([PAL_PLUGIN_DIR])
++
+ m4_define([LT_MAJOR], [1])
+ m4_define([LT_MINOR], [0])
+ m4_define([LT_PATCH], [0])
+@@ -71,4 +78,3 @@ AC_CONFIG_FILES([
+         ])
+ 
+ AC_OUTPUT
+-

@@ -1,0 +1,300 @@
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
+Date: Mon, 21 Sep 2026 16:00:55 +0200
+Subject: configure: use configurable PAL runtime directories
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Assisted-By: GPT:gpt-6-astra
+Forwarded: https://github.com/AudioReach/audioreach-pal/pull/92
+
+Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+---
+ Makefile.am                                        |  4 +++-
+ plugins/PluginManager/Makefile.am                  |  2 ++
+ plugins/PluginManager/src/PluginManager.cpp        | 19 +++++++++++-----
+ resource_manager/inc/ResourceManager.h             |  3 ++-
+ resource_manager/src/ResourceManager.cpp           | 11 ++++++---
+ session/SessionAR/Makefile.am                      |  1 +
+ session/SessionAR/src/PayloadBuilder.cpp           |  6 ++++-
+ stream/StreamSoundTrigger/Makefile.am              |  1 +
+ .../StreamSoundTrigger/src/StreamSoundTrigger.cpp  |  4 +++-
+ utils/inc/PluginUtils.h                            | 26 ++++++++++++++++++++++
+ utils/src/BTUtils.cpp                              |  3 ++-
+ 11 files changed, 66 insertions(+), 14 deletions(-)
+ create mode 100644 utils/inc/PluginUtils.h
+
+diff --git a/Makefile.am b/Makefile.am
+index 7a9f9f7..7780f95 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,6 +1,6 @@
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = pal.pc
+-EXTRA_DIST = $(pkgconfig_DATA)
++EXTRA_DIST = $(pkgconfig_DATA) utils/inc/PluginUtils.h
+ 
+ 
+ if BUILDSYSTEM_OPENWRT
+@@ -81,6 +81,8 @@ pal_sources = $(top_srcdir)/stream/src/Stream.cpp \
+ endif
+ AM_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ AM_CPPFLAGS += -DCONFIG_GSL
++AM_CPPFLAGS += -DPAL_PLUGIN_DIR=\"@PAL_PLUGIN_DIR@\"
++AM_CPPFLAGS += -DPAL_DATA_DIR=\"@PAL_DATA_DIR@\"
+ 
+ library_includedir = $(includedir)/pal
+ lib_LTLIBRARIES     = libaudioreach-pal.la
+diff --git a/plugins/PluginManager/Makefile.am b/plugins/PluginManager/Makefile.am
+index a7075fb..f6f36bf 100644
+--- a/plugins/PluginManager/Makefile.am
++++ b/plugins/PluginManager/Makefile.am
+@@ -47,6 +47,8 @@ libplugin_manager_la_LDFLAGS   = --disable-shared -avoid-version
+ libplugin_manager_la_CPPFLAGS += @GLIB_CFLAGS@  -include glib.h
+ libplugin_manager_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libplugin_manager_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
++libplugin_manager_la_CPPFLAGS += -DPAL_PLUGIN_DIR=\"@PAL_PLUGIN_DIR@\"
++libplugin_manager_la_CPPFLAGS += -DPAL_CONFIG_DIR=\"@PAL_CONFIG_DIR@\"
+ 
+ 
+ if USE_SYSLOG
+diff --git a/plugins/PluginManager/src/PluginManager.cpp b/plugins/PluginManager/src/PluginManager.cpp
+index 247b7ca..ff6e669 100644
+--- a/plugins/PluginManager/src/PluginManager.cpp
++++ b/plugins/PluginManager/src/PluginManager.cpp
+@@ -10,7 +10,9 @@
+ #include <iostream>
+ #include <fstream>
+ #include <map>
++#include <limits.h>
+ #include "PalCommon.h"
++#include "PluginUtils.h"
+ #ifdef PAL_CUTILS_SUPPORTED
+ #include <cutils/properties.h>
+ #endif
+@@ -22,9 +24,14 @@ std::vector<pm_item_t> PluginManager::registeredDevices = {};
+ std::vector<pm_item_t> PluginManager::registeredControls = {};
+ std::vector<pm_item_t> PluginManager::registeredConfigs = {};
+ 
+-#define XML_PATH_MAX_LENGTH 100
++#define XML_PATH_MAX_LENGTH PATH_MAX
+ #define PLUGIN_MANAGER_FILENAME "plugin_manager.xml"
+-#define VENDOR_CONFIG_PATH_MAX_LENGTH 128
++#define VENDOR_CONFIG_PATH_MAX_LENGTH PATH_MAX
++
++#ifndef PAL_CONFIG_DIR
++#define PAL_CONFIG_DIR "/etc"
++#endif
++
+ char pimngr_xml_file[XML_PATH_MAX_LENGTH] = {0};
+ char pimngr_vendor_config_path[VENDOR_CONFIG_PATH_MAX_LENGTH] = {0};
+ 
+@@ -171,9 +178,10 @@ int32_t PluginManager::openPlugin(pal_plugin_manager_t type, std::string keyName
+             if (key == keyName) {
+                 /*if lib has not been opened yet open it*/
+                 if(!item.refCount){
++                    const std::string pluginPath = getPalPluginPath(item.libName);
+                     try {
+                         PAL_DBG(LOG_TAG, "Opening lib %s", item.libName.c_str());
+-                        item.handle = dlopen(item.libName.c_str(), RTLD_LAZY);
++                        item.handle = dlopen(pluginPath.c_str(), RTLD_LAZY);
+                         if (item.handle) {
+                             item.plugin = (dlsym(item.handle, item.entryFunction.c_str()));
+                             if (!item.plugin) {
+@@ -302,8 +310,8 @@ void PluginManager::getVendorConfigPath (char* config_file_path, int path_size)
+     }
+ #endif
+ #if defined(FEATURE_IPQ_OPENWRT) || defined(LINUX_ENABLED)
+-        /* Audio configs are stored in /etc */
+-        snprintf(config_file_path, path_size, "%s", "/etc");
++        /* Audio configs are stored in PAL_CONFIG_DIR */
++        snprintf(config_file_path, path_size, "%s", PAL_CONFIG_DIR);
+ #endif
+ }
+ 
+@@ -391,4 +399,3 @@ std::shared_ptr<PluginManager> PluginManager::getInstance()
+     return instance;
+ 
+ }
+-
+diff --git a/resource_manager/inc/ResourceManager.h b/resource_manager/inc/ResourceManager.h
+index f684a9b..40e32e7 100644
+--- a/resource_manager/inc/ResourceManager.h
++++ b/resource_manager/inc/ResourceManager.h
+@@ -52,6 +52,7 @@
+ #include <stdio.h>
+ #include <queue>
+ #include <deque>
++#include <limits.h>
+ #include <unordered_map>
+ #include <amdb_api.h>
+ #include "PalCommon.h"
+@@ -72,7 +73,7 @@ typedef enum {
+ #define audio_mixer mixer
+ #define MAX_SND_CARD 10
+ #define DUMMY_SND_CARD MAX_SND_CARD
+-#define VENDOR_CONFIG_PATH_MAX_LENGTH 128
++#define VENDOR_CONFIG_PATH_MAX_LENGTH PATH_MAX
+ #define VOLUME_TOLERANCE 0.000001
+ #define AUDIO_PARAMETER_KEY_NATIVE_AUDIO "audio.nat.codec.enabled"
+ #define AUDIO_PARAMETER_KEY_NATIVE_AUDIO_MODE "native_audio_mode"
+diff --git a/resource_manager/src/ResourceManager.cpp b/resource_manager/src/ResourceManager.cpp
+index 8504770..1b09664 100644
+--- a/resource_manager/src/ResourceManager.cpp
++++ b/resource_manager/src/ResourceManager.cpp
+@@ -44,6 +44,7 @@
+ #include <iostream>
+ #include <fstream>
+ #include <sys/ioctl.h>
++#include <limits.h>
+ #include "ResourceManager.h"
+ #include "Session.h"
+ #include "Device.h"
+@@ -74,7 +75,7 @@
+ #define XML_PATH_EXTN_MAX_SIZE 80
+ #define XML_FILE_DELIMITER "_"
+ #define XML_FILE_EXT ".xml"
+-#define XML_PATH_MAX_LENGTH 100
++#define XML_PATH_MAX_LENGTH PATH_MAX
+ #define HW_INFO_ARRAY_MAX_SIZE 32
+ 
+ #define VBAT_BCL_SUFFIX "-vbat"
+@@ -105,6 +106,10 @@
+ #define MIXER_XML_BASE_STRING_NAME "mixer_paths"
+ #define RMNGR_XMLFILE_BASE_STRING_NAME "resourcemanager"
+ 
++#ifndef PAL_DATA_DIR
++#define PAL_DATA_DIR "/etc"
++#endif
++
+ #define MAX_RETRY_CNT 20
+ #define LOWLATENCY_PCM_DEVICE 15
+ #define DEEP_BUFFER_PCM_DEVICE 0
+@@ -9643,8 +9648,8 @@ void ResourceManager::getVendorConfigPath (char* config_file_path, int path_size
+    if (property_get("ro.boot.product.vendor.sku", vendor_sku, "") <= 0) {
+ #endif
+ #if defined(FEATURE_IPQ_OPENWRT) || defined(LINUX_ENABLED)
+-       /* Audio configs are stored in /etc */
+-       snprintf(config_file_path, path_size, "%s", "/etc");
++       /* Audio configs are stored in PAL_DATA_DIR */
++       snprintf(config_file_path, path_size, "%s", PAL_DATA_DIR);
+ #else
+        /* Audio configs are stored in /vendor/etc */
+        snprintf(config_file_path, path_size, "%s", "/vendor/etc");
+diff --git a/session/SessionAR/Makefile.am b/session/SessionAR/Makefile.am
+index 4c5cce3..96e481b 100644
+--- a/session/SessionAR/Makefile.am
++++ b/session/SessionAR/Makefile.am
+@@ -51,6 +51,7 @@ libsession_ar_la_CPPFLAGS += -std=c++14
+ libsession_ar_la_LDFLAGS   = -shared -avoid-version
+ libsession_ar_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_ar_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
++libsession_ar_la_CPPFLAGS += -DPAL_CONFIG_DIR=\"@PAL_CONFIG_DIR@\"
+ libsession_ar_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+ if USE_SYSLOG
+diff --git a/session/SessionAR/src/PayloadBuilder.cpp b/session/SessionAR/src/PayloadBuilder.cpp
+index 248297b..34d4189 100644
+--- a/session/SessionAR/src/PayloadBuilder.cpp
++++ b/session/SessionAR/src/PayloadBuilder.cpp
+@@ -69,8 +69,12 @@
+ #include "PalCommon.h"
+ #include "gsl_intf.h"
+ 
++#ifndef PAL_CONFIG_DIR
++#define PAL_CONFIG_DIR "/etc"
++#endif
++
+ #if defined(FEATURE_IPQ_OPENWRT) || defined(LINUX_ENABLED)
+-#define USECASE_XML_FILE "/etc/usecaseKvManager.xml"
++#define USECASE_XML_FILE PAL_CONFIG_DIR "/usecaseKvManager.xml"
+ #else
+ #define USECASE_XML_FILE "/vendor/etc/usecaseKvManager.xml"
+ #endif
+diff --git a/stream/StreamSoundTrigger/Makefile.am b/stream/StreamSoundTrigger/Makefile.am
+index 22ae434..1bae464 100644
+--- a/stream/StreamSoundTrigger/Makefile.am
++++ b/stream/StreamSoundTrigger/Makefile.am
+@@ -63,6 +63,7 @@ libstream_soundtrigger_la_CPPFLAGS += -std=c++14
+ libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version
+ libstream_soundtrigger_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_soundtrigger_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
++libstream_soundtrigger_la_CPPFLAGS += -DPAL_PLUGIN_DIR=\"@PAL_PLUGIN_DIR@\"
+ libstream_soundtrigger_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+ if BUILDSYSTEM_OPENWRT
+diff --git a/stream/StreamSoundTrigger/src/StreamSoundTrigger.cpp b/stream/StreamSoundTrigger/src/StreamSoundTrigger.cpp
+index e6aad75..dc93cb9 100644
+--- a/stream/StreamSoundTrigger/src/StreamSoundTrigger.cpp
++++ b/stream/StreamSoundTrigger/src/StreamSoundTrigger.cpp
+@@ -49,6 +49,7 @@
+ #include "MemLogBuilder.h"
+ #endif
+ #include "STUtils.h"
++#include "PluginUtils.h"
+ 
+ // TODO: find another way to print debug logs by default
+ #define ST_DBG_LOGS
+@@ -4240,7 +4241,8 @@ int32_t StreamSoundTrigger::GetVUIInterface(struct vui_intf_t *intf, vui_intf_pa
+                 break;
+             }
+ 
+-            plugin->handle = dlopen(config->intf_plugin_lib.c_str(), RTLD_NOW);
++            plugin->handle = dlopen(getPalPluginPath(config->intf_plugin_lib).c_str(),
++                                    RTLD_NOW);
+             if (!plugin->handle) {
+                 status = -ENOMEM;
+                 free(plugin);
+diff --git a/utils/inc/PluginUtils.h b/utils/inc/PluginUtils.h
+new file mode 100644
+index 0000000..dd72958
+--- /dev/null
++++ b/utils/inc/PluginUtils.h
+@@ -0,0 +1,26 @@
++/*
++ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
++ * SPDX-License-Identifier: BSD-3-Clause-Clear
++ */
++
++#ifndef PLUGIN_UTILS_H
++#define PLUGIN_UTILS_H
++
++#include <string>
++
++#ifndef PAL_PLUGIN_DIR
++#define PAL_PLUGIN_DIR ""
++#endif
++
++static inline std::string getPalPluginPath(const std::string &libName)
++{
++    if (libName.find('/') != std::string::npos || PAL_PLUGIN_DIR[0] == '\0')
++        return libName;
++
++    std::string pluginPath = PAL_PLUGIN_DIR;
++    if (pluginPath.back() != '/')
++        pluginPath += "/";
++    return pluginPath + libName;
++}
++
++#endif
+diff --git a/utils/src/BTUtils.cpp b/utils/src/BTUtils.cpp
+index 4118ba6..912077b 100644
+--- a/utils/src/BTUtils.cpp
++++ b/utils/src/BTUtils.cpp
+@@ -10,6 +10,7 @@
+ #include <dlfcn.h>
+ #include "Device.h"
+ #include <bt_intf.h>
++#include "PluginUtils.h"
+ 
+ #define CLOCK_SRC_DEFAULT 1
+ 
+@@ -1984,7 +1985,7 @@ std::string getBtCodecLib(uint32_t codecFormat, std::string codecType)
+ 
+     iter = btCodecMap.find(std::make_pair(codecFormat, codecType));
+     if (iter != btCodecMap.end()) {
+-        return iter->second;
++        return getPalPluginPath(iter->second);
+     }
+ 
+     return std::string();

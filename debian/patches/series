@@ -6,3 +6,4 @@
 0006-build-install-PAL-XML-files-in-configurable-director.patch
 0007-build-install-PAL-plugins-in-configurable-directory.patch
 0008-build-add-PAL-functional-test.patch
+0009-build-link-PAL-against-AGM.patch

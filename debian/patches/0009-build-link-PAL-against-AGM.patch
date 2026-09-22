@@ -1,0 +1,43 @@
+From: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+Date: Tue, 22 Sep 2026 00:00:00 +0200
+Subject: build: link PAL against AGM libraries
+
+PAL directly uses AGM APIs such as agm_dump() and agm_cshm_alloc().
+Link the PAL shared library against the libraries reported by the AGM
+pkg-config module so those symbols are available to PAL consumers.
+
+Forwarded: https://github.com/AudioReach/audioreach-pal/pull/91
+
+---
+ Makefile.am  | 4 ++--
+ configure.ac | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -88,11 +88,11 @@ library_includedir = $(includedir)/pal
+ lib_LTLIBRARIES     = libaudioreach-pal.la
+ libaudioreach_pal_la_SOURCES   = $(pal_sources)
+ if BUILDSYSTEM_OPENWRT
+-libaudioreach_pal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress -lagmclientwrapper
++libaudioreach_pal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ @AGM_LIBS@ -lexpat -ltinycompress -lagmclientwrapper
+ libaudioreach_pal_la_LIBADD   += @GSL_LIBS@
+ libaudioreach_pal_la_CPPFLAGS  = -DFEATURE_IPQ_OPENWRT
+ else
+-libaudioreach_pal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress
++libaudioreach_pal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ @AGM_LIBS@ -lexpat -ltinycompress
+ libaudioreach_pal_la_CPPFLAGS  =  -DPAL_USE_SYSLOG -DLINUX_ENABLED -DATRACE_UNSUPPORTED -DPAL_MEMLOG_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ endif
+ if IS_SDXLEMUR
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -103,6 +103,7 @@ AM_CONDITIONAL([IS_SA525M], [test x$IS_S
+ 
+ # Checks for libraries
+ PKG_CHECK_MODULES([AGM], [agm])
++AC_SUBST([AGM_LIBS])
+ AC_SUBST([AGM_CFLAGS])
+ 
+ PKG_CHECK_MODULES([SPF], [spf])

@@ -69,10 +69,6 @@ Description: AudioReach platform abstraction layer - shared libraries
  user-space audio frameworks with underlying audio hardware.
  .
  This package contains shared libraries for the PAL.
-Breaks:
- audioreach-pal (<< 1.0.0-0qli+staging2~),
-Replaces:
- audioreach-pal (<< 1.0.0-0qli+staging2~),
 
 Package: libaudioreach-pal-dev
 Architecture: arm64
@@ -87,9 +83,3 @@ Section: libdevel
 Depends:
  libaudioreach-pal1 (= ${binary:Version}),
  ${misc:Depends},
-Provides:
- audioreach-pal-dev,
-Breaks:
- audioreach-pal-dev (<< 1.0.0-0qli+staging2~),
-Replaces:
- audioreach-pal-dev (<< 1.0.0-0qli+staging2~),

@@ -1,0 +1,3 @@
+# Unversioned plugins
+# https://github.com/AudioReach/audioreach-pal/issues/80
+usr/lib/audioreach-pal/plugins/*.so

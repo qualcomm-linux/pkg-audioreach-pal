@@ -1,53 +1,85 @@
 Source: audioreach-pal
 Section: misc
-Priority: optional
 Maintainer: Sairamreddy Bojja <sbojja@qti.qualcomm.com>
 Uploaders:
- Agathe Porte <agathe.porte@oss.qualcomm.com>
-Rules-Requires-Root: no
-Build-Depends: debhelper-compat (= 13),
- libglib2.0-dev,
- pkg-config,
- audioreach-conf,
- libtinyalsa2,
- libtinyalsa-dev,
- libtinycompress0,
- libtinycompress-dev,
- audioreach-graphservices,
- audioreach-graphservices-dev,
- audioreach-graphmgr,
- audioreach-graphmgr-dev,
- audioreach-audio-utils,
- audioreach-audio-utils-dev,
+ Agathe Porte <agathe.porte@oss.qualcomm.com>,
+ Lukas Märdian <lukas.maerdian@oss.qualcomm.com>,
+Build-Depends:
+ debhelper-compat (= 13),
+ audioreach-kvh2xml-dev,
+ audioreach-spf-dev,
+ libagm-dev,
+ libaudioreach-gsl-dev,
+ libaudioreach-osal-dev,
+ libaudioroute-dev,
  libexpat1-dev,
+ libglib2.0-dev,
+ libtinyalsa-dev,
+ libtinycompress-dev,
+ pkgconf,
 Standards-Version: 4.6.2
 Homepage: https://github.com/Audioreach/audioreach-pal
-Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal -b debian/latest
+Vcs-Git: https://github.com/qualcomm-linux/pkg-audioreach-pal.git
 Vcs-Browser: https://github.com/qualcomm-linux/pkg-audioreach-pal
 
 Package: audioreach-pal
 Architecture: arm64
-Section: libs
-Depends: ${shlibs:Depends}, ${misc:Depends},
- libc6,
- libtinyalsa2,
- libtinycompress0,
+Depends:
  audioreach-conf,
- audioreach-graphservices,
- audioreach-graphmgr,
- audioreach-audio-utils,
+ audioreach-pal-plugins (= ${binary:Version}),
+ ${misc:Depends},
 Description: AudioReach platform abstraction layer
  Provides APIs to configure and control audio use cases by bridging
  user-space audio frameworks with underlying audio hardware.
+ .
+ This package contains data and configuration.
 
-Package: audioreach-pal-dev
+Package: audioreach-pal-plugins
+Architecture: arm64
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: AudioReach platform abstraction layer - plugins
+ Provides APIs to configure and control audio use cases by bridging
+ user-space audio frameworks with underlying audio hardware.
+ .
+ This package contains plugin libraries for different scenarios.
+
+Package: audioreach-pal-tests
+Architecture: arm64
+Depends:
+ audioreach-pal (= ${binary:Version}),
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: AudioReach platform abstraction layer - functional tests
+ Provides target-side functional tests for the AudioReach PAL.
+ .
+ This package contains tests that require a functioning AudioReach sound
+ card and target-specific PAL configuration.
+
+Package: libaudioreach-pal1
+Architecture: arm64
+Multi-Arch: same
+Section: libs
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: AudioReach platform abstraction layer - shared libraries
+ Provides APIs to configure and control audio use cases by bridging
+ user-space audio frameworks with underlying audio hardware.
+ .
+ This package contains shared libraries for the PAL.
+
+Package: libaudioreach-pal-dev
 Architecture: arm64
 Description: AudioReach pal - development files
  AudioReach platform abstraction layer
  Provides APIs to configure and control audio use cases by bridging
  user-space audio frameworks with underlying audio hardware.
  .
- This package contains library headers for the shared libraries shipped in the
- audioreach-pal package.
+ This package contains library headers for the shared libraries shipped
+ in the libaudioreach-pal1 package.
 Section: libdevel
-Depends: audioreach-pal (= ${binary:Version}), ${misc:Depends}
+Depends:
+ libaudioreach-pal1 (= ${binary:Version}),
+ ${misc:Depends},

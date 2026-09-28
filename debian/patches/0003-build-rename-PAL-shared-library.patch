@@ -1,0 +1,1886 @@
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
+Date: Mon, 21 Sep 2026 14:44:35 +0200
+Subject: build: rename PAL shared library
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Rename the PAL shared library from libpal to libaudioreach-pal across
+the Autotools and Android builds, internal dependencies, pkg-config
+linker flags, and ABI-check paths.
+
+The generic libpal.so basename is unsuitable for general-purpose
+distributions such as Debian: it is not namespace-specific, can collide
+with unrelated PAL implementations, and does not identify AudioReach
+ownership. The libaudioreach-pal name provides a distribution-safe,
+project-specific library identity.
+
+Assisted-by: GPT:gpt-5.6-luna
+Forwarded: https://github.com/AudioReach/audioreach-pal/pull/91
+
+Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+---
+ Android.mk                                         |  4 +-
+ Makefile.am                                        | 48 +++++++++++-----------
+ device/A2B2Mic/Android.mk                          |  2 +-
+ device/A2B2Speaker/Android.mk                      |  2 +-
+ device/A2BMic/Android.mk                           |  2 +-
+ device/A2BSpeaker/Android.mk                       |  2 +-
+ device/Bluetooth/Android.mk                        |  2 +-
+ device/Bluetooth/Makefile.am                       |  2 +-
+ device/DisplayPort/Android.mk                      |  2 +-
+ device/DisplayPort/Makefile.am                     |  2 +-
+ device/DummyDev/Android.mk                         |  2 +-
+ device/DummyDev/Makefile.am                        |  2 +-
+ device/ECRefDevice/Android.mk                      |  2 +-
+ device/ECRefDevice/Makefile.am                     |  2 +-
+ device/ExtEC/Android.mk                            |  2 +-
+ device/ExtEC/Makefile.am                           |  2 +-
+ device/FMDevice/Android.mk                         |  2 +-
+ device/FMDevice/Makefile.am                        |  2 +-
+ device/Handset/Android.mk                          |  2 +-
+ device/Handset/Makefile.am                         |  2 +-
+ device/HandsetMic/Android.mk                       |  2 +-
+ device/HandsetMic/Makefile.am                      |  2 +-
+ device/HandsetVaMic/Android.mk                     |  2 +-
+ device/HandsetVaMic/Makefile.am                    |  2 +-
+ device/HapticsDev/Android.mk                       |  2 +-
+ device/HapticsDev/Makefile.am                      |  2 +-
+ device/Headphone/Android.mk                        |  2 +-
+ device/Headphone/Makefile.am                       |  2 +-
+ device/HeadsetMic/Android.mk                       |  2 +-
+ device/HeadsetMic/Makefile.am                      |  2 +-
+ device/HeadsetVaMic/Android.mk                     |  2 +-
+ device/HeadsetVaMic/Makefile.am                    |  2 +-
+ device/HfpDownlink/Android.mk                      |  2 +-
+ device/HfpUplink/Android.mk                        |  2 +-
+ device/RTProxy/Android.mk                          |  2 +-
+ device/RTProxy/Makefile.am                         |  2 +-
+ device/Speaker/Android.mk                          |  2 +-
+ device/Speaker/Makefile.am                         |  2 +-
+ device/SpeakerMic/Android.mk                       |  2 +-
+ device/SpeakerMic/Makefile.am                      |  2 +-
+ device/USBAudio/Android.mk                         |  2 +-
+ device/USBAudio/Makefile.am                        |  2 +-
+ device/UltrasoundDevice/Android.mk                 |  2 +-
+ device/UltrasoundDevice/Makefile.am                |  2 +-
+ ipc/aidl/palnotifierserver/Android.mk              |  2 +-
+ ipc/aidl/server/Android.mk                         |  2 +-
+ pal.pc.in                                          |  3 +-
+ .../default/ConfigSessionAlsaCompress/Android.mk   |  2 +-
+ .../default/ConfigSessionAlsaCompress/Makefile.am  |  2 +-
+ .../IoT/default/ConfigSessionAlsaPcm/Android.mk    |  2 +-
+ .../IoT/default/ConfigSessionAlsaPcm/Makefile.am   |  2 +-
+ .../IoT/default/ConfigSessionAlsaVoice/Android.mk  |  2 +-
+ .../IoT/default/ConfigSessionAlsaVoice/Makefile.am |  2 +-
+ .../qcom/IoT/default/ConfigSessionUtils/Android.mk |  2 +-
+ .../IoT/default/ConfigSessionUtils/Makefile.am     |  2 +-
+ .../default/ConfigSessionAlsaCompress/Android.mk   |  2 +-
+ .../default/ConfigSessionAlsaPcm/Android.mk        |  2 +-
+ .../default/ConfigSessionAlsaVoice/Android.mk      |  2 +-
+ .../default/ConfigSessionUtils/Android.mk          |  2 +-
+ .../default/ConfigSessionAlsaCompress/Android.mk   |  2 +-
+ .../default/ConfigSessionAlsaPcm/Android.mk        |  2 +-
+ .../default/ConfigSessionAlsaVoice/Android.mk      |  2 +-
+ .../compute/default/ConfigSessionUtils/Android.mk  |  2 +-
+ .../hamoa/ConfigSessionAlsaCompress/Android.mk     |  2 +-
+ .../compute/hamoa/ConfigSessionAlsaPcm/Android.mk  |  2 +-
+ .../hamoa/ConfigSessionAlsaVoice/Android.mk        |  2 +-
+ .../compute/hamoa/ConfigSessionUtils/Android.mk    |  2 +-
+ .../hamoa_la/ConfigSessionAlsaCompress/Android.mk  |  2 +-
+ .../hamoa_la/ConfigSessionAlsaPcm/Android.mk       |  2 +-
+ .../hamoa_la/ConfigSessionAlsaVoice/Android.mk     |  2 +-
+ .../compute/hamoa_la/ConfigSessionUtils/Android.mk |  2 +-
+ .../default/ConfigSessionAlsaCompress/Android.mk   |  2 +-
+ .../default/ConfigSessionAlsaCompress/Makefile.am  |  2 +-
+ .../mbb/default/ConfigSessionAlsaPcm/Android.mk    |  2 +-
+ .../mbb/default/ConfigSessionAlsaPcm/Makefile.am   |  2 +-
+ .../mbb/default/ConfigSessionAlsaVoice/Android.mk  |  2 +-
+ .../mbb/default/ConfigSessionAlsaVoice/Makefile.am |  2 +-
+ .../qcom/mbb/default/ConfigSessionUtils/Android.mk |  2 +-
+ .../mbb/default/ConfigSessionUtils/Makefile.am     |  2 +-
+ .../default/ConfigSessionAlsaCompress/Android.mk   |  2 +-
+ .../default/ConfigSessionAlsaCompress/Makefile.am  |  2 +-
+ .../mobile/default/ConfigSessionAlsaPcm/Android.mk |  2 +-
+ .../default/ConfigSessionAlsaPcm/Makefile.am       |  2 +-
+ .../default/ConfigSessionAlsaVoice/Android.mk      |  2 +-
+ .../default/ConfigSessionAlsaVoice/Makefile.am     |  2 +-
+ .../mobile/default/ConfigSessionUtils/Android.mk   |  2 +-
+ .../mobile/default/ConfigSessionUtils/Makefile.am  |  2 +-
+ public_headers/config.yml                          |  2 +-
+ session/SessionAR/Android.mk                       |  2 +-
+ session/SessionAR/Makefile.am                      |  2 +-
+ session/SessionAgm/Android.mk                      |  2 +-
+ session/SessionAgm/Makefile.am                     |  2 +-
+ session/SessionAlsaCompress/Android.mk             |  2 +-
+ session/SessionAlsaCompress/Makefile.am            |  2 +-
+ session/SessionAlsaPcm/Android.mk                  |  2 +-
+ session/SessionAlsaPcm/Makefile.am                 |  2 +-
+ session/SessionAlsaVoice/Android.mk                |  2 +-
+ session/SessionAlsaVoice/Makefile.am               |  2 +-
+ stream/StreamACD/Android.mk                        |  2 +-
+ stream/StreamACD/Makefile.am                       |  2 +-
+ stream/StreamASR/Android.mk                        |  2 +-
+ stream/StreamASR/Makefile.am                       |  2 +-
+ stream/StreamCallTranslation/Android.mk            |  2 +-
+ stream/StreamCommon/Android.mk                     |  2 +-
+ stream/StreamCommon/Makefile.am                    |  2 +-
+ stream/StreamCommon/StreamCommonProxy/Android.mk   |  2 +-
+ stream/StreamCommon/StreamCommonProxy/Makefile.am  |  2 +-
+ stream/StreamCommon/StreamContextProxy/Android.mk  |  2 +-
+ stream/StreamCommon/StreamContextProxy/Makefile.am |  2 +-
+ stream/StreamCommon/StreamSensorPCMData/Android.mk |  2 +-
+ .../StreamCommon/StreamSensorPCMData/Makefile.am   |  2 +-
+ .../StreamCommon/StreamSensorRenderer/Android.mk   |  2 +-
+ .../StreamCommon/StreamSensorRenderer/Makefile.am  |  2 +-
+ stream/StreamCommon/StreamUltrasSound/Android.mk   |  2 +-
+ stream/StreamCompress/Android.mk                   |  2 +-
+ stream/StreamCompress/Makefile.am                  |  2 +-
+ stream/StreamDummy/Android.mk                      |  2 +-
+ stream/StreamHaptic/Android.mk                     |  2 +-
+ stream/StreamHaptic/Makefile.am                    |  2 +-
+ stream/StreamInCall/Android.mk                     |  2 +-
+ stream/StreamInCall/Makefile.am                    |  2 +-
+ stream/StreamNonTunnel/Android.mk                  |  2 +-
+ stream/StreamNonTunnel/Makefile.am                 |  2 +-
+ stream/StreamPCM/Android.mk                        |  2 +-
+ stream/StreamPCM/Makefile.am                       |  2 +-
+ stream/StreamSoundTrigger/Android.mk               |  2 +-
+ stream/StreamSoundTrigger/Makefile.am              |  2 +-
+ 127 files changed, 151 insertions(+), 152 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 0f71bc4..e80b937 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -23,7 +23,7 @@ include $(BUILD_HEADER_LIBRARY)
+ 
+ include $(CLEAR_VARS)
+ 
+-LOCAL_MODULE        := libar-pal
++LOCAL_MODULE        := libaudioreach-pal
+ LOCAL_MODULE_OWNER  := qti
+ LOCAL_MODULE_TAGS   := optional
+ LOCAL_VENDOR_MODULE := true
+@@ -237,7 +237,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libsession_ar \
+     libsession_agm \
+     libexpat \
+-    libar-pal
++    libaudioreach-pal
+ 
+ LOCAL_HEADER_LIBRARIES := \
+     libarpal_headers \
+diff --git a/Makefile.am b/Makefile.am
+index 7c8cdd3..7a9f9f7 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -83,55 +83,55 @@ AM_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ AM_CPPFLAGS += -DCONFIG_GSL
+ 
+ library_includedir = $(includedir)/pal
+-lib_LTLIBRARIES     = libpal.la
+-libpal_la_SOURCES   = $(pal_sources)
++lib_LTLIBRARIES     = libaudioreach-pal.la
++libaudioreach_pal_la_SOURCES   = $(pal_sources)
+ if BUILDSYSTEM_OPENWRT
+-libpal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress -lagmclientwrapper
+-libpal_la_LIBADD   += @GSL_LIBS@
+-libpal_la_CPPFLAGS  = -DFEATURE_IPQ_OPENWRT
++libaudioreach_pal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress -lagmclientwrapper
++libaudioreach_pal_la_LIBADD   += @GSL_LIBS@
++libaudioreach_pal_la_CPPFLAGS  = -DFEATURE_IPQ_OPENWRT
+ else
+-libpal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress
+-libpal_la_CPPFLAGS  =  -DPAL_USE_SYSLOG -DLINUX_ENABLED -DATRACE_UNSUPPORTED -DPAL_MEMLOG_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
++libaudioreach_pal_la_LIBADD    = $(GLIB_LIBS) -ltinyalsa -laudioroute @OSAL_LIBS@ -lexpat -ltinycompress
++libaudioreach_pal_la_CPPFLAGS  =  -DPAL_USE_SYSLOG -DLINUX_ENABLED -DATRACE_UNSUPPORTED -DPAL_MEMLOG_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ endif
+ if IS_SDXLEMUR
+-libpal_la_LIBADD    += -lagmclientwrapper
++libaudioreach_pal_la_LIBADD    += -lagmclientwrapper
+ endif
+ if IS_SA525M
+-libpal_la_LIBADD    += -lagmclientwrapper
++libaudioreach_pal_la_LIBADD    += -lagmclientwrapper
+ endif
+-libpal_la_CPPFLAGS += $(AM_CPPFLAGS)
+-libpal_la_CPPFLAGS += -std=c++14
+-libpal_la_LDFLAGS   = -shared -version-number @LT_VERSION_NUMBER@
+-libpal_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+-libpal_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
++libaudioreach_pal_la_CPPFLAGS += $(AM_CPPFLAGS)
++libaudioreach_pal_la_CPPFLAGS += -std=c++14
++libaudioreach_pal_la_LDFLAGS   = -shared -version-number @LT_VERSION_NUMBER@
++libaudioreach_pal_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
++libaudioreach_pal_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ 
+ if USE_SYSLOG
+-libpal_la_CPPFLAGS += -DPAL_USE_SYSLOG
++libaudioreach_pal_la_CPPFLAGS += -DPAL_USE_SYSLOG
+ endif
+ 
+ if USE_G_STR_FUNC
+-libpal_la_CPPFLAGS +=-Dstrlcpy=g_strlcpy -Dstrlcat=g_strlcat
++libaudioreach_pal_la_CPPFLAGS +=-Dstrlcpy=g_strlcpy -Dstrlcat=g_strlcat
+ endif
+ 
+ if BUILDSYSTEM_OPENWRT
+-libpal_la_LIBADD += -lglib-2.0 -llog
++libaudioreach_pal_la_LIBADD += -lglib-2.0 -llog
+ endif
+ if COMPILE_COMPRESS
+-libpal_la_CPPFLAGS += -DSND_COMPRESS_DEC_HDR
++libaudioreach_pal_la_CPPFLAGS += -DSND_COMPRESS_DEC_HDR
+ endif
+-libpal_la_LIBADD   += -L${abs_top_builddir}/plugins/vui_interface/.libs
+-libpal_la_LIBADD   += ${abs_top_builddir}/plugins/PluginManager/.libs/libplugin_manager.la
++libaudioreach_pal_la_LIBADD   += -L${abs_top_builddir}/plugins/vui_interface/.libs
++libaudioreach_pal_la_LIBADD   += ${abs_top_builddir}/plugins/PluginManager/.libs/libplugin_manager.la
+ 
+ if CUTILS_SUPPORTED
+-libpal_la_CPPFLAGS += -DPAL_CUTILS_SUPPORTED
+-libpal_la_LIBADD += -lcutils
++libaudioreach_pal_la_CPPFLAGS += -DPAL_CUTILS_SUPPORTED
++libaudioreach_pal_la_LIBADD += -lcutils
+ endif
+ 
+ if BUILDSYSTEM_OPENWRT
+ # config files for OPENWRT
+ else
+ 
+-libpal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml \
++libaudioreach_pal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml \
+                       ./configs/qcom/IoT/qcs615/mixer_paths_TALOS_EVK.xml \
+                       ./configs/qcom/IoT/qcs615/resourcemanager_TALOS_EVK.xml \
+                       ./configs/qcom/IoT/qcs8300/mixer_paths_MONACO_EVK.xml \
+@@ -161,7 +161,7 @@ libpal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml \
+ 
+ # install essential xml files under /etc
+ root_etcdir      = "/etc"
+-root_etc_SCRIPTS = $(libpal_la_list)
++root_etc_SCRIPTS = $(libaudioreach_pal_la_list)
+ install-data-hook:
+ 	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_MONACO_EVK.xml
+ 	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_MONACO_EVK.xml
+diff --git a/device/A2B2Mic/Android.mk b/device/A2B2Mic/Android.mk
+index 5d54c32..46b4075 100644
+--- a/device/A2B2Mic/Android.mk
++++ b/device/A2B2Mic/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libutilscallstack \
+     libsession_ar
+diff --git a/device/A2B2Speaker/Android.mk b/device/A2B2Speaker/Android.mk
+index 45de09e..4f81922 100644
+--- a/device/A2B2Speaker/Android.mk
++++ b/device/A2B2Speaker/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libutilscallstack \
+     libsession_ar
+diff --git a/device/A2BMic/Android.mk b/device/A2BMic/Android.mk
+index cf6f859..bb55e0c 100644
+--- a/device/A2BMic/Android.mk
++++ b/device/A2BMic/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libutilscallstack \
+     libsession_ar
+diff --git a/device/A2BSpeaker/Android.mk b/device/A2BSpeaker/Android.mk
+index 3f32921..fab6719 100644
+--- a/device/A2BSpeaker/Android.mk
++++ b/device/A2BSpeaker/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libutilscallstack \
+     libsession_ar
+diff --git a/device/Bluetooth/Android.mk b/device/Bluetooth/Android.mk
+index 0ca92d5..3aa0a56 100644
+--- a/device/Bluetooth/Android.mk
++++ b/device/Bluetooth/Android.mk
+@@ -50,7 +50,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libpal_sounddose \
+     libsession_ar
+diff --git a/device/Bluetooth/Makefile.am b/device/Bluetooth/Makefile.am
+index 41a2236..82597bc 100644
+--- a/device/Bluetooth/Makefile.am
++++ b/device/Bluetooth/Makefile.am
+@@ -49,7 +49,7 @@ lib_LTLIBRARIES     = libdev_bt.la
+ libdev_bt_la_SOURCES   = $(dev_bt_sources)
+ libdev_bt_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_bt_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+-libdev_bt_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_bt_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_bt_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_bt_la_CPPFLAGS += -std=c++17
+ libdev_bt_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/DisplayPort/Android.mk b/device/DisplayPort/Android.mk
+index 54d8755..73b96e4 100644
+--- a/device/DisplayPort/Android.mk
++++ b/device/DisplayPort/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/device/DisplayPort/Makefile.am b/device/DisplayPort/Makefile.am
+index c11f375..3e269cb 100644
+--- a/device/DisplayPort/Makefile.am
++++ b/device/DisplayPort/Makefile.am
+@@ -45,7 +45,7 @@ lib_LTLIBRARIES     = libdev_display.la
+ libdev_display_la_SOURCES   = $(dev_display_sources)
+ libdev_display_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_display_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+-libdev_display_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_display_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_display_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_display_la_CPPFLAGS += -std=c++14
+ libdev_display_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/DummyDev/Android.mk b/device/DummyDev/Android.mk
+index b4cdccc..805340b 100644
+--- a/device/DummyDev/Android.mk
++++ b/device/DummyDev/Android.mk
+@@ -37,7 +37,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/DummyDev/Makefile.am b/device/DummyDev/Makefile.am
+index f4e170f..3f6e122 100644
+--- a/device/DummyDev/Makefile.am
++++ b/device/DummyDev/Makefile.am
+@@ -46,7 +46,7 @@ library_includedir = $(includedir)/dev_dummy
+ lib_LTLIBRARIES     = libdev_dummy.la
+ libdev_dummy_la_SOURCES   = $(dev_dummy_sources)
+ libdev_dummy_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_dummy_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_dummy_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_dummy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_dummy_la_CPPFLAGS += -std=c++14
+ libdev_dummy_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/ECRefDevice/Android.mk b/device/ECRefDevice/Android.mk
+index 0bbc782..66e22da 100644
+--- a/device/ECRefDevice/Android.mk
++++ b/device/ECRefDevice/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/device/ECRefDevice/Makefile.am b/device/ECRefDevice/Makefile.am
+index 66f0aa3..685517c 100644
+--- a/device/ECRefDevice/Makefile.am
++++ b/device/ECRefDevice/Makefile.am
+@@ -46,7 +46,7 @@ lib_LTLIBRARIES     = libdev_ec_ref.la
+ libdev_ec_ref_la_SOURCES   = $(dev_ec_ref_sources)
+ libdev_ec_ref_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_ec_ref_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+-libdev_ec_ref_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_ec_ref_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_ec_ref_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_ec_ref_la_CPPFLAGS += -std=c++14
+ libdev_ec_ref_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/ExtEC/Android.mk b/device/ExtEC/Android.mk
+index f83167d..7e2b87e 100644
+--- a/device/ExtEC/Android.mk
++++ b/device/ExtEC/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/ExtEC/Makefile.am b/device/ExtEC/Makefile.am
+index 72ffa3d..16fa323 100644
+--- a/device/ExtEC/Makefile.am
++++ b/device/ExtEC/Makefile.am
+@@ -44,7 +44,7 @@ library_includedir = $(includedir)/dev_ext_ec
+ lib_LTLIBRARIES     = libdev_ext_ec.la
+ libdev_ext_ec_la_SOURCES   = $(dev_ext_ec_sources)
+ libdev_ext_ec_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_ext_ec_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libdev_ext_ec_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_ext_ec_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_ext_ec_la_CPPFLAGS += -std=c++14
+ libdev_ext_ec_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/FMDevice/Android.mk b/device/FMDevice/Android.mk
+index e64fd48..2213c16 100644
+--- a/device/FMDevice/Android.mk
++++ b/device/FMDevice/Android.mk
+@@ -37,7 +37,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/FMDevice/Makefile.am b/device/FMDevice/Makefile.am
+index 1eedc9b..bd327ee 100644
+--- a/device/FMDevice/Makefile.am
++++ b/device/FMDevice/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/dev_fm
+ lib_LTLIBRARIES     = libdev_fm.la
+ libdev_fm_la_SOURCES   = $(dev_fm_sources)
+ libdev_fm_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_fm_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_fm_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_fm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_fm_la_CPPFLAGS += -std=c++14
+ libdev_fm_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/Handset/Android.mk b/device/Handset/Android.mk
+index e1acb61..c947f74 100644
+--- a/device/Handset/Android.mk
++++ b/device/Handset/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libdev_speaker
+ 
+diff --git a/device/Handset/Makefile.am b/device/Handset/Makefile.am
+index 6704c41..86144b1 100644
+--- a/device/Handset/Makefile.am
++++ b/device/Handset/Makefile.am
+@@ -46,7 +46,7 @@ lib_LTLIBRARIES     = libdev_handset.la
+ libdev_handset_la_SOURCES   = $(dev_handset_sources)
+ libdev_handset_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_handset_la_LIBADD    += -L${abs_top_builddir}/device/Speaker/.libs -ldev_speaker
+-libdev_handset_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_handset_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_handset_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_handset_la_CPPFLAGS += -std=c++14
+ libdev_handset_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/HandsetMic/Android.mk b/device/HandsetMic/Android.mk
+index 4fe8f6f..5fae5a9 100644
+--- a/device/HandsetMic/Android.mk
++++ b/device/HandsetMic/Android.mk
+@@ -37,7 +37,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/HandsetMic/Makefile.am b/device/HandsetMic/Makefile.am
+index 9a34a57..f8f96e8 100644
+--- a/device/HandsetMic/Makefile.am
++++ b/device/HandsetMic/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/dev_handset_mic
+ lib_LTLIBRARIES     = libdev_handset_mic.la
+ libdev_handset_mic_la_SOURCES   = $(dev_handset_mic_sources)
+ libdev_handset_mic_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_handset_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_handset_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_handset_mic_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_handset_mic_la_CPPFLAGS += -std=c++14
+ libdev_handset_mic_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/HandsetVaMic/Android.mk b/device/HandsetVaMic/Android.mk
+index b33c2af..a6f9328 100644
+--- a/device/HandsetVaMic/Android.mk
++++ b/device/HandsetVaMic/Android.mk
+@@ -37,7 +37,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/HandsetVaMic/Makefile.am b/device/HandsetVaMic/Makefile.am
+index 3ff6e76..f79fc53 100644
+--- a/device/HandsetVaMic/Makefile.am
++++ b/device/HandsetVaMic/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/dev_handset_va
+ lib_LTLIBRARIES     = libdev_handset_va.la
+ libdev_handset_va_la_SOURCES   = $(dev_handset_va_sources)
+ libdev_handset_va_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_handset_va_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_handset_va_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_handset_va_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_handset_va_la_CPPFLAGS += -std=c++14
+ libdev_handset_va_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/HapticsDev/Android.mk b/device/HapticsDev/Android.mk
+index 0c2bf43..ae78ac1 100644
+--- a/device/HapticsDev/Android.mk
++++ b/device/HapticsDev/Android.mk
+@@ -41,7 +41,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libaudioroute \
+     libsession_ar
+diff --git a/device/HapticsDev/Makefile.am b/device/HapticsDev/Makefile.am
+index 824eba7..f084941 100644
+--- a/device/HapticsDev/Makefile.am
++++ b/device/HapticsDev/Makefile.am
+@@ -50,7 +50,7 @@ lib_LTLIBRARIES     = libdev_haptics.la
+ libdev_haptics_la_SOURCES   = $(dev_haptics_sources)
+ libdev_haptics_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_haptics_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+-libdev_haptics_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_haptics_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_haptics_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_haptics_la_CPPFLAGS += -std=c++14
+ libdev_haptics_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/Headphone/Android.mk b/device/Headphone/Android.mk
+index 3e2a1e1..36bea7d 100644
+--- a/device/Headphone/Android.mk
++++ b/device/Headphone/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libpal_sounddose 
+ 
+diff --git a/device/Headphone/Makefile.am b/device/Headphone/Makefile.am
+index 68923bb..61a45de 100644
+--- a/device/Headphone/Makefile.am
++++ b/device/Headphone/Makefile.am
+@@ -45,7 +45,7 @@ library_includedir = $(includedir)/dev_headphone
+ lib_LTLIBRARIES     = libdev_headphone.la
+ libdev_headphone_la_SOURCES   = $(dev_headphone_sources)
+ libdev_headphone_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_headphone_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_headphone_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_headphone_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_headphone_la_CPPFLAGS += -std=c++14
+ libdev_headphone_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/HeadsetMic/Android.mk b/device/HeadsetMic/Android.mk
+index 8d22a6c..b8cd794 100644
+--- a/device/HeadsetMic/Android.mk
++++ b/device/HeadsetMic/Android.mk
+@@ -41,7 +41,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/HeadsetMic/Makefile.am b/device/HeadsetMic/Makefile.am
+index 619d3ce..fc38600 100644
+--- a/device/HeadsetMic/Makefile.am
++++ b/device/HeadsetMic/Makefile.am
+@@ -44,7 +44,7 @@ library_includedir = $(includedir)/dev_headset_mic
+ lib_LTLIBRARIES     = libdev_headset_mic.la
+ libdev_headset_mic_la_SOURCES   = $(dev_headset_mic_sources)
+ libdev_headset_mic_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_headset_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_headset_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_headset_mic_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_headset_mic_la_CPPFLAGS += -std=c++14
+ libdev_headset_mic_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/HeadsetVaMic/Android.mk b/device/HeadsetVaMic/Android.mk
+index 6492bfe..93b8043 100644
+--- a/device/HeadsetVaMic/Android.mk
++++ b/device/HeadsetVaMic/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/HeadsetVaMic/Makefile.am b/device/HeadsetVaMic/Makefile.am
+index f193ee0..90c9199 100644
+--- a/device/HeadsetVaMic/Makefile.am
++++ b/device/HeadsetVaMic/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/dev_headset_va
+ lib_LTLIBRARIES     = libdev_headset_va.la
+ libdev_headset_va_la_SOURCES   = $(dev_headset_va_sources)
+ libdev_headset_va_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_headset_va_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_headset_va_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_headset_va_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_headset_va_la_CPPFLAGS += -std=c++14
+ libdev_headset_va_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/HfpDownlink/Android.mk b/device/HfpDownlink/Android.mk
+index cbe0178..75a0e01 100644
+--- a/device/HfpDownlink/Android.mk
++++ b/device/HfpDownlink/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libutilscallstack \
+     libsession_ar
+diff --git a/device/HfpUplink/Android.mk b/device/HfpUplink/Android.mk
+index e9ebadd..107dd52 100644
+--- a/device/HfpUplink/Android.mk
++++ b/device/HfpUplink/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libutilscallstack \
+     libsession_ar
+diff --git a/device/RTProxy/Android.mk b/device/RTProxy/Android.mk
+index 83157a9..a43341c 100644
+--- a/device/RTProxy/Android.mk
++++ b/device/RTProxy/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/device/RTProxy/Makefile.am b/device/RTProxy/Makefile.am
+index 7bedd51..cc0474f 100644
+--- a/device/RTProxy/Makefile.am
++++ b/device/RTProxy/Makefile.am
+@@ -46,7 +46,7 @@ lib_LTLIBRARIES     = libdev_proxy.la
+ libdev_proxy_la_SOURCES   = $(dev_proxy_sources)
+ libdev_proxy_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_proxy_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+-libdev_proxy_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_proxy_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_proxy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_proxy_la_CPPFLAGS += -std=c++14
+ libdev_proxy_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/Speaker/Android.mk b/device/Speaker/Android.mk
+index c0370be..477db43 100644
+--- a/device/Speaker/Android.mk
++++ b/device/Speaker/Android.mk
+@@ -47,7 +47,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libaudioroute \
+     libsession_ar
+diff --git a/device/Speaker/Makefile.am b/device/Speaker/Makefile.am
+index a968797..bc9c684 100644
+--- a/device/Speaker/Makefile.am
++++ b/device/Speaker/Makefile.am
+@@ -55,7 +55,7 @@ lib_LTLIBRARIES     = libdev_speaker.la
+ libdev_speaker_la_SOURCES   = $(dev_speaker_sources)
+ libdev_speaker_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress -laudioroute
+ libdev_speaker_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+-libdev_speaker_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_speaker_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_speaker_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_speaker_la_CPPFLAGS += -std=c++14
+ libdev_speaker_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/SpeakerMic/Android.mk b/device/SpeakerMic/Android.mk
+index 9cc903d..dcc9ff9 100644
+--- a/device/SpeakerMic/Android.mk
++++ b/device/SpeakerMic/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/SpeakerMic/Makefile.am b/device/SpeakerMic/Makefile.am
+index a627d89..ea0891a 100644
+--- a/device/SpeakerMic/Makefile.am
++++ b/device/SpeakerMic/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/dev_speaker_mic
+ lib_LTLIBRARIES     = libdev_speaker_mic.la
+ libdev_speaker_mic_la_SOURCES   = $(dev_speaker_mic_sources)
+ libdev_speaker_mic_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_speaker_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_speaker_mic_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_speaker_mic_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_speaker_mic_la_CPPFLAGS += -std=c++14
+ libdev_speaker_mic_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/USBAudio/Android.mk b/device/USBAudio/Android.mk
+index e5628bc..cb4f5c9 100644
+--- a/device/USBAudio/Android.mk
++++ b/device/USBAudio/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libpal_sounddose \
+     libsession_ar
+diff --git a/device/USBAudio/Makefile.am b/device/USBAudio/Makefile.am
+index 7d835d6..9d2c523 100644
+--- a/device/USBAudio/Makefile.am
++++ b/device/USBAudio/Makefile.am
+@@ -45,7 +45,7 @@ lib_LTLIBRARIES     = libdev_usb.la
+ libdev_usb_la_SOURCES   = $(dev_usb_sources)
+ libdev_usb_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+ libdev_usb_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+-libdev_usb_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_usb_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_usb_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_usb_la_CPPFLAGS += -std=c++14
+ libdev_usb_la_LDFLAGS   = -shared -avoid-version
+diff --git a/device/UltrasoundDevice/Android.mk b/device/UltrasoundDevice/Android.mk
+index e55d264..59a63f8 100644
+--- a/device/UltrasoundDevice/Android.mk
++++ b/device/UltrasoundDevice/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+  ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/device/UltrasoundDevice/Makefile.am b/device/UltrasoundDevice/Makefile.am
+index e9ad438..e7e66d2 100644
+--- a/device/UltrasoundDevice/Makefile.am
++++ b/device/UltrasoundDevice/Makefile.am
+@@ -42,7 +42,7 @@ library_includedir = $(includedir)/dev_ultrasound
+ lib_LTLIBRARIES     = libdev_ultrasound.la
+ libdev_ultrasound_la_SOURCES   = $(dev_ultrasound_sources)
+ libdev_ultrasound_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libdev_ultrasound_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libdev_ultrasound_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libdev_ultrasound_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libdev_ultrasound_la_CPPFLAGS += -std=c++14
+ libdev_ultrasound_la_LDFLAGS   = -shared -avoid-version
+diff --git a/ipc/aidl/palnotifierserver/Android.mk b/ipc/aidl/palnotifierserver/Android.mk
+index e67dbf9..7c7eead 100644
+--- a/ipc/aidl/palnotifierserver/Android.mk
++++ b/ipc/aidl/palnotifierserver/Android.mk
+@@ -29,7 +29,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libbase \
+     libcutils \
+     libutils \
+-    libar-pal \
++    libaudioreach-pal \
+     vendor.qti.hardware.pal-V1-ndk \
+     vendor.qti.hardware.paleventnotifier-V3-ndk
+ 
+diff --git a/ipc/aidl/server/Android.mk b/ipc/aidl/server/Android.mk
+index 6767d4b..419acfc 100644
+--- a/ipc/aidl/server/Android.mk
++++ b/ipc/aidl/server/Android.mk
+@@ -29,7 +29,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     libutils \
+     libfmq \
+-    libar-pal \
++    libaudioreach-pal \
+     vendor.qti.hardware.pal-V1-ndk
+ 
+ LOCAL_HEADER_LIBRARIES := \
+diff --git a/pal.pc.in b/pal.pc.in
+index 1a5d2e2..5ca895a 100644
+--- a/pal.pc.in
++++ b/pal.pc.in
+@@ -6,6 +6,5 @@ includedir=@includedir@
+ Name: pal
+ Description: pal library
+ Version: @LT_VERSION@
+-Libs: -L${libdir}
++Libs: -L${libdir} -laudioreach-pal
+ Cflags: -I${includedir}/pal
+-
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Android.mk b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Android.mk
+index 2ee6012..b0a0668 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Android.mk
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_compress
+ 
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am
+index 86a1488..7c96209 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaCompress/Makefile.am
+@@ -37,7 +37,7 @@ libsession_compress_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_compress_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_compress_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\)  -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ 
+-libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaCompress/.libs -lsession_compress
+ libsession_compress_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/IoT/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Android.mk b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Android.mk
+index bc4a6af..aa9be0a 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Android.mk
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_pcm \
+     libaudioroute
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am
+index 290853a..3add371 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaPcm/Makefile.am
+@@ -35,7 +35,7 @@ libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version
+ libsession_pcm_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_pcm_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_pcm_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+-libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaPcm/.libs -lsession_pcm
+ libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_pcm_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/IoT/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Android.mk b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Android.mk
+index 589181c..285bd0e 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Android.mk
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Android.mk
+@@ -35,7 +35,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_voice
+ 
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am
+index d5d1816..c347b3d 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionAlsaVoice/Makefile.am
+@@ -37,7 +37,7 @@ libsession_voice_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h  -DPAL_USE_
+ libsession_voice_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_voice_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+-libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaVoice/.libs -lsession_voice
+ libsession_voice_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/IoT/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Android.mk b/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Android.mk
+index dafb9a0..8fceb9a 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Android.mk
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_pcm
+ 
+ ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am b/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am
+index 0c8793f..8e4e6fc 100644
+--- a/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am
++++ b/plugins/configs/qcom/IoT/default/ConfigSessionUtils/Makefile.am
+@@ -37,7 +37,7 @@ libsession_utils_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_utils_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_utils_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ 
+-libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaPcm/.libs -lsession_pcm
+ 
+ if BUILDSYSTEM_OPENWRT
+diff --git a/plugins/configs/qcom/automotive/default/ConfigSessionAlsaCompress/Android.mk b/plugins/configs/qcom/automotive/default/ConfigSessionAlsaCompress/Android.mk
+index 2ee6012..b0a0668 100644
+--- a/plugins/configs/qcom/automotive/default/ConfigSessionAlsaCompress/Android.mk
++++ b/plugins/configs/qcom/automotive/default/ConfigSessionAlsaCompress/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_compress
+ 
+diff --git a/plugins/configs/qcom/automotive/default/ConfigSessionAlsaPcm/Android.mk b/plugins/configs/qcom/automotive/default/ConfigSessionAlsaPcm/Android.mk
+index bc4a6af..aa9be0a 100644
+--- a/plugins/configs/qcom/automotive/default/ConfigSessionAlsaPcm/Android.mk
++++ b/plugins/configs/qcom/automotive/default/ConfigSessionAlsaPcm/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_pcm \
+     libaudioroute
+diff --git a/plugins/configs/qcom/automotive/default/ConfigSessionAlsaVoice/Android.mk b/plugins/configs/qcom/automotive/default/ConfigSessionAlsaVoice/Android.mk
+index 589181c..285bd0e 100644
+--- a/plugins/configs/qcom/automotive/default/ConfigSessionAlsaVoice/Android.mk
++++ b/plugins/configs/qcom/automotive/default/ConfigSessionAlsaVoice/Android.mk
+@@ -35,7 +35,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_voice
+ 
+diff --git a/plugins/configs/qcom/automotive/default/ConfigSessionUtils/Android.mk b/plugins/configs/qcom/automotive/default/ConfigSessionUtils/Android.mk
+index dafb9a0..8fceb9a 100644
+--- a/plugins/configs/qcom/automotive/default/ConfigSessionUtils/Android.mk
++++ b/plugins/configs/qcom/automotive/default/ConfigSessionUtils/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_pcm
+ 
+ ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/plugins/configs/qcom/compute/default/ConfigSessionAlsaCompress/Android.mk b/plugins/configs/qcom/compute/default/ConfigSessionAlsaCompress/Android.mk
+index f7bb90b..5e60d56 100644
+--- a/plugins/configs/qcom/compute/default/ConfigSessionAlsaCompress/Android.mk
++++ b/plugins/configs/qcom/compute/default/ConfigSessionAlsaCompress/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_compress
+ 
+diff --git a/plugins/configs/qcom/compute/default/ConfigSessionAlsaPcm/Android.mk b/plugins/configs/qcom/compute/default/ConfigSessionAlsaPcm/Android.mk
+index 197b3ca..ec43e38 100644
+--- a/plugins/configs/qcom/compute/default/ConfigSessionAlsaPcm/Android.mk
++++ b/plugins/configs/qcom/compute/default/ConfigSessionAlsaPcm/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_pcm \
+     libaudioroute
+diff --git a/plugins/configs/qcom/compute/default/ConfigSessionAlsaVoice/Android.mk b/plugins/configs/qcom/compute/default/ConfigSessionAlsaVoice/Android.mk
+index 5bd5ab3..345c544 100644
+--- a/plugins/configs/qcom/compute/default/ConfigSessionAlsaVoice/Android.mk
++++ b/plugins/configs/qcom/compute/default/ConfigSessionAlsaVoice/Android.mk
+@@ -42,7 +42,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_voice
+ 
+diff --git a/plugins/configs/qcom/compute/default/ConfigSessionUtils/Android.mk b/plugins/configs/qcom/compute/default/ConfigSessionUtils/Android.mk
+index fdf5468..cf664c4 100644
+--- a/plugins/configs/qcom/compute/default/ConfigSessionUtils/Android.mk
++++ b/plugins/configs/qcom/compute/default/ConfigSessionUtils/Android.mk
+@@ -52,7 +52,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_pcm
+ 
+ ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaCompress/Android.mk b/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaCompress/Android.mk
+index f7bb90b..5e60d56 100644
+--- a/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaCompress/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaCompress/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_compress
+ 
+diff --git a/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaPcm/Android.mk b/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaPcm/Android.mk
+index 197b3ca..ec43e38 100644
+--- a/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaPcm/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaPcm/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_pcm \
+     libaudioroute
+diff --git a/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaVoice/Android.mk b/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaVoice/Android.mk
+index 5bd5ab3..345c544 100644
+--- a/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaVoice/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa/ConfigSessionAlsaVoice/Android.mk
+@@ -42,7 +42,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_voice
+ 
+diff --git a/plugins/configs/qcom/compute/hamoa/ConfigSessionUtils/Android.mk b/plugins/configs/qcom/compute/hamoa/ConfigSessionUtils/Android.mk
+index fdf5468..cf664c4 100644
+--- a/plugins/configs/qcom/compute/hamoa/ConfigSessionUtils/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa/ConfigSessionUtils/Android.mk
+@@ -52,7 +52,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_pcm
+ 
+ ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaCompress/Android.mk b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaCompress/Android.mk
+index f7bb90b..5e60d56 100644
+--- a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaCompress/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaCompress/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_compress
+ 
+diff --git a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaPcm/Android.mk b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaPcm/Android.mk
+index 197b3ca..ec43e38 100644
+--- a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaPcm/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaPcm/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_pcm \
+     libaudioroute
+diff --git a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaVoice/Android.mk b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaVoice/Android.mk
+index 5bd5ab3..345c544 100644
+--- a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaVoice/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionAlsaVoice/Android.mk
+@@ -42,7 +42,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_voice
+ 
+diff --git a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionUtils/Android.mk b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionUtils/Android.mk
+index fdf5468..cf664c4 100644
+--- a/plugins/configs/qcom/compute/hamoa_la/ConfigSessionUtils/Android.mk
++++ b/plugins/configs/qcom/compute/hamoa_la/ConfigSessionUtils/Android.mk
+@@ -52,7 +52,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_pcm
+ 
+ ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Android.mk b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Android.mk
+index 2ee6012..b0a0668 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Android.mk
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_compress
+ 
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am
+index adbd463..9a1bf01 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaCompress/Makefile.am
+@@ -34,7 +34,7 @@ libsession_compress_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dst
+ libsession_compress_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_compress_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+-libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaCompress/.libs -lsession_compress
+ libsession_compress_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/mbb/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Android.mk b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Android.mk
+index bc4a6af..aa9be0a 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Android.mk
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_pcm \
+     libaudioroute
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am
+index 5612a1c..ba0ad5a 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaPcm/Makefile.am
+@@ -33,7 +33,7 @@ libsession_pcm_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dstrlcat
+ libsession_pcm_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_pcm_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+-libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaPcm/.libs -lsession_pcm
+ libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_pcm_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/mbb/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Android.mk b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Android.mk
+index 589181c..285bd0e 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Android.mk
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Android.mk
+@@ -35,7 +35,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_voice
+ 
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am
+index 1c8d744..f22b63b 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionAlsaVoice/Makefile.am
+@@ -33,7 +33,7 @@ libsession_voice_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dstrlc
+ libsession_voice_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_voice_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+-libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaVoice/.libs -lsession_voice
+ libsession_voice_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/mbb/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Android.mk b/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Android.mk
+index dafb9a0..8fceb9a 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Android.mk
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_pcm
+ 
+ ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am b/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am
+index 879870e..7942d80 100644
+--- a/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am
++++ b/plugins/configs/qcom/mbb/default/ConfigSessionUtils/Makefile.am
+@@ -32,7 +32,7 @@ libsession_utils_config_la_CPPFLAGS += @GLIB_CFLAGS@ -Dstrlcpy=g_strlcpy -Dstrlc
+ libsession_utils_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_utils_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+-libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaPcm/.libs -lsession_pcm
+ 
+ if CUTILS_SUPPORTED
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Android.mk b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Android.mk
+index 2ee6012..b0a0668 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Android.mk
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_compress
+ 
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am
+index 49e610c..88418d5 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaCompress/Makefile.am
+@@ -37,7 +37,7 @@ libsession_compress_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_compress_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_compress_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\)  -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ 
+-libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_compress_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaCompress/.libs -lsession_compress
+ libsession_compress_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/mobile/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Android.mk b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Android.mk
+index bc4a6af..aa9be0a 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Android.mk
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_pcm \
+     libaudioroute
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am
+index 626a424..2749ac2 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaPcm/Makefile.am
+@@ -35,7 +35,7 @@ libsession_pcm_config_la_LDFLAGS   = -shared -avoid-version
+ libsession_pcm_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_pcm_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_pcm_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+-libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaPcm/.libs -lsession_pcm
+ libsession_pcm_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_pcm_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/mobile/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Android.mk b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Android.mk
+index 589181c..285bd0e 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Android.mk
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Android.mk
+@@ -35,7 +35,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_ar \
+     libsession_voice
+ 
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am
+index c0b0606..9242e8a 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am
+@@ -37,7 +37,7 @@ libsession_voice_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h  -DPAL_USE_
+ libsession_voice_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_voice_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
+ 
+-libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_voice_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaVoice/.libs -lsession_voice
+ libsession_voice_config_la_LIBADD   += ${abs_top_builddir}/plugins/configs/qcom/mobile/default/ConfigSessionUtils/.libs/libsession_utils_config.la
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Android.mk b/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Android.mk
+index dafb9a0..8fceb9a 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Android.mk
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     libcutils \
+     liblx-osal \
+     libexpat \
+-    libar-pal \
++    libaudioreach-pal \
+     libsession_pcm
+ 
+ ifeq ($(TARGET_USES_QTI_TINYCOMPRESS),true)
+diff --git a/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am b/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am
+index 6dddfd2..9d92071 100644
+--- a/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am
++++ b/plugins/configs/qcom/mobile/default/ConfigSessionUtils/Makefile.am
+@@ -37,7 +37,7 @@ libsession_utils_config_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libsession_utils_config_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+ libsession_utils_config_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DPAL_USE_SYSLOG -DLINUX_ENABLED  -DATRACE_UNSUPPORTED -DCARD_STATE_UNSUPPORTED -DPAL_SIGNAL_HANDLER_UNSUPPORTED -DA2DP_SINK_SUPPORTED -DVUI_DMGR_AUDIO_UNSUPPORTED -DAUDIO_FEATURE_STATS_UNSUPPORTED
+ 
+-libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_utils_config_la_LIBADD   += -L${abs_top_builddir}/session/SessionAlsaPcm/.libs -lsession_pcm
+ 
+ if BUILDSYSTEM_OPENWRT
+diff --git a/public_headers/config.yml b/public_headers/config.yml
+index 99b2cb6..5598b25 100644
+--- a/public_headers/config.yml
++++ b/public_headers/config.yml
+@@ -11,4 +11,4 @@ branches:
+           - session/inc/Session.h
+           - stream/inc/Stream.h
+ abi_checks:
+-  - path: build/usr/lib/libpal.so
++  - path: build/usr/lib/libaudioreach-pal.so
+diff --git a/session/SessionAR/Android.mk b/session/SessionAR/Android.mk
+index 353037b..856e882 100644
+--- a/session/SessionAR/Android.mk
++++ b/session/SessionAR/Android.mk
+@@ -42,7 +42,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libagmclient \
+     libaudioroute \
+diff --git a/session/SessionAR/Makefile.am b/session/SessionAR/Makefile.am
+index 54c6cbe..4c5cce3 100644
+--- a/session/SessionAR/Makefile.am
++++ b/session/SessionAR/Makefile.am
+@@ -45,7 +45,7 @@ library_includedir = $(includedir)/session_ar
+ lib_LTLIBRARIES     = libsession_ar.la
+ libsession_ar_la_SOURCES   = $(session_ar_sources)
+ libsession_ar_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress @GSL_LIBS@
+-libsession_ar_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_ar_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_ar_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_ar_la_CPPFLAGS += -std=c++14
+ libsession_ar_la_LDFLAGS   = -shared -avoid-version
+diff --git a/session/SessionAgm/Android.mk b/session/SessionAgm/Android.mk
+index 67bb770..5c2b123 100644
+--- a/session/SessionAgm/Android.mk
++++ b/session/SessionAgm/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libagmclient \
+     libsession_ar
+diff --git a/session/SessionAgm/Makefile.am b/session/SessionAgm/Makefile.am
+index 2c4bdbd..0f99bc0 100644
+--- a/session/SessionAgm/Makefile.am
++++ b/session/SessionAgm/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/session_agm
+ lib_LTLIBRARIES     = libsession_agm.la
+ libsession_agm_la_SOURCES   = $(session_agm_sources)
+ libsession_agm_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libsession_agm_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libsession_agm_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_agm_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_agm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_agm_la_CPPFLAGS += -std=c++14
+diff --git a/session/SessionAlsaCompress/Android.mk b/session/SessionAlsaCompress/Android.mk
+index e386e21..a7550f0 100644
+--- a/session/SessionAlsaCompress/Android.mk
++++ b/session/SessionAlsaCompress/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/session/SessionAlsaCompress/Makefile.am b/session/SessionAlsaCompress/Makefile.am
+index 4fad468..19b242d 100644
+--- a/session/SessionAlsaCompress/Makefile.am
++++ b/session/SessionAlsaCompress/Makefile.am
+@@ -44,7 +44,7 @@ library_includedir = $(includedir)/session_compress
+ lib_LTLIBRARIES     = libsession_compress.la
+ libsession_compress_la_SOURCES   = $(session_compress_sources)
+ libsession_compress_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libsession_compress_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar -L${abs_top_builddir}/.libs -lpal
++libsession_compress_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_compress_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_compress_la_CPPFLAGS += -std=c++14
+ libsession_compress_la_LDFLAGS   = -shared -avoid-version
+diff --git a/session/SessionAlsaPcm/Android.mk b/session/SessionAlsaPcm/Android.mk
+index 6039b64..81296eb 100644
+--- a/session/SessionAlsaPcm/Android.mk
++++ b/session/SessionAlsaPcm/Android.mk
+@@ -37,7 +37,7 @@ LOCAL_HEADER_LIBRARIES := \
+ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libagmclient \
+     libsession_ar
+diff --git a/session/SessionAlsaPcm/Makefile.am b/session/SessionAlsaPcm/Makefile.am
+index c8bcb84..18b6d8c 100644
+--- a/session/SessionAlsaPcm/Makefile.am
++++ b/session/SessionAlsaPcm/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/session_pcm
+ lib_LTLIBRARIES     = libsession_pcm.la
+ libsession_pcm_la_SOURCES   = $(session_pcm_sources)
+ libsession_pcm_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libsession_pcm_la_LIBADD   += -L${abs_top_builddir}/.libs -lpal
++libsession_pcm_la_LIBADD   += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_pcm_la_LIBADD   += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_pcm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_pcm_la_CPPFLAGS += -std=c++14
+diff --git a/session/SessionAlsaVoice/Android.mk b/session/SessionAlsaVoice/Android.mk
+index 8bcb638..e6bf50e 100644
+--- a/session/SessionAlsaVoice/Android.mk
++++ b/session/SessionAlsaVoice/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libaudioroute \
+     libsession_ar
+diff --git a/session/SessionAlsaVoice/Makefile.am b/session/SessionAlsaVoice/Makefile.am
+index 7a8bb67..1a3ea1e 100644
+--- a/session/SessionAlsaVoice/Makefile.am
++++ b/session/SessionAlsaVoice/Makefile.am
+@@ -44,7 +44,7 @@ library_includedir = $(includedir)/session_voice
+ lib_LTLIBRARIES     = libsession_voice.la
+ libsession_voice_la_SOURCES   = $(session_voice_sources)
+ libsession_voice_la_LIBADD    = @GLIB_LIBS@ -lexpat -ltinyalsa -ltinycompress
+-libsession_voice_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libsession_voice_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libsession_voice_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libsession_voice_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libsession_voice_la_CPPFLAGS += -std=c++14
+diff --git a/stream/StreamACD/Android.mk b/stream/StreamACD/Android.mk
+index c08cf08..c72743c 100644
+--- a/stream/StreamACD/Android.mk
++++ b/stream/StreamACD/Android.mk
+@@ -42,7 +42,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/stream/StreamACD/Makefile.am b/stream/StreamACD/Makefile.am
+index eb435e0..e37267b 100644
+--- a/stream/StreamACD/Makefile.am
++++ b/stream/StreamACD/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/stream_acd
+ lib_LTLIBRARIES     = libstream_acd.la
+ libstream_acd_la_SOURCES   = $(stream_acd_sources)
+ libstream_acd_la_LIBADD    = @GLIB_LIBS@ -lexpat
+-libstream_acd_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_acd_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_acd_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_acd_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_acd_la_CPPFLAGS += -std=c++14
+diff --git a/stream/StreamASR/Android.mk b/stream/StreamASR/Android.mk
+index c454a54..80a583a 100644
+--- a/stream/StreamASR/Android.mk
++++ b/stream/StreamASR/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/stream/StreamASR/Makefile.am b/stream/StreamASR/Makefile.am
+index d487b81..0259f18 100644
+--- a/stream/StreamASR/Makefile.am
++++ b/stream/StreamASR/Makefile.am
+@@ -47,7 +47,7 @@ library_includedir = $(includedir)/stream_asr
+ lib_LTLIBRARIES     = libstream_asr.la
+ libstream_asr_la_SOURCES   = $(stream_asr_sources)
+ libstream_asr_la_LIBADD    = @GLIB_LIBS@ -lexpat
+-libstream_asr_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_asr_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_asr_la_LIBADD    += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
+ libstream_asr_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_asr_la_CPPFLAGS += -std=c++14
+diff --git a/stream/StreamCallTranslation/Android.mk b/stream/StreamCallTranslation/Android.mk
+index d2d3e7c..e305fa8 100644
+--- a/stream/StreamCallTranslation/Android.mk
++++ b/stream/StreamCallTranslation/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libstream_common \
+     libsession_ar
+diff --git a/stream/StreamCommon/Android.mk b/stream/StreamCommon/Android.mk
+index 55362e2..bf27e8d 100644
+--- a/stream/StreamCommon/Android.mk
++++ b/stream/StreamCommon/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+ ifeq ($(USE_PAL_STATIC_LINKING_MODULES),true)
+diff --git a/stream/StreamCommon/Makefile.am b/stream/StreamCommon/Makefile.am
+index ba6a909..1bd24da 100644
+--- a/stream/StreamCommon/Makefile.am
++++ b/stream/StreamCommon/Makefile.am
+@@ -46,7 +46,7 @@ libstream_common_la_SOURCES   = $(stream_common_sources)
+ libstream_common_la_LIBADD    = @GLIB_LIBS@ -lexpat @GSL_LIBS@
+ libstream_common_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_common_la_CPPFLAGS += -std=c++14
+-libstream_common_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_common_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_common_la_LDFLAGS   = -shared -avoid-version
+ libstream_common_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
+ libstream_common_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
+diff --git a/stream/StreamCommon/StreamCommonProxy/Android.mk b/stream/StreamCommon/StreamCommonProxy/Android.mk
+index 2c4b4ca..60358c5 100644
+--- a/stream/StreamCommon/StreamCommonProxy/Android.mk
++++ b/stream/StreamCommon/StreamCommonProxy/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+ 	libstream_common
+ 
+diff --git a/stream/StreamCommon/StreamCommonProxy/Makefile.am b/stream/StreamCommon/StreamCommonProxy/Makefile.am
+index abe0ab6..5002cd1 100644
+--- a/stream/StreamCommon/StreamCommonProxy/Makefile.am
++++ b/stream/StreamCommon/StreamCommonProxy/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/stream_commonproxy
+ lib_LTLIBRARIES     = libstream_commonproxy.la
+ libstream_commonproxy_la_SOURCES   = $(stream_commonproxy_sources)
+ libstream_commonproxy_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+-libstream_commonproxy_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_commonproxy_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_commonproxy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_commonproxy_la_CPPFLAGS += -std=c++14
+ libstream_commonproxy_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamCommon/StreamContextProxy/Android.mk b/stream/StreamCommon/StreamContextProxy/Android.mk
+index 7cd5bda..48b3e28 100644
+--- a/stream/StreamCommon/StreamContextProxy/Android.mk
++++ b/stream/StreamCommon/StreamContextProxy/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+ 	libstream_common
+ 
+diff --git a/stream/StreamCommon/StreamContextProxy/Makefile.am b/stream/StreamCommon/StreamContextProxy/Makefile.am
+index debc777..70b577e 100644
+--- a/stream/StreamCommon/StreamContextProxy/Makefile.am
++++ b/stream/StreamCommon/StreamContextProxy/Makefile.am
+@@ -45,7 +45,7 @@ library_includedir = $(includedir)/stream_contextproxy
+ lib_LTLIBRARIES     = libstream_contextproxy.la
+ libstream_contextproxy_la_SOURCES   = $(stream_contextproxy_sources)
+ libstream_contextproxy_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+-libstream_contextproxy_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_contextproxy_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_contextproxy_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_contextproxy_la_CPPFLAGS += -std=c++14
+ libstream_contextproxy_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamCommon/StreamSensorPCMData/Android.mk b/stream/StreamCommon/StreamSensorPCMData/Android.mk
+index 3204b3d..9e8ad93 100644
+--- a/stream/StreamCommon/StreamSensorPCMData/Android.mk
++++ b/stream/StreamCommon/StreamSensorPCMData/Android.mk
+@@ -45,7 +45,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+ 	libstream_common
+ 
+diff --git a/stream/StreamCommon/StreamSensorPCMData/Makefile.am b/stream/StreamCommon/StreamSensorPCMData/Makefile.am
+index 737aab7..2786fdf 100644
+--- a/stream/StreamCommon/StreamSensorPCMData/Makefile.am
++++ b/stream/StreamCommon/StreamSensorPCMData/Makefile.am
+@@ -41,7 +41,7 @@ library_includedir = $(includedir)/streamsensorpcmdata_headers
+ lib_LTLIBRARIES     = libstream_sensorpcmdata.la
+ libstream_sensorpcmdata_la_SOURCES   = $(streamsensorpcmdata_sources)
+ libstream_sensorpcmdata_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+-libstream_sensorpcmdata_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_sensorpcmdata_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_sensorpcmdata_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_sensorpcmdata_la_CPPFLAGS += -std=c++14
+ libstream_sensorpcmdata_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamCommon/StreamSensorRenderer/Android.mk b/stream/StreamCommon/StreamSensorRenderer/Android.mk
+index c19e412..9c31717 100644
+--- a/stream/StreamCommon/StreamSensorRenderer/Android.mk
++++ b/stream/StreamCommon/StreamSensorRenderer/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libstream_common
+ 
+diff --git a/stream/StreamCommon/StreamSensorRenderer/Makefile.am b/stream/StreamCommon/StreamSensorRenderer/Makefile.am
+index ab4d3c6..929fbcc 100644
+--- a/stream/StreamCommon/StreamSensorRenderer/Makefile.am
++++ b/stream/StreamCommon/StreamSensorRenderer/Makefile.am
+@@ -47,7 +47,7 @@ library_includedir = $(includedir)/stream_sensorrenderer
+ lib_LTLIBRARIES     = libstream_sensorrenderer.la
+ libstream_sensorrenderer_la_SOURCES   = $(stream_sensorrenderer_sources)
+ libstream_sensorrenderer_la_LIBADD    = @GLIB_LIBS@ -lexpat -L${abs_top_builddir}/stream/StreamCommon/.libs -lstream_common
+-libstream_sensorrenderer_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_sensorrenderer_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_sensorrenderer_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_sensorrenderer_la_CPPFLAGS += -std=c++14
+ libstream_sensorrenderer_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamCommon/StreamUltrasSound/Android.mk b/stream/StreamCommon/StreamUltrasSound/Android.mk
+index 9af5878..a4d3db9 100644
+--- a/stream/StreamCommon/StreamUltrasSound/Android.mk
++++ b/stream/StreamCommon/StreamUltrasSound/Android.mk
+@@ -39,7 +39,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+ 	libstream_common \
+     libsession_ar \
+diff --git a/stream/StreamCompress/Android.mk b/stream/StreamCompress/Android.mk
+index 4541f52..79bb51d 100644
+--- a/stream/StreamCompress/Android.mk
++++ b/stream/StreamCompress/Android.mk
+@@ -34,7 +34,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+ ifeq ($(USE_PAL_STATIC_LINKING_MODULES),true)
+diff --git a/stream/StreamCompress/Makefile.am b/stream/StreamCompress/Makefile.am
+index b05c974..1e2f2fe 100644
+--- a/stream/StreamCompress/Makefile.am
++++ b/stream/StreamCompress/Makefile.am
+@@ -44,7 +44,7 @@ lib_LTLIBRARIES     = libstream_compress.la
+ libstream_compress_la_SOURCES   = $(stream_compress_sources)
+ libstream_compress_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_compress_la_CPPFLAGS := $(AM_CPPFLAGS)
+-libstream_compress_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_compress_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_compress_la_CPPFLAGS += -std=c++14
+ libstream_compress_la_LDFLAGS   = -shared -avoid-version
+ libstream_compress_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h -DLINUX_ENABLED
+diff --git a/stream/StreamDummy/Android.mk b/stream/StreamDummy/Android.mk
+index 0843330..9f0666b 100644
+--- a/stream/StreamDummy/Android.mk
++++ b/stream/StreamDummy/Android.mk
+@@ -35,7 +35,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/stream/StreamHaptic/Android.mk b/stream/StreamHaptic/Android.mk
+index c8689cd..747126d 100644
+--- a/stream/StreamHaptic/Android.mk
++++ b/stream/StreamHaptic/Android.mk
+@@ -34,7 +34,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libstream_pcm
+ 
+diff --git a/stream/StreamHaptic/Makefile.am b/stream/StreamHaptic/Makefile.am
+index a4283f4..35e31ff 100644
+--- a/stream/StreamHaptic/Makefile.am
++++ b/stream/StreamHaptic/Makefile.am
+@@ -45,7 +45,7 @@ lib_LTLIBRARIES     = libstream_haptics.la
+ libstream_haptics_la_SOURCES   = $(stream_haptics_sources)
+ libstream_haptics_la_LIBADD    = @GLIB_LIBS@ -lexpat
+ libstream_haptics_la_LIBADD    += -L${abs_top_builddir}/stream/StreamPCM/.libs -lstream_pcm
+-libstream_haptics_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_haptics_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_haptics_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_haptics_la_CPPFLAGS += -std=c++14
+ libstream_haptics_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamInCall/Android.mk b/stream/StreamInCall/Android.mk
+index 6f45708..8fc2fe2 100644
+--- a/stream/StreamInCall/Android.mk
++++ b/stream/StreamInCall/Android.mk
+@@ -36,7 +36,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+ 
+ ifeq ($(USE_PAL_STATIC_LINKING_MODULES),true)
+diff --git a/stream/StreamInCall/Makefile.am b/stream/StreamInCall/Makefile.am
+index 8e8e291..fb3b7af 100644
+--- a/stream/StreamInCall/Makefile.am
++++ b/stream/StreamInCall/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/stream_incall
+ lib_LTLIBRARIES     = libstream_incall.la
+ libstream_incall_la_SOURCES   = $(stream_incall_sources)
+ libstream_incall_la_LIBADD    = @GLIB_LIBS@ -lexpat
+-libstream_incall_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_incall_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_incall_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_incall_la_CPPFLAGS += -std=c++14
+ libstream_incall_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamNonTunnel/Android.mk b/stream/StreamNonTunnel/Android.mk
+index 996a7b0..4c8380e 100644
+--- a/stream/StreamNonTunnel/Android.mk
++++ b/stream/StreamNonTunnel/Android.mk
+@@ -34,7 +34,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+ ifeq ($(USE_PAL_STATIC_LINKING_MODULES),true)
+diff --git a/stream/StreamNonTunnel/Makefile.am b/stream/StreamNonTunnel/Makefile.am
+index a4b494b..6b74814 100644
+--- a/stream/StreamNonTunnel/Makefile.am
++++ b/stream/StreamNonTunnel/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/stream_nontunnel
+ lib_LTLIBRARIES     = libstream_nontunnel.la
+ libstream_nontunnel_la_SOURCES   = $(stream_nontunnel_sources)
+ libstream_nontunnel_la_LIBADD    = @GLIB_LIBS@ -lexpat @GSL_LIBS@
+-libstream_nontunnel_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_nontunnel_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_nontunnel_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_nontunnel_la_CPPFLAGS += -std=c++14
+ libstream_nontunnel_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamPCM/Android.mk b/stream/StreamPCM/Android.mk
+index 95a1035..37e077e 100644
+--- a/stream/StreamPCM/Android.mk
++++ b/stream/StreamPCM/Android.mk
+@@ -34,7 +34,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat
+ 
+ ifeq ($(USE_PAL_STATIC_LINKING_MODULES),true)
+diff --git a/stream/StreamPCM/Makefile.am b/stream/StreamPCM/Makefile.am
+index 3a23725..399aa3f 100644
+--- a/stream/StreamPCM/Makefile.am
++++ b/stream/StreamPCM/Makefile.am
+@@ -43,7 +43,7 @@ library_includedir = $(includedir)/stream_pcm
+ lib_LTLIBRARIES     = libstream_pcm.la
+ libstream_pcm_la_SOURCES   = $(stream_pcm_sources)
+ libstream_pcm_la_LIBADD    = @GLIB_LIBS@ -lexpat
+-libstream_pcm_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_pcm_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_pcm_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_pcm_la_CPPFLAGS += -std=c++14
+ libstream_pcm_la_LDFLAGS   = -shared -avoid-version
+diff --git a/stream/StreamSoundTrigger/Android.mk b/stream/StreamSoundTrigger/Android.mk
+index f2277e0..91fdd59 100644
+--- a/stream/StreamSoundTrigger/Android.mk
++++ b/stream/StreamSoundTrigger/Android.mk
+@@ -43,7 +43,7 @@ LOCAL_SHARED_LIBRARIES := \
+     liblog \
+     libcutils \
+     liblx-osal \
+-    libar-pal \
++    libaudioreach-pal \
+     libexpat \
+     libsession_ar
+ 
+diff --git a/stream/StreamSoundTrigger/Makefile.am b/stream/StreamSoundTrigger/Makefile.am
+index 7f7c341..22ae434 100644
+--- a/stream/StreamSoundTrigger/Makefile.am
++++ b/stream/StreamSoundTrigger/Makefile.am
+@@ -57,7 +57,7 @@ library_includedir = $(includedir)/stream_soundtrigger
+ lib_LTLIBRARIES     = libstream_soundtrigger.la
+ libstream_soundtrigger_la_SOURCES   = $(stream_soundtrigger_sources)
+ libstream_soundtrigger_la_LIBADD    = @GLIB_LIBS@ -lexpat
+-libstream_soundtrigger_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
++libstream_soundtrigger_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_soundtrigger_la_CPPFLAGS := $(AM_CPPFLAGS)
+ libstream_soundtrigger_la_CPPFLAGS += -std=c++14
+ libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version

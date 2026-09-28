@@ -1,6 +1,4 @@
-usr/lib/${DEB_HOST_MULTIARCH}/*.so.*
-usr/lib/${DEB_HOST_MULTIARCH}/*.so
-etc/mixer_paths_*.xml
-etc/resourcemanager_*.xml
-etc/plugin_manager.xml
-etc/usecaseKvManager.xml
+etc/audioreach/plugin_manager.xml
+etc/audioreach/usecaseKvManager.xml
+usr/share/audioreach/mixer_paths_*.xml
+usr/share/audioreach/resourcemanager_*.xml

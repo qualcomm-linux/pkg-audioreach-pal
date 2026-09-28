@@ -1,3 +1,0 @@
-audioreach-pal: shared-library-lacks-version
-audioreach-pal: package-name-doesnt-match-sonames
-audioreach-pal: lacks-unversioned-link-to-shared-library

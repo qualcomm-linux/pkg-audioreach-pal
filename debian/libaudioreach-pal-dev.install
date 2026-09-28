@@ -1,0 +1,3 @@
+usr/include/audioreach-pal/*
+usr/lib/${DEB_HOST_MULTIARCH}/libaudioreach-pal.so
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/audioreach-pal.pc

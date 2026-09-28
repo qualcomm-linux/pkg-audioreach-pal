@@ -1,8 +1,9 @@
 audioreach-pal (1.0.0-0qli2~bpo13+1~) UNRELEASED; urgency=medium
 
-  * Unreleased changes
+  * Rebuild for Trixie QLI.
+  * d/gbp.conf: Update for trixie QLI.
 
- -- Debusine Action Bot <noreply@bot.invalid>  Fri, 10 Jul 2026 12:00:21 +0000
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Mon, 28 Sep 2026 16:52:44 +0200
 
 audioreach-pal (1.0.0-0qli2) forky; urgency=medium
 

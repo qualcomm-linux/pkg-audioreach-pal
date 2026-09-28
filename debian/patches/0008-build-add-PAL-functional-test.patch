@@ -1,4 +1,4 @@
-From: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
 Date: Tue, 22 Sep 2026 00:00:00 +0200
 Subject: build: add PAL functional test program
 
@@ -10,7 +10,6 @@ This is intentionally not registered as an Automake TESTS target: it
 requires a functioning AudioReach sound card and target configuration.
 
 Forwarded: not-needed
-
 ---
  Makefile.am           |  2 +-
  configure.ac          |  1 +
@@ -18,8 +17,10 @@ Forwarded: not-needed
  test/PalTest_main.c   |  1 +
  test/PalUsecaseTest.c |  2 ++
  5 files changed, 16 insertions(+), 1 deletion(-)
+ create mode 100644 test/Makefile.am
 
 diff --git a/Makefile.am b/Makefile.am
+index 69a601e..fa0ed70 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -179,4 +179,4 @@ audioadsprpcd_la_CFLAGS = -fPIC
@@ -29,6 +30,7 @@ diff --git a/Makefile.am b/Makefile.am
 -SUBDIRS =  inc plugins . session stream device plugins/configs
 +SUBDIRS =  inc plugins . session stream device plugins/configs test
 diff --git a/configure.ac b/configure.ac
+index 7a285a2..b3fbf7e 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -173,6 +173,7 @@ AC_CONFIG_SUBDIRS([
@@ -41,6 +43,7 @@ diff --git a/configure.ac b/configure.ac
  session/Makefile \
 diff --git a/test/Makefile.am b/test/Makefile.am
 new file mode 100644
+index 0000000..e1c1abd
 --- /dev/null
 +++ b/test/Makefile.am
 @@ -0,0 +1,11 @@
@@ -55,20 +58,28 @@ new file mode 100644
 +
 +PalTest_LDADD = $(top_builddir)/.libs/libaudioreach-pal.so
 +PalTest_DEPENDENCIES = $(top_builddir)/libaudioreach-pal.la
-
 diff --git a/test/PalTest_main.c b/test/PalTest_main.c
+index 1f8ec17..049ac36 100644
 --- a/test/PalTest_main.c
 +++ b/test/PalTest_main.c
-@@ -35,2 +35,3 @@
+@@ -33,6 +33,7 @@
+  */
+ 
  #include <unistd.h>
 +#include <stdlib.h>
  #include <stdio.h>
-
+ #include <string.h>
+ #include <signal.h>
 diff --git a/test/PalUsecaseTest.c b/test/PalUsecaseTest.c
+index b69ca37..216f611 100644
 --- a/test/PalUsecaseTest.c
 +++ b/test/PalUsecaseTest.c
-@@ -31,2 +31,4 @@
+@@ -29,6 +29,8 @@
+ 
+ #include"PalUsecaseTest.h"
  #include <errno.h>
 +#include <stdio.h>
 +#include <stdlib.h>
  #include <string.h>
+ 
+ static struct pal_stream_attributes *stream_attributes;

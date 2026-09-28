@@ -1,4 +1,4 @@
-From: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
+From: =?utf-8?q?Lukas_M=C3=A4rdian?= <lukas.maerdian@oss.qualcomm.com>
 Date: Tue, 22 Sep 2026 00:00:00 +0200
 Subject: build: link PAL against AGM libraries
 
@@ -7,13 +7,13 @@ Link the PAL shared library against the libraries reported by the AGM
 pkg-config module so those symbols are available to PAL consumers.
 
 Forwarded: https://github.com/AudioReach/audioreach-pal/pull/91
-
 ---
  Makefile.am  | 4 ++--
  configure.ac | 1 +
  2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
+index fa0ed70..e0cbf05 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -88,11 +88,11 @@ library_includedir = $(includedir)/pal
@@ -31,9 +31,10 @@ diff --git a/Makefile.am b/Makefile.am
  endif
  if IS_SDXLEMUR
 diff --git a/configure.ac b/configure.ac
+index b3fbf7e..971cd17 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -103,6 +103,7 @@ AM_CONDITIONAL([IS_SA525M], [test x$IS_S
+@@ -103,6 +103,7 @@ AM_CONDITIONAL([IS_SA525M], [test x$IS_SA525M_TARGET = xtrue])
  
  # Checks for libraries
  PKG_CHECK_MODULES([AGM], [agm])

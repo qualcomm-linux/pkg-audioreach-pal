@@ -1,8 +1,12 @@
 audioreach-pal (1.0.0-0qli+staging3~) UNRELEASED; urgency=medium
 
-  * Unreleased changes
+  * d/copyright: Fix Source field.
+  * d/rules: Adopt buildflags for dynamic (data-)dirs to meta-audioreach.
+  * d/patches: Refresh.
+  * d/patches: Pass PAL_CONFIG_DIR for SNDPARSER, too.
+    - d/p/0012-build-pass-PAL_CONFIG_DIR-to-compiler-and-use-in-SND.patch
 
- -- Debusine Action Bot <noreply@bot.invalid>  Tue, 22 Sep 2026 13:53:23 +0000
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Mon, 28 Sep 2026 15:47:09 +0200
 
 audioreach-pal (1.0.0-0qli+staging2) forky; urgency=medium
 

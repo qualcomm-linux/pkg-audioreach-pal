@@ -1,5 +1,6 @@
-audioreach-pal (1.0.0-0qli1~) UNRELEASED; urgency=medium
+audioreach-pal (1.0.0-0qli1) forky; urgency=medium
 
+  [ Lukas Märdian ]
   * Rebuild for QLI.
   * d/copyright: Fix Source field.
   * d/rules: Adopt buildflags for dynamic (data-)dirs to meta-audioreach.
@@ -8,7 +9,7 @@ audioreach-pal (1.0.0-0qli1~) UNRELEASED; urgency=medium
     - d/p/0012-build-pass-PAL_CONFIG_DIR-to-compiler-and-use-in-SND.patch
   * d/gbp.conf: Update for QLI branch.
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Mon, 28 Sep 2026 15:51:24 +0200
+ -- Debusine Action Bot <noreply@bot.invalid>  Mon, 28 Sep 2026 13:52:43 +0000
 
 audioreach-pal (1.0.0-0qli+staging2) forky; urgency=medium
 

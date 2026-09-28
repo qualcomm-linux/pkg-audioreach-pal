@@ -1,4 +1,4 @@
-etc/audioreach-pal/plugin_manager.xml
-etc/audioreach-pal/usecaseKvManager.xml
-usr/share/audioreach-pal/mixer_paths_*.xml
-usr/share/audioreach-pal/resourcemanager_*.xml
+etc/audioreach/plugin_manager.xml
+etc/audioreach/usecaseKvManager.xml
+usr/share/audioreach/mixer_paths_*.xml
+usr/share/audioreach/resourcemanager_*.xml

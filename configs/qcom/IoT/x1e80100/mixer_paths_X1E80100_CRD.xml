@@ -255,7 +255,7 @@
     <!-- These are actual sound device specific mixer settings -->
     <path name="amic2">
         <ctl name="TX DEC0 MUX" value="SWR_MIC" />
-        <ctl name="TX SMIC MUX0" value="ADC1" />
+        <ctl name="TX SMIC MUX0" value="SWR_MIC1" />
         <ctl name="TX_AIF1_CAP Mixer DEC0" value="1" />
         <ctl name="TX1 MODE" value="ADC_NORMAL" />
         <ctl name="ADC2 Volume" value="20" />
@@ -453,8 +453,8 @@
         <ctl name="HPHR_RDAC Switch" value="1" />
         <ctl name="HPHL Switch" value="1" />
         <ctl name="HPHR Switch" value="1" />
-        <ctl name="HPHR_COMP Switch" value="1" />
-        <ctl name="HPHL_COMP Switch" value="1" />
+        <ctl name="HPHR_COMP Switch" value="0" />
+        <ctl name="HPHL_COMP Switch" value="0" />
         <ctl name="RX HPH Mode" value="CLS_H_HIFI" />
         <ctl name="RX_HPH PWR Mode" value="LOHIFI" />
         <ctl name="RX_MACRO RX0 MUX" value="AIF1_PB" />

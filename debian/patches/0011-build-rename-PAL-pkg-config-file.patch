@@ -14,27 +14,23 @@ Forwarded: https://github.com/AudioReach/audioreach-pal/pull/91
 
 Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
 ---
- Makefile.am          |  4 ++--
+ Makefile.am          |  2 +-
  audioreach-pal.pc.in | 10 ++++++++++
  configure.ac         |  2 +-
  pal.pc.in            | 10 ----------
- 4 files changed, 13 insertions(+), 13 deletions(-)
- create mode 100644 audioreach-pal.pc.in
- delete mode 100644 pal.pc.in
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 1b9be10..8cda917 100644
+index e1af5d0..d3e9fba 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -1,6 +1,6 @@
+@@ -1,5 +1,5 @@
  pkgconfigdir = $(libdir)/pkgconfig
 -pkgconfig_DATA = pal.pc
--EXTRA_DIST = $(pkgconfig_DATA) utils/inc/PluginUtils.h
 +pkgconfig_DATA = audioreach-pal.pc
-+EXTRA_DIST = $(pkgconfig_DATA) utils/inc/pluginUtils.h
+ EXTRA_DIST = $(pkgconfig_DATA) utils/inc/PluginUtils.h
  
  
- if BUILDSYSTEM_OPENWRT
 diff --git a/audioreach-pal.pc.in b/audioreach-pal.pc.in
 new file mode 100644
 index 0000000..a77225d
@@ -52,10 +48,10 @@ index 0000000..a77225d
 +Libs: -L${libdir} -laudioreach-pal
 +Cflags: -I${includedir}/audioreach-pal
 diff --git a/configure.ac b/configure.ac
-index 971cd17..f3da38b 100644
+index 55293aa..49e3068 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -175,7 +175,7 @@ AC_CONFIG_SUBDIRS([
+@@ -176,7 +176,7 @@ AC_CONFIG_SUBDIRS([
  
  AC_CONFIG_FILES([ Makefile \
  test/Makefile \

@@ -45,7 +45,7 @@ index c3bd791..370637e 100644
  
  Audioreach-pal (source files are licensed under the BSD-3-Clause-Clear. Check out the LICENSE for more details
 diff --git a/configure.ac b/configure.ac
-index 3fc3856..7a285a2 100644
+index 46a3f86..01f6b96 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -23,6 +23,28 @@ AC_PROG_LN_S
@@ -76,9 +76,9 @@ index 3fc3856..7a285a2 100644
 +
  m4_define([LT_MAJOR], [1])
  m4_define([LT_MINOR], [0])
- m4_define([LT_PATCH], [0])
+ m4_define([LT_PATCH], [2])
 diff --git a/plugins/vui_interface/configure.ac b/plugins/vui_interface/configure.ac
-index 645a7e2..e85d70e 100644
+index f46c96d..64f922d 100644
 --- a/plugins/vui_interface/configure.ac
 +++ b/plugins/vui_interface/configure.ac
 @@ -30,6 +30,13 @@ PKG_PROG_PKG_CONFIG
@@ -95,7 +95,7 @@ index 645a7e2..e85d70e 100644
  m4_define([LT_MAJOR], [1])
  m4_define([LT_MINOR], [0])
  m4_define([LT_PATCH], [0])
-@@ -71,4 +78,3 @@ AC_CONFIG_FILES([
+@@ -85,4 +92,3 @@ AC_CONFIG_FILES([
          ])
  
  AC_OUTPUT

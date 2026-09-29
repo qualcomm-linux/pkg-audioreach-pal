@@ -172,7 +172,7 @@ index 0f71bc4..e80b937 100644
  LOCAL_HEADER_LIBRARIES := \
      libarpal_headers \
 diff --git a/Makefile.am b/Makefile.am
-index 7c8cdd3..7a9f9f7 100644
+index 94f37b5..b5111df 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -83,55 +83,55 @@ AM_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
@@ -254,7 +254,7 @@ index 7c8cdd3..7a9f9f7 100644
                        ./configs/qcom/IoT/qcs615/mixer_paths_TALOS_EVK.xml \
                        ./configs/qcom/IoT/qcs615/resourcemanager_TALOS_EVK.xml \
                        ./configs/qcom/IoT/qcs8300/mixer_paths_MONACO_EVK.xml \
-@@ -161,7 +161,7 @@ libpal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml \
+@@ -163,7 +163,7 @@ libpal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml \
  
  # install essential xml files under /etc
  root_etcdir      = "/etc"
@@ -1872,7 +1872,7 @@ index f2277e0..91fdd59 100644
      libsession_ar
  
 diff --git a/stream/StreamSoundTrigger/Makefile.am b/stream/StreamSoundTrigger/Makefile.am
-index 7f7c341..22ae434 100644
+index ba44519..741e0ab 100644
 --- a/stream/StreamSoundTrigger/Makefile.am
 +++ b/stream/StreamSoundTrigger/Makefile.am
 @@ -57,7 +57,7 @@ library_includedir = $(includedir)/stream_soundtrigger
@@ -1881,6 +1881,6 @@ index 7f7c341..22ae434 100644
  libstream_soundtrigger_la_LIBADD    = @GLIB_LIBS@ -lexpat
 -libstream_soundtrigger_la_LIBADD    += -L${abs_top_builddir}/.libs -lpal
 +libstream_soundtrigger_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+ libstream_soundtrigger_la_LIBADD += -L${abs_top_builddir}/session/SessionAlsaVoice/.libs -lsession_voice
+ libstream_soundtrigger_la_LIBADD += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
  libstream_soundtrigger_la_CPPFLAGS := $(AM_CPPFLAGS)
- libstream_soundtrigger_la_CPPFLAGS += -std=c++14
- libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version

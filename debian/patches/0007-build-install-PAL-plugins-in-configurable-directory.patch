@@ -66,9 +66,9 @@ Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
  .../default/ConfigSessionAlsaPcm/session_pcm_config.pc.in   |  3 +--
  .../qcom/mobile/default/ConfigSessionAlsaVoice/Makefile.am  |  5 +++--
  .../ConfigSessionAlsaVoice/session_voice_config.pc.in       |  3 +--
- plugins/vui_interface/customva_intf/Makefile.am             |  7 ++++---
+ plugins/vui_interface/customva_intf/Makefile.am             |  5 +++--
  plugins/vui_interface/customva_intf/customva_intf.pc.in     |  4 ++--
- plugins/vui_interface/hotword_intf/Makefile.am              |  7 ++++---
+ plugins/vui_interface/hotword_intf/Makefile.am              |  5 +++--
  plugins/vui_interface/hotword_intf/hotword_intf.pc.in       |  4 ++--
  plugins/vui_interface/sva_intf/Makefile.am                  |  5 +++--
  plugins/vui_interface/sva_intf/sva_interface.pc.in          |  4 ++--
@@ -114,7 +114,7 @@ Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
  stream/StreamPCM/stream_pcm.pc.in                           |  4 ++--
  stream/StreamSoundTrigger/Makefile.am                       |  5 +++--
  stream/StreamSoundTrigger/stream_soundtrigger.pc.in         |  4 ++--
- 104 files changed, 258 insertions(+), 214 deletions(-)
+ 104 files changed, 256 insertions(+), 212 deletions(-)
 
 diff --git a/device/Bluetooth/Makefile.am b/device/Bluetooth/Makefile.am
 index 82597bc..d07a5a1 100644
@@ -1232,10 +1232,10 @@ index 37ef378..53aab33 100644
  Cflags: -I${includedir}/session_voice_config
 -
 diff --git a/plugins/vui_interface/customva_intf/Makefile.am b/plugins/vui_interface/customva_intf/Makefile.am
-index 07893be..a8d18c7 100644
+index fbccabd..95b2f89 100644
 --- a/plugins/vui_interface/customva_intf/Makefile.am
 +++ b/plugins/vui_interface/customva_intf/Makefile.am
-@@ -21,16 +21,17 @@ customva_intf_sources = ./src/CustomVAInterface.cpp
+@@ -14,12 +14,13 @@ customva_intf_sources = $(top_srcdir)/customva_intf/src/CustomVA.cpp
  
  library_includedir = $(includedir)/customva_intf
  
@@ -1243,20 +1243,14 @@ index 07893be..a8d18c7 100644
 +pluginlibdir = @PAL_PLUGIN_DIR@
 +pluginlib_LTLIBRARIES = libcustomva_intf.la
  libcustomva_intf_la_SOURCES   = $(customva_intf_sources)
- libcustomva_intf_la_LIBADD    = @GLIB_LIBS@ -llog -lcutils -lexpat
+ libcustomva_intf_la_LIBADD    = @GLIB_LIBS@ -lexpat
  libcustomva_intf_la_CPPFLAGS := $(AM_CPPFLAGS)
  libcustomva_intf_la_CPPFLAGS += -std=c++14
--libcustomva_intf_la_LDFLAGS   = -shared -avoid-version
-+libcustomva_intf_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
- libcustomva_intf_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
- libcustomva_intf_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
- libcustomva_intf_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
- 
- if BUILDSYSTEM_OPENWRT
- libcustomva_intf_la_LIBADD += -lglib-2.0
--endif
-\ No newline at end of file
-+endif
+-libcustomva_intf_la_LDFLAGS  = -shared -version-number @LT_VERSION_NUMBER@
++libcustomva_intf_la_LDFLAGS  = -shared -version-number @LT_VERSION_NUMBER@ -Wl,-rpath,'$$ORIGIN'
+ libcustomva_intf_la_CPPFLAGS += @GLIB_CFLAGS@
+ if WITH_GLIB
+ libcustomva_intf_la_CPPFLAGS += -include glib.h
 diff --git a/plugins/vui_interface/customva_intf/customva_intf.pc.in b/plugins/vui_interface/customva_intf/customva_intf.pc.in
 index 5c0f3d7..86b3593 100644
 --- a/plugins/vui_interface/customva_intf/customva_intf.pc.in
@@ -1276,10 +1270,10 @@ index 5c0f3d7..86b3593 100644
 \ No newline at end of file
 +Cflags: -I${includedir}/customva_intf
 diff --git a/plugins/vui_interface/hotword_intf/Makefile.am b/plugins/vui_interface/hotword_intf/Makefile.am
-index c6f8157..db959f1 100644
+index 57386f6..1109845 100644
 --- a/plugins/vui_interface/hotword_intf/Makefile.am
 +++ b/plugins/vui_interface/hotword_intf/Makefile.am
-@@ -20,16 +20,17 @@ hotword_intf_sources = ./src/HotwordInterface.cpp
+@@ -13,12 +13,13 @@ hotword_intf_sources = $(top_srcdir)/hotword_intf/src/HotwordVA.cpp
  
  library_includedir = $(includedir)/hotword_intf
  
@@ -1287,20 +1281,14 @@ index c6f8157..db959f1 100644
 +pluginlibdir = @PAL_PLUGIN_DIR@
 +pluginlib_LTLIBRARIES = libhotword_intf.la
  libhotword_intf_la_SOURCES   = $(hotword_intf_sources)
- libhotword_intf_la_LIBADD    = @GLIB_LIBS@ -llog -lcutils -lexpat
+ libhotword_intf_la_LIBADD    = @GLIB_LIBS@ -lexpat
  libhotword_intf_la_CPPFLAGS := $(AM_CPPFLAGS)
  libhotword_intf_la_CPPFLAGS += -std=c++14
--libhotword_intf_la_LDFLAGS   = -shared -avoid-version
-+libhotword_intf_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
- libhotword_intf_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
- libhotword_intf_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
- libhotword_intf_la_CPPFLAGS += -D__unused=__attribute__\(\(__unused__\)\) -DLINUX_ENABLED
- 
- if BUILDSYSTEM_OPENWRT
- libhotword_intf_la_LIBADD += -lglib-2.0
--endif
-\ No newline at end of file
-+endif
+-libhotword_intf_la_LDFLAGS  = -shared -version-number @LT_VERSION_NUMBER@
++libhotword_intf_la_LDFLAGS  = -shared -version-number @LT_VERSION_NUMBER@ -Wl,-rpath,'$$ORIGIN'
+ libhotword_intf_la_CPPFLAGS += @GLIB_CFLAGS@
+ if WITH_GLIB
+ libhotword_intf_la_CPPFLAGS += -include glib.h
 diff --git a/plugins/vui_interface/hotword_intf/hotword_intf.pc.in b/plugins/vui_interface/hotword_intf/hotword_intf.pc.in
 index 0e4e185..2aee244 100644
 --- a/plugins/vui_interface/hotword_intf/hotword_intf.pc.in
@@ -1320,10 +1308,10 @@ index 0e4e185..2aee244 100644
 \ No newline at end of file
 +Cflags: -I${includedir}/hotword_intf
 diff --git a/plugins/vui_interface/sva_intf/Makefile.am b/plugins/vui_interface/sva_intf/Makefile.am
-index 0bc370e..8eb1d0c 100644
+index bb0500c..5be60d9 100644
 --- a/plugins/vui_interface/sva_intf/Makefile.am
 +++ b/plugins/vui_interface/sva_intf/Makefile.am
-@@ -21,8 +21,9 @@ AM_CPPFLAGS += -I $(top_srcdir)/utils/inc/
+@@ -27,8 +27,9 @@ AM_CPPFLAGS += -I $(top_srcdir)/utils/inc/
  
  c_sources := $(top_srcdir)/sva_intf/src/SVAInterface.cpp
  
@@ -2147,10 +2135,10 @@ index 0e227f1..3650d63 100644
 \ No newline at end of file
 +Cflags: -I${includedir}/stream_pcm
 diff --git a/stream/StreamSoundTrigger/Makefile.am b/stream/StreamSoundTrigger/Makefile.am
-index 1bae464..87745eb 100644
+index 950f0e1..7f15eab 100644
 --- a/stream/StreamSoundTrigger/Makefile.am
 +++ b/stream/StreamSoundTrigger/Makefile.am
-@@ -54,13 +54,14 @@ endif
+@@ -54,7 +54,8 @@ endif
  
  library_includedir = $(includedir)/stream_soundtrigger
  
@@ -2160,10 +2148,12 @@ index 1bae464..87745eb 100644
  libstream_soundtrigger_la_SOURCES   = $(stream_soundtrigger_sources)
  libstream_soundtrigger_la_LIBADD    = @GLIB_LIBS@ -lexpat
  libstream_soundtrigger_la_LIBADD    += -L${abs_top_builddir}/.libs -laudioreach-pal
+@@ -62,7 +63,7 @@ libstream_soundtrigger_la_LIBADD += -L${abs_top_builddir}/session/SessionAlsaVoi
+ libstream_soundtrigger_la_LIBADD += -L${abs_top_builddir}/session/SessionAR/.libs -lsession_ar
  libstream_soundtrigger_la_CPPFLAGS := $(AM_CPPFLAGS)
  libstream_soundtrigger_la_CPPFLAGS += -std=c++14
--libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version
-+libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version -Wl,-rpath,'$$ORIGIN'
+-libstream_soundtrigger_la_LDFLAGS   = -shared -version-number @LT_VERSION_NUMBER@ -no-undefined
++libstream_soundtrigger_la_LDFLAGS   = -shared -version-number @LT_VERSION_NUMBER@ -no-undefined -Wl,-rpath,'$$ORIGIN'
  libstream_soundtrigger_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
  libstream_soundtrigger_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
  libstream_soundtrigger_la_CPPFLAGS += -DPAL_PLUGIN_DIR=\"@PAL_PLUGIN_DIR@\"

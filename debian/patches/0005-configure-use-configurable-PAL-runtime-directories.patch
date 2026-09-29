@@ -22,10 +22,9 @@ Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
  utils/inc/PluginUtils.h                            | 26 ++++++++++++++++++++++
  utils/src/BTUtils.cpp                              |  3 ++-
  11 files changed, 66 insertions(+), 14 deletions(-)
- create mode 100644 utils/inc/PluginUtils.h
 
 diff --git a/Makefile.am b/Makefile.am
-index 7a9f9f7..7780f95 100644
+index b5111df..3bb39d4 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -1,6 +1,6 @@
@@ -139,7 +138,7 @@ index f684a9b..40e32e7 100644
  #define AUDIO_PARAMETER_KEY_NATIVE_AUDIO "audio.nat.codec.enabled"
  #define AUDIO_PARAMETER_KEY_NATIVE_AUDIO_MODE "native_audio_mode"
 diff --git a/resource_manager/src/ResourceManager.cpp b/resource_manager/src/ResourceManager.cpp
-index 8504770..1b09664 100644
+index 0cc1b25..c23dc3b 100644
 --- a/resource_manager/src/ResourceManager.cpp
 +++ b/resource_manager/src/ResourceManager.cpp
 @@ -44,6 +44,7 @@
@@ -170,7 +169,7 @@ index 8504770..1b09664 100644
  #define MAX_RETRY_CNT 20
  #define LOWLATENCY_PCM_DEVICE 15
  #define DEEP_BUFFER_PCM_DEVICE 0
-@@ -9643,8 +9648,8 @@ void ResourceManager::getVendorConfigPath (char* config_file_path, int path_size
+@@ -9646,8 +9651,8 @@ void ResourceManager::getVendorConfigPath (char* config_file_path, int path_size
     if (property_get("ro.boot.product.vendor.sku", vendor_sku, "") <= 0) {
  #endif
  #if defined(FEATURE_IPQ_OPENWRT) || defined(LINUX_ENABLED)
@@ -212,11 +211,11 @@ index 248297b..34d4189 100644
  #define USECASE_XML_FILE "/vendor/etc/usecaseKvManager.xml"
  #endif
 diff --git a/stream/StreamSoundTrigger/Makefile.am b/stream/StreamSoundTrigger/Makefile.am
-index 22ae434..1bae464 100644
+index 741e0ab..950f0e1 100644
 --- a/stream/StreamSoundTrigger/Makefile.am
 +++ b/stream/StreamSoundTrigger/Makefile.am
-@@ -63,6 +63,7 @@ libstream_soundtrigger_la_CPPFLAGS += -std=c++14
- libstream_soundtrigger_la_LDFLAGS   = -shared -avoid-version
+@@ -65,6 +65,7 @@ libstream_soundtrigger_la_CPPFLAGS += -std=c++14
+ libstream_soundtrigger_la_LDFLAGS   = -shared -version-number @LT_VERSION_NUMBER@ -no-undefined
  libstream_soundtrigger_la_CPPFLAGS += @GLIB_CFLAGS@ -include glib.h
  libstream_soundtrigger_la_CPPFLAGS += -DACD_SM_FILEPATH=\"/etc/models/acd/\"
 +libstream_soundtrigger_la_CPPFLAGS += -DPAL_PLUGIN_DIR=\"@PAL_PLUGIN_DIR@\"

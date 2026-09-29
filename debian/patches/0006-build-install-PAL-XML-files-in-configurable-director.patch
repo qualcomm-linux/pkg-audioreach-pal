@@ -10,11 +10,11 @@ Forwarded: https://github.com/AudioReach/audioreach-pal/pull/92
 
 Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
 ---
- Makefile.am | 42 ++++++++----------------------------------
- 1 file changed, 8 insertions(+), 34 deletions(-)
+ Makefile.am | 44 ++++++++------------------------------------
+ 1 file changed, 8 insertions(+), 36 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 7780f95..69a601e 100644
+index 3bb39d4..4b52353 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -133,8 +133,12 @@ if BUILDSYSTEM_OPENWRT
@@ -33,15 +33,15 @@ index 7780f95..69a601e 100644
                        ./configs/qcom/IoT/qcs8300/mixer_paths_MONACO_EVK.xml \
                        ./configs/qcom/IoT/qcs8300/resourcemanager_MONACO_EVK.xml \
 @@ -146,7 +150,6 @@ libaudioreach_pal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml
-                       ./configs/qcom/IoT/shikra/resourcemanager_Shikra_CQM_EVK.xml \
-                       ./configs/qcom/IoT/shikra/mixer_paths_Shikra_CQS_EVK.xml \
-                       ./configs/qcom/IoT/shikra/resourcemanager_Shikra_CQS_EVK.xml\
--                      ./configs/qcom/IoT/shikra/plugin_manager.xml\
+                       ./configs/qcom/IoT/shikra/resourcemanager_shikra_cqs_evk.xml \
+                       ./configs/qcom/IoT/shikra/mixer_paths_shikra_iqs_evk.xml \
+                       ./configs/qcom/IoT/shikra/resourcemanager_shikra_iqs_evk.xml \
+-                      ./configs/qcom/IoT/shikra/plugin_manager.xml \
                        ./configs/qcom/IoT/x1e80100/mixer_paths_X1E80100_CRD.xml \
                        ./configs/qcom/IoT/x1e80100/resourcemanager_X1E80100_CRD.xml \
                        ./configs/qcom/IoT/x1e80100/mixer_paths_X1E80100_EVK.xml \
-@@ -161,38 +164,9 @@ libaudioreach_pal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml
-                       ./configs/qcom/IoT/Kaanapali/resourcemanager_Kaanapali_MTP.xml
+@@ -163,40 +166,9 @@ libaudioreach_pal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml
+                       ./configs/qcom/IoT/NORD/resourcemanager_NORD_RIDE_SX.xml
  
  
 -# install essential xml files under /etc
@@ -59,10 +59,10 @@ index 7780f95..69a601e 100644
 -	ln -sf resourcemanager_QCS6490_RB3Gen2.xml $(DESTDIR)$(root_etcdir)/resourcemanager_QCM6490_IDP.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_LEMANS_EVK.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_LEMANS_EVK.xml
--	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_Shikra_CQM_EVK.xml
--	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_Shikra_CQM_EVK.xml
--	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_Shikra_CQS_EVK.xml
--	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_Shikra_CQS_EVK.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_shikra_cqs_evk.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_shikra_cqs_evk.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_shikra_iqs_evk.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_shikra_iqs_evk.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/plugin_manager.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_X1E80100_CRD.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_X1E80100_CRD.xml
@@ -76,6 +76,8 @@ index 7780f95..69a601e 100644
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_MAHUA_CRD.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_Kaanapali_MTP.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_Kaanapali_MTP.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_NORD_RIDE_SX.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_NORD_RIDE_SX.xml
 +	ln -sf mixer_paths_QCS6490_RB3Gen2.xml "$(DESTDIR)$(pal_datadir)/mixer_paths_QCM6490_IDP.xml"
 +	ln -sf resourcemanager_QCS6490_RB3Gen2.xml "$(DESTDIR)$(pal_datadir)/resourcemanager_QCM6490_IDP.xml"
  endif

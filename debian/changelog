@@ -1,12 +1,16 @@
 audioreach-pal (1.0.2-0qli1~) UNRELEASED; urgency=medium
 
-  [ Debusine Action Bot ]
-  * Unreleased changes
-
   [ GitHub Service Bot ]
-  * New upstream release
+  * New upstream release: 1.0.2
 
- -- GitHub Service Bot <githubservice@qti.qualcomm.com>  Tue, 29 Sep 2026 09:21:02 +0000
+  [ Lukas Märdian ]
+  * d/patches: Drop patches applied upstream (1.0.2).
+    - 0001-pal-replace-hardcoded-lib-flags-with-PKG_CHECK_MODUL.patch
+    - 0002-build-fix-Sensor-PCM-data-library-name.patch
+  * d/patches: Refresh.
+  * d/control: Add audioreach-vui-intf-dev for VUI headers and pkgconf.
+
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Tue, 29 Sep 2026 12:32:57 +0200
 
 audioreach-pal (1.0.0-0qli2) forky; urgency=medium
 

@@ -57,6 +57,18 @@ Description: AudioReach platform abstraction layer - functional tests
  This package contains tests that require a functioning AudioReach sound
  card and target-specific PAL configuration.
 
+Package: audioreach-vui-intf-dev
+Architecture: arm64
+Section: libdevel
+Depends:
+ libaudioreach-pal-dev (= ${binary:Version}),
+ ${misc:Depends},
+Description: AudioReach voice user interface - development files
+ Provides the voice user interface definitions used by AudioReach PAL
+ and its clients.
+ .
+ This package contains VUI interface headers and pkg-config metadata.
+
 Package: libaudioreach-pal1
 Architecture: arm64
 Multi-Arch: same

@@ -1,0 +1,2 @@
+usr/include/vuiInterfaceHeader/*
+usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/vui-intf-header.pc

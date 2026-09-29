@@ -1,4 +1,4 @@
-audioreach-pal (1.0.2-0qli1~) UNRELEASED; urgency=medium
+audioreach-pal (1.0.2-0qli1) forky; urgency=medium
 
   [ GitHub Service Bot ]
   * New upstream release: 1.0.2
@@ -10,7 +10,7 @@ audioreach-pal (1.0.2-0qli1~) UNRELEASED; urgency=medium
   * d/patches: Refresh.
   * d/control: Add audioreach-vui-intf-dev for VUI headers and pkgconf.
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Tue, 29 Sep 2026 12:32:57 +0200
+ -- Debusine Action Bot <noreply@bot.invalid>  Tue, 29 Sep 2026 10:59:47 +0000
 
 audioreach-pal (1.0.0-0qli2) forky; urgency=medium
 

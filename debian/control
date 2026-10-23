@@ -16,6 +16,7 @@ Build-Depends:
  libglib2.0-dev,
  libtinyalsa-dev,
  libtinycompress-dev,
+ android-libcutils-dev,
  pkgconf,
 Standards-Version: 4.6.2
 Homepage: https://github.com/Audioreach/audioreach-pal

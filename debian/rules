@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 include /usr/share/dpkg/architecture.mk
 
+export DEB_CPPFLAGS_MAINT_APPEND = -DPAL_SP_TEMP_PATH=\"/var/lib/audioreach/speaker-protection.cal\"
 export DEB_CFLAGS_MAINT_APPEND = -Wl,--no-undefined
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
@@ -9,6 +10,7 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 override_dh_auto_configure:
 	dh_auto_configure -- --with-glib --with-syslog \
+		--enable-upstream-kernel \
 		--with-pal-config-dir=/etc/audioreach \
 		--with-pal-data-dir=/usr/share/audioreach \
 		--with-pal-plugin-dir=/usr/lib/audioreach-pal/plugins

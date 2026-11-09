@@ -11,7 +11,8 @@ override_dh_auto_configure:
 	dh_auto_configure -- --with-glib --with-syslog \
 		--with-pal-config-dir=/etc/audioreach \
 		--with-pal-data-dir=/usr/share/audioreach \
-		--with-pal-plugin-dir=/usr/lib/audioreach-pal/plugins
+		--with-pal-plugin-dir=/usr/lib/audioreach-pal/plugins \
+		--enable-upstream-support=yes
 
 override_dh_fixperms:
 	dh_fixperms

@@ -16,6 +16,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear
         <stream name="PAL_STREAM_ULTRA_LOW_LATENCY" lib="libstream_pcm.so" entryFunction="CreatePCMStream"/>
         <stream name="PAL_STREAM_VOICE_UI" lib="libstream_soundtrigger.so" entryFunction="CreateSoundTriggerStream"/>
         <stream name="PAL_STREAM_COMPRESSED" lib="libstream_compress.so" entryFunction="CreateCompressStream"/>
+        <stream name="PAL_STREAM_CONTEXT_PROXY" lib="libstream_contextproxy.so" entryFunction="CreateContextProxyStream"/>
     </streams>
     <sessions>
         <session name="PAL_STREAM_DEEP_BUFFER" lib="libsession_pcm.so" entryFunction="CreatePcmSession"/>
@@ -27,6 +28,7 @@ SPDX-License-Identifier: BSD-3-Clause-Clear
         <session name="PAL_STREAM_ULTRA_LOW_LATENCY" lib="libsession_pcm.so" entryFunction="CreatePcmSession"/>
         <session name="PAL_STREAM_VOICE_UI" lib="libsession_pcm.so" entryFunction="CreatePcmSession"/>
         <session name="PAL_STREAM_COMPRESSED" lib="libsession_compress.so" entryFunction="CreateCompressSession"/>
+        <session name="PAL_STREAM_CONTEXT_PROXY" lib="libsession_pcm.so" entryFunction="CreatePcmSession"/>
     </sessions>
     <devices>
         <!--Handset-->
@@ -48,6 +50,9 @@ SPDX-License-Identifier: BSD-3-Clause-Clear
         <!--Dummy-->
         <device name="PAL_DEVICE_IN_EXT_EC_REF" lib="libdev_ext_ec.so" entryFunction="CreateExtEcDevice"/>
         <device name="PAL_DEVICE_IN_ECHO_REF" lib="libdev_ec_ref.so" entryFunction="CreateECRefDevice"/>
+        <!--Display-->
+        <device name="PAL_DEVICE_OUT_AUX_DIGITAL" lib="libdev_display.so" entryFunction="CreateDisplayDevice"/>
+        <device name="PAL_DEVICE_OUT_HDMI" lib="libdev_display.so" entryFunction="CreateDisplayDevice"/>
     </devices>
     <configs>
         <!--pcm_config-->
@@ -61,5 +66,6 @@ SPDX-License-Identifier: BSD-3-Clause-Clear
         <config name="PAL_STREAM_VOICE_UI" lib="libsession_pcm_config.so" entryFunction="pcmPluginConfig"/>
         <!-- compress_config -->
         <config name="PAL_STREAM_COMPRESSED" lib="libsession_compress_config.so" entryFunction="compressPluginConfig"/>
+        <config name="PAL_STREAM_CONTEXT_PROXY" lib="libsession_pcm_config.so" entryFunction="pcmPluginConfig"/>
     </configs>
 </plugin_manager_info>

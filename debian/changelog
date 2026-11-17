@@ -1,12 +1,14 @@
 audioreach-pal (2.1.0-0qli1~) UNRELEASED; urgency=medium
 
-  [ Debusine Action Bot ]
-  * Unreleased changes
-
   [ GitHub Service Bot ]
   * New upstream release
 
- -- GitHub Service Bot <githubservice@qti.qualcomm.com>  Tue, 17 Nov 2026 10:29:25 +0000
+  [ Lukas Märdian ]
+  * d/patches: Refresh.
+  * d/*.links: Drop broken compat-symlinks.
+  * d/control: Update to libaudioreach-pal2 following the SONAME bump.
+
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Tue, 17 Nov 2026 16:31:14 +0100
 
 audioreach-pal (1.0.3-0qli1) forky; urgency=medium
 

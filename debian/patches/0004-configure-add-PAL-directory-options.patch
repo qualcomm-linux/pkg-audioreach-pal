@@ -75,7 +75,7 @@ index 46a3f86..01f6b96 100644
 +AC_SUBST([PAL_DATA_DIR])
 +
  m4_define([LT_MAJOR], [2])
- m4_define([LT_MINOR], [1])
+ m4_define([LT_MINOR], [2])
  m4_define([LT_PATCH], [0])
 diff --git a/plugins/vui_interface/configure.ac b/plugins/vui_interface/configure.ac
 index f46c96d..64f922d 100644

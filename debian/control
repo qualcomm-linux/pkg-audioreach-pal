@@ -69,13 +69,17 @@ Description: AudioReach voice user interface - development files
  .
  This package contains VUI interface headers and pkg-config metadata.
 
-Package: libaudioreach-pal1
+Package: libaudioreach-pal2
 Architecture: arm64
 Multi-Arch: same
 Section: libs
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
+Breaks:
+ libaudioreach-pal1,
+Replaces:
+ libaudioreach-pal1,
 Description: AudioReach platform abstraction layer - shared libraries
  Provides APIs to configure and control audio use cases by bridging
  user-space audio frameworks with underlying audio hardware.
@@ -90,8 +94,8 @@ Description: AudioReach pal - development files
  user-space audio frameworks with underlying audio hardware.
  .
  This package contains library headers for the shared libraries shipped
- in the libaudioreach-pal1 package.
+ in the libaudioreach-pal2 package.
 Section: libdevel
 Depends:
- libaudioreach-pal1 (= ${binary:Version}),
+ libaudioreach-pal2 (= ${binary:Version}),
  ${misc:Depends},

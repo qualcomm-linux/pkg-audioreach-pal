@@ -10,14 +10,12 @@ Forwarded: https://github.com/AudioReach/audioreach-pal/pull/92
 
 Signed-off-by: Lukas Märdian <lukas.maerdian@oss.qualcomm.com>
 ---
- Makefile.am | 44 ++++++++------------------------------------
- 1 file changed, 8 insertions(+), 36 deletions(-)
+ Makefile.am | 52 ++++++++++------------------------------------------
+ 1 file changed, 10 insertions(+), 42 deletions(-)
 
-diff --git a/Makefile.am b/Makefile.am
-index 3bb39d4..4b52353 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -133,8 +133,12 @@ if BUILDSYSTEM_OPENWRT
+@@ -133,8 +133,12 @@
  # config files for OPENWRT
  else
  
@@ -32,7 +30,7 @@ index 3bb39d4..4b52353 100644
                        ./configs/qcom/IoT/qcs615/resourcemanager_TALOS_EVK.xml \
                        ./configs/qcom/IoT/qcs8300/mixer_paths_MONACO_EVK.xml \
                        ./configs/qcom/IoT/qcs8300/resourcemanager_MONACO_EVK.xml \
-@@ -146,7 +150,6 @@ libaudioreach_pal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml
+@@ -146,7 +150,6 @@
                        ./configs/qcom/IoT/shikra/resourcemanager_shikra_cqs_evk.xml \
                        ./configs/qcom/IoT/shikra/mixer_paths_shikra_iqs_evk.xml \
                        ./configs/qcom/IoT/shikra/resourcemanager_shikra_iqs_evk.xml \
@@ -40,8 +38,8 @@ index 3bb39d4..4b52353 100644
                        ./configs/qcom/IoT/x1e80100/mixer_paths_X1E80100_CRD.xml \
                        ./configs/qcom/IoT/x1e80100/resourcemanager_X1E80100_CRD.xml \
                        ./configs/qcom/IoT/x1e80100/mixer_paths_X1E80100_EVK.xml \
-@@ -163,40 +166,9 @@ libaudioreach_pal_la_list      = ./configs/qcom/IoT/qcm6490/usecaseKvManager.xml
-                       ./configs/qcom/IoT/NORD/resourcemanager_NORD_RIDE_SX.xml
+@@ -167,46 +170,11 @@
+                       ./configs/qcom/IoT/arduino_monza/resourcemanager_arduino_monza.xml
  
  
 -# install essential xml files under /etc
@@ -76,8 +74,16 @@ index 3bb39d4..4b52353 100644
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_MAHUA_CRD.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_Kaanapali_MTP.xml
 -	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_Kaanapali_MTP.xml
--	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_NORD_RIDE_SX.xml
--	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_NORD_RIDE_SX.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_NORD_RIDE.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_NORD_RIDE.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_HAWI_MTP.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_HAWI_MTP.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/mixer_paths_arduino_monza.xml
+-	chmod  go+r $(DESTDIR)$(root_etcdir)/resourcemanager_arduino_monza.xml
+-	ln -sf mixer_paths_arduino_monza.xml $(DESTDIR)$(root_etcdir)/mixer_paths_monaco_gertrude.xml
+-	ln -sf resourcemanager_arduino_monza.xml $(DESTDIR)$(root_etcdir)/resourcemanager_monaco_gertrude.xml
++	ln -sf mixer_paths_arduino_monza.xml "$(DESTDIR)$(pal_datadir)/mixer_paths_monaco_gertrude.xml"
++	ln -sf resourcemanager_arduino_monza.xml "$(DESTDIR)$(pal_datadir)/resourcemanager_monaco_gertrude.xml"
 +	ln -sf mixer_paths_QCS6490_RB3Gen2.xml "$(DESTDIR)$(pal_datadir)/mixer_paths_QCM6490_IDP.xml"
 +	ln -sf resourcemanager_QCS6490_RB3Gen2.xml "$(DESTDIR)$(pal_datadir)/resourcemanager_QCM6490_IDP.xml"
  endif

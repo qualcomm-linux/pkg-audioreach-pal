@@ -1,9 +1,9 @@
-audioreach-pal (2.1.0-0qli2~) UNRELEASED; urgency=medium
+audioreach-pal (2.1.0-0qli2) forky; urgency=medium
 
   [ Shashank Pathmudi ]
   * d/rules: enable speaker protection support.
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 18 Nov 2026 21:42:11 +0100
+ -- Debusine Action Bot <noreply@bot.invalid>  Wed, 18 Nov 2026 21:00:47 +0000
 
 audioreach-pal (2.1.0-0qli1) forky; urgency=medium
 

@@ -1,4 +1,4 @@
-audioreach-pal (2.1.0-0qli1~) UNRELEASED; urgency=medium
+audioreach-pal (2.1.0-0qli1) forky; urgency=medium
 
   [ GitHub Service Bot ]
   * New upstream release
@@ -11,7 +11,7 @@ audioreach-pal (2.1.0-0qli1~) UNRELEASED; urgency=medium
   [ Chiluka Rohith ]
   * d/rules: enable upstream DisplayPort support build flag.
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 18 Nov 2026 14:34:29 +0100
+ -- Debusine Action Bot <noreply@bot.invalid>  Wed, 18 Nov 2026 13:50:47 +0000
 
 audioreach-pal (1.0.3-0qli1) forky; urgency=medium
 

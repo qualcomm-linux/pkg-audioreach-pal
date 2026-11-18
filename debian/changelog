@@ -3,7 +3,10 @@ audioreach-pal (2.2.0-0qli1~) UNRELEASED; urgency=medium
   [ GitHub Service Bot ]
   * New upstream release v2.2.0
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 18 Nov 2026 22:19:35 +0100
+  [ Lukas Märdian ]
+  * d/patches: Refresh.
+
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 18 Nov 2026 22:30:55 +0100
 
 audioreach-pal (2.1.0-0qli2) forky; urgency=medium
 

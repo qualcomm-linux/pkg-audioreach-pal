@@ -1,8 +1,9 @@
-audioreach-pal (2.1.0-0qli3~) UNRELEASED; urgency=medium
+audioreach-pal (2.2.0-0qli1~) UNRELEASED; urgency=medium
 
-  * Unreleased changes
+  [ GitHub Service Bot ]
+  * New upstream release v2.2.0
 
- -- Debusine Action Bot <noreply@bot.invalid>  Wed, 18 Nov 2026 21:14:55 +0000
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 18 Nov 2026 22:19:35 +0100
 
 audioreach-pal (2.1.0-0qli2) forky; urgency=medium
 

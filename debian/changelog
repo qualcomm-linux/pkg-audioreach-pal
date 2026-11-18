@@ -8,7 +8,10 @@ audioreach-pal (2.1.0-0qli1~) UNRELEASED; urgency=medium
   * d/*.links: Drop broken compat-symlinks.
   * d/control: Update to libaudioreach-pal2 following the SONAME bump.
 
- -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Tue, 17 Nov 2026 16:31:14 +0100
+  [ Chiluka Rohith ]
+  * d/rules: enable upstream DisplayPort support build flag.
+
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Wed, 18 Nov 2026 14:34:29 +0100
 
 audioreach-pal (1.0.3-0qli1) forky; urgency=medium
 

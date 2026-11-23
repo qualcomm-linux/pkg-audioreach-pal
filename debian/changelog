@@ -1,8 +1,9 @@
 audioreach-pal (2.2.0-0qli1~bpo13+1~) UNRELEASED; urgency=medium
 
-  * Unreleased changes
+  * Rebuild for trixie.
+  * New upstream release v2.2.0
 
- -- Debusine Action Bot <noreply@bot.invalid>  Thu, 29 Oct 2026 13:09:57 +0000
+ -- Lukas Märdian <lukas.maerdian@oss.qualcomm.com>  Mon, 23 Nov 2026 11:33:51 +0100
 
 audioreach-pal (2.2.0-0qli1) forky; urgency=medium
 

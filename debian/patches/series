@@ -9,3 +9,4 @@
 0011-build-rename-PAL-pkg-config-file.patch
 0012-build-pass-PAL_CONFIG_DIR-to-compiler-and-use-in-SND.patch
 0013-build-link-internal-helper-libraries-statically.patch
+0014-configs-disable-context-manager-for-glymur.patch

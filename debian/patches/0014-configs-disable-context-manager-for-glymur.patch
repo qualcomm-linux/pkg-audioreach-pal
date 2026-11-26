@@ -1,0 +1,20 @@
+From: Shashank Pathmudi <spathmud@qti.qualcomm.com>
+Date: Wed, 25 Nov 2026 18:34:30 +0530
+Subject: configs: disable context manager for Glymur
+
+Disable context_manager_enable for Glymur since Speaker Protection is
+disabled by default on Glymur.
+
+Origin: https://github.com/AudioReach/audioreach-pal/pull/134
+Signed-off-by: Shashank Pathmudi <spathmud@qti.qualcomm.com>
+---
+ configs/qcom/IoT/GLYMUR/resourcemanager_GLYMUR_CRD.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configs/qcom/IoT/GLYMUR/resourcemanager_GLYMUR_CRD.xml b/configs/qcom/IoT/GLYMUR/resourcemanager_GLYMUR_CRD.xml
+index b5b53ab..e269e65 100644
+--- a/configs/qcom/IoT/GLYMUR/resourcemanager_GLYMUR_CRD.xml
++++ b/configs/qcom/IoT/GLYMUR/resourcemanager_GLYMUR_CRD.xml
+@@ -44,1 +44,1 @@
+-        <param key="context_manager_enable" value ="true" />
++        <param key="context_manager_enable" value ="false" />
